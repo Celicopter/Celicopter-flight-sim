@@ -1,0 +1,47 @@
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+public class Test extends Canvas{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public static void main(String []args){
+		Test t=new Test();
+		Frame f=new Frame();
+		f.setSize(500,600);
+		f.add(t);
+		f.setVisible(true);
+		f.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);
+			}//closes window listener that closes the program when we exit out of the window
+		}//closes patch
+		);
+	}
+
+	public Test() {
+		super();
+	}
+	
+	public void paint(Graphics g){
+		g.fillPolygon(createPoly(3,100));
+	}
+	
+	private Polygon createPoly(int numberOfSides,int sideLength){
+		int[] xPts=new int[numberOfSides];
+		int[] yPts=new int[numberOfSides];
+		double intAngle=2*Math.PI/numberOfSides;
+		double r=sideLength/(2*Math.sin(intAngle));
+		double theta=(3*Math.PI/2)+intAngle/2;
+		for(int i=0;i<numberOfSides;i++){
+			xPts[i]=(int) (r*Math.sin(theta+i*intAngle));
+			yPts[i]=(int) (r*Math.cos(theta+i*intAngle));
+		}
+		Polygon p= new Polygon(xPts,yPts,numberOfSides);
+		p.translate((int) (0+p.getBounds2D().getWidth()/2), (int) (0+p.getBounds2D().getHeight()/2));
+		return p;
+	}
+}
