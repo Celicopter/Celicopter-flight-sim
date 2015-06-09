@@ -28,8 +28,11 @@ public class Test extends Canvas{
 	    //Sets the screen to it's maximum allowable size (maximizes screen)
 	    f.setSize(xSize,ySize);
 		 */
+
+		/**This code works for devices with multiple screens*/
 		
-		f.setSize((int)t.virtualBounds.getWidth(),(int)t.virtualBounds.getWidth());
+		
+		f.setBounds(t.virtualBounds);
 		f.add(t);
 		f.setVisible(true);
 		f.addWindowListener(new WindowAdapter() {
@@ -42,7 +45,6 @@ public class Test extends Canvas{
 
 	public Test() {
 		super();
-		/**This code works for devices with multiple screens*/
 		//Defines a variable to hold the maximum bounds of the screen we will find shortly
 		virtualBounds = new Rectangle();
 		//Gets an object that encapsulates all periphery devices attached to this computer (screens, printers, etc.)
@@ -58,10 +60,25 @@ public class Test extends Canvas{
 				virtualBounds =virtualBounds.union(gc[i].getBounds());
 			}
 		}
+		System.out.println(virtualBounds);
 	}
 	
 	public void paint(Graphics g){
-		g.fillRect(0,0,100,100);
+		g.fillPolygon(createPoly(100,10));
 	}
 	
+	private Polygon createPoly(int numberOfSides,int sideLength){
+		int[] xPts=new int[numberOfSides];
+		int[] yPts=new int[numberOfSides];
+		double intAngle=2*Math.PI/numberOfSides;
+		double r=sideLength/(2*Math.sin(intAngle));
+		double theta=(3*Math.PI/2)+intAngle/2;
+		for(int i=0;i<numberOfSides;i++){
+			xPts[i]=(int) (r*Math.sin(theta+i*intAngle));
+			yPts[i]=(int) (r*Math.cos(theta+i*intAngle));
+		}
+		Polygon p= new Polygon(xPts,yPts,numberOfSides);
+		p.translate((int) (0+p.getBounds2D().getWidth()/2), (int) (0+p.getBounds2D().getHeight()/2));
+		return p;
+	}
 }

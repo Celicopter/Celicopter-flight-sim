@@ -28,8 +28,11 @@ public class Test extends Canvas{
 	    //Sets the screen to it's maximum allowable size (maximizes screen)
 	    f.setSize(xSize,ySize);
 		 */
+
 		
-		f.setSize((int)t.virtualBounds.getWidth(),(int)t.virtualBounds.getWidth());
+		
+		
+		f.setBounds(t.virtualBounds);
 		f.add(t);
 		f.setVisible(true);
 		f.addWindowListener(new WindowAdapter() {

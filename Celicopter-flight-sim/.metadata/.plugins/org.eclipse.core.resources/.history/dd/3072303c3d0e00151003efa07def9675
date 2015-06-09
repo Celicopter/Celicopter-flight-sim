@@ -28,8 +28,11 @@ public class Test extends Canvas{
 	    //Sets the screen to it's maximum allowable size (maximizes screen)
 	    f.setSize(xSize,ySize);
 		 */
+
+		/**This code works for devices with multiple screens*/
 		
-		f.setSize((int)t.virtualBounds.getWidth(),(int)t.virtualBounds.getWidth());
+		
+		f.setBounds(t.virtualBounds);
 		f.add(t);
 		f.setVisible(true);
 		f.addWindowListener(new WindowAdapter() {
@@ -42,7 +45,6 @@ public class Test extends Canvas{
 
 	public Test() {
 		super();
-		/**This code works for devices with multiple screens*/
 		//Defines a variable to hold the maximum bounds of the screen we will find shortly
 		virtualBounds = new Rectangle();
 		//Gets an object that encapsulates all periphery devices attached to this computer (screens, printers, etc.)
