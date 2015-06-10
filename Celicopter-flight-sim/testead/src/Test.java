@@ -8,7 +8,6 @@ public class Test extends Canvas{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
 	public Rectangle virtualBounds;
 
 	public static void main(String []args){
@@ -61,7 +60,44 @@ public class Test extends Canvas{
 	}
 	
 	public void paint(Graphics g){
-		g.fillRect(0,0,100,100);
+//		for(int i=3;i<=10;i++){
+//			g.setColor(new Color(25*i,10*i,i));
+//			g.fillPolygon(createPoly(i,182));
+//		}
+		//g.fillPolygon(createPoly(5,182));
+		g.setColor(Color.GREEN);
+		g.fillPolygon(createPoly(6,182));
+		//g.setColor(Color.BLUE);
+		//g.fillPolygon(createPoly(7,182));
+	}
+	
+	private Polygon createPoly(int numberOfSides,double SF){
+		int[] xPts=new int[numberOfSides];
+		int[] yPts=new int[numberOfSides];
+		double intAngle=2*Math.PI/numberOfSides;
+		//double r=SF/2;
+		double r;
+		if(numberOfSides%2==0)
+			r=SF/(2*Math.cos(intAngle/2));
+		else
+			r=SF/(1+Math.cos(intAngle/2));
+		//double r=sideLength/(2*Math.sin(intAngle/2));
+		double theta=(3*Math.PI/2)-intAngle/2;
+		for(int i=0;i<numberOfSides;i++){
+			xPts[i]=(int) Math.round((r*Math.cos(theta+i*intAngle)));
+			yPts[i]=(int) Math.round((r*Math.sin(theta+i*intAngle)));
+		}
+		Polygon p= new Polygon(xPts,yPts,numberOfSides);
+		p.translate(-1*min(xPts), -1*min(yPts));
+		return p;
+	}
+	
+	private int min(int[] ford){
+		int max=ford[0];
+		for(int i=1;i<ford.length;i++)
+			if(ford[i]<=max)
+				max=ford[i];
+		return max;
 	}
 	
 }

@@ -117,10 +117,10 @@ public class ScreenObject{
 		yPosition=startY;
 		dx=0;
 		dy=0;
-		shape=createPoly(numberOfSides);
 		sprite=null;
 		spatialFrequency=182;
 		modulation=1;
+		shape=createPoly(numberOfSides,spatialFrequency);
 	}
 	
 	/**
@@ -138,10 +138,10 @@ public class ScreenObject{
 		yPosition=startY;
 		dx=startDx;
 		dy=startDy;
-		shape=createPoly(numberOfSides);
 		sprite=null;
 		spatialFrequency=182;
 		modulation=1;
+		shape=createPoly(numberOfSides,spatialFrequency);
 	}
 	
 	/**
@@ -161,10 +161,10 @@ public class ScreenObject{
 		yPosition=startY;
 		dx=startDx;
 		dy=startDy;
-		shape=createPoly(numberOfSides);
 		sprite=null;
 		spatialFrequency=SF;
 		modulation=mod;
+		shape=createPoly(numberOfSides,spatialFrequency);
 	}
 	
 	/**
@@ -220,10 +220,10 @@ public class ScreenObject{
 		yPosition=startY;
 		dx=0;
 		dy=0;
-		shape=shape=createPoly(numberOfSides);
 		sprite=null;
 		spatialFrequency=startSF;
 		modulation=1;
+		shape=createPoly(numberOfSides,spatialFrequency);
 	}
 	
 	/**
@@ -242,10 +242,10 @@ public class ScreenObject{
 		yPosition=startY;
 		dx=startDx;
 		dy=startDy;
-		shape=createPoly(numberOfSides);
 		sprite=null;
 		spatialFrequency=startSF;
 		modulation=1;
+		shape=createPoly(numberOfSides,spatialFrequency);
 	}
 	
 	/**
@@ -340,18 +340,32 @@ public class ScreenObject{
 			yPosition=newY;
 	}
 
-	private Polygon createPoly(int numberOfSides,int sideLength){
+	private Polygon createPoly(int numberOfSides,double SF){
 		int[] xPts=new int[numberOfSides];
 		int[] yPts=new int[numberOfSides];
 		double intAngle=2*Math.PI/numberOfSides;
-		double r=sideLength/(2*Math.sin(intAngle));
-		double theta=(3*Math.PI/2)+intAngle/2;
+		//double r=SF/2;
+		double r;
+		if(numberOfSides%2==0)
+			r=SF/(2*Math.cos(intAngle/2));
+		else
+			r=SF/(1+Math.cos(intAngle/2));
+		//double r=sideLength/(2*Math.sin(intAngle/2));
+		double theta=(3*Math.PI/2)-intAngle/2;
 		for(int i=0;i<numberOfSides;i++){
-			xPts[i]=(int) (r*Math.sin(theta+i*intAngle));
-			yPts[i]=(int) (r*Math.cos(theta+i*intAngle));
+			xPts[i]=(int) Math.round((r*Math.cos(theta+i*intAngle)));
+			yPts[i]=(int) Math.round((r*Math.sin(theta+i*intAngle)));
 		}
 		Polygon p= new Polygon(xPts,yPts,numberOfSides);
-		p.translate((int) (p.getBounds2D().getWidth()/2), (int) (p.getBounds2D().getHeight()/2));
+		p.translate(-1*min(xPts), -1*min(yPts));
 		return p;
+	}
+	
+	private int min(int[] ford){
+		int max=ford[0];
+		for(int i=1;i<ford.length;i++)
+			if(ford[i]<=max)
+				max=ford[i];
+		return max;
 	}
 }
