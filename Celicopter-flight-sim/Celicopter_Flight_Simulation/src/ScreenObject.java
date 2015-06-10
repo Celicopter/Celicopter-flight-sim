@@ -112,7 +112,6 @@ public class ScreenObject{
 	 * @param numberOfSides The number of sides the polygon to be rendered on the screen has
 	 */
 	public ScreenObject(double startX, double startY, int numberOfSides){
-		double sideLength=10;
 		xPosition=startX;
 		yPosition=startY;
 		dx=0;
@@ -212,8 +211,8 @@ public class ScreenObject{
 	 * This constructor assumes spatial frequency is 182, modulation is 1, and the shape initially starts from rest
 	 * @param startX X-coordinate of the top right-hand corner where the object starts
 	 * @param startY Y-coordinate of the top right-hand corner where the object starts
-	 * @param numberOfSides The number of sides the polygon to be rendered on the screen has
 	 * @param startSF The user-specified starting spatial-frequency
+	 * @param numberOfSides The number of sides the polygon to be rendered on the screen has
 	 */
 	public ScreenObject(double startX, double startY, double startSF,int numberOfSides){
 		xPosition=startX;
@@ -302,19 +301,23 @@ public class ScreenObject{
 
 	/**
 	 * Draws the object in the specified graphics context
+	 * If this object isn't a polygon or an image, a black circle is drawn
+	 * If this object is a polygon, it is drawn in black
+	 * If this object is an image, the image is drawn
 	 * @param g The Graphics context to draw the object in
 	 */
 	public void draw(Graphics g){
-		Color c=new Color(g.getColor().getRed(),g.getColor().getGreen(),g.getColor().getBlue(),(int) (255*modulation));
+		Color c=new Color(0,0,0,(int) (255*modulation));
 		g.setColor(c);
 		if(shape==null && sprite==null){
 			g.fillOval((int)xPosition, (int)yPosition, (int)spatialFrequency, (int)spatialFrequency);
 			return;
 		}
 		if(shape!=null){
-			Polygon sharpie=shape;
+			Polygon sharpie=new Polygon(shape.xpoints,shape.ypoints,shape.npoints);
 			sharpie.translate((int) (xPosition), (int) (yPosition));
 			g.fillPolygon(sharpie);
+			sharpie=null;
 		}
 		if(sprite!=null){
 			BufferedImage tmpImg = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -328,6 +331,7 @@ public class ScreenObject{
 	public void move(long time, int screenWidth, int screenHeight){
 		double newX=xPosition+dx*time;
 		double newY=yPosition+dy*time;
+		if(shape==null){
 		if(newX+spatialFrequency>screenWidth || newX<0){
 			dx=-dx;
 		}
@@ -338,9 +342,23 @@ public class ScreenObject{
 		}
 		else
 			yPosition=newY;
+		}
+		if(shape!=null){
+			if(newX+shape.getBounds2D().getWidth()>screenWidth || newX<0){
+				dx=-dx;
+			}
+			else
+				xPosition=newX;
+			if(newY+shape.getBounds2D().getHeight()>screenHeight || newY<0){
+				dy=-dy;
+			}
+			else
+				yPosition=newY;
+			}
 	}
 
 	private Polygon createPoly(int numberOfSides,double SF){
+		if(numberOfSides>2){
 		int[] xPts=new int[numberOfSides];
 		int[] yPts=new int[numberOfSides];
 		double intAngle=2*Math.PI/numberOfSides;
@@ -359,6 +377,9 @@ public class ScreenObject{
 		Polygon p= new Polygon(xPts,yPts,numberOfSides);
 		p.translate(-1*min(xPts), -1*min(yPts));
 		return p;
+		}
+		else
+			return null;
 	}
 	
 	private int min(int[] ford){

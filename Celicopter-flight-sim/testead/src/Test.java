@@ -9,11 +9,20 @@ public class Test extends Canvas{
 	 * 
 	 */
 	public Rectangle virtualBounds;
+	public ScreenObject sc;
+	public ScreenObject sc1;
+	public long lastLoopTime;
 
 	public static void main(String []args){
 		Test t=new Test();
-		JFrame f=new JFrame();
-
+		Test t1=new Test();
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		//Unpacks this object and gets a list of all peripheries 
+		GraphicsDevice[] gs = ge.getScreenDevices();
+		JFrame f=new JFrame("Test",gs[0].getConfigurations()[0]);
+		System.out.println();
+		
+		
 		/*
 		//Gets information related to the display screen. This only works for single-monitor devices
 		Toolkit tk = Toolkit.getDefaultToolkit();  
@@ -28,7 +37,7 @@ public class Test extends Canvas{
 	    f.setSize(xSize,ySize);
 		 */
 		
-		f.setSize((int)t.virtualBounds.getWidth(),(int)t.virtualBounds.getWidth());
+		f.setBounds(gs[0].getConfigurations()[0].getBounds());
 		f.add(t);
 		f.setVisible(true);
 		f.addWindowListener(new WindowAdapter() {
@@ -37,11 +46,33 @@ public class Test extends Canvas{
 			}//closes window listener that closes the program when we exit out of the window
 		}//closes patch
 		);
+		
+		JFrame f1=new JFrame("Test1",gs[1].getConfigurations()[0]);
+		System.out.println(gs[1].getConfigurations()[0].getBounds());
+		f1.add(t1);
+		f1.setBounds(gs[1].getConfigurations()[0].getBounds());
+		f1.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);
+			}//closes window listener that closes the program when we exit out of the window
+		}//closes patch
+		);
+		f1.setVisible(true);
+//		JFrame f2=new JFrame("");
+//		f2.add(t);
+//		f2.setSize(900,900);
+//		f2.addWindowListener(new WindowAdapter() {
+//			public void windowClosing(WindowEvent e) {
+//				System.exit(0);
+//			}//closes window listener that closes the program when we exit out of the window
+//		}//closes patch
+//		);
+//		f2.setVisible(true);
 	}
 
 	public Test() {
 		super();
-		/**This code works for devices with multiple screens*/
+		/**This code should work for devices with multiple screens*/
 		//Defines a variable to hold the maximum bounds of the screen we will find shortly
 		virtualBounds = new Rectangle();
 		//Gets an object that encapsulates all periphery devices attached to this computer (screens, printers, etc.)
@@ -57,47 +88,27 @@ public class Test extends Canvas{
 				virtualBounds =virtualBounds.union(gc[i].getBounds());
 			}
 		}
+		sc=new ScreenObject(100,0,0.1,0.1,182,1);
+		sc1=new ScreenObject(1920,100,0.1,-0.1,182,1);
+		lastLoopTime = System.currentTimeMillis();
+		System.out.println(virtualBounds);
 	}
 	
 	public void paint(Graphics g){
-//		for(int i=3;i<=10;i++){
-//			g.setColor(new Color(25*i,10*i,i));
-//			g.fillPolygon(createPoly(i,182));
-//		}
-		//g.fillPolygon(createPoly(5,182));
-		g.setColor(Color.GREEN);
-		g.fillPolygon(createPoly(6,182));
-		//g.setColor(Color.BLUE);
-		//g.fillPolygon(createPoly(7,182));
-	}
-	
-	private Polygon createPoly(int numberOfSides,double SF){
-		int[] xPts=new int[numberOfSides];
-		int[] yPts=new int[numberOfSides];
-		double intAngle=2*Math.PI/numberOfSides;
-		//double r=SF/2;
-		double r;
-		if(numberOfSides%2==0)
-			r=SF/(2*Math.cos(intAngle/2));
-		else
-			r=SF/(1+Math.cos(intAngle/2));
-		//double r=sideLength/(2*Math.sin(intAngle/2));
-		double theta=(3*Math.PI/2)-intAngle/2;
-		for(int i=0;i<numberOfSides;i++){
-			xPts[i]=(int) Math.round((r*Math.cos(theta+i*intAngle)));
-			yPts[i]=(int) Math.round((r*Math.sin(theta+i*intAngle)));
+		//g.setColor(Color.WHITE);
+		//g.fillRect(0, 0, getWidth(), getHeight());
+		long delta=-1*(lastLoopTime-System.currentTimeMillis());
+		lastLoopTime = System.currentTimeMillis();
+		g.fillRect(100, 100, 100, 100);
+		sc.draw(g);
+		sc1.draw(g);
+		sc.move(delta, getWidth(), getHeight());
+		sc1.move(delta, getWidth(), getHeight());
+		try {
+			Thread.sleep(2);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-		Polygon p= new Polygon(xPts,yPts,numberOfSides);
-		p.translate(-1*min(xPts), -1*min(yPts));
-		return p;
+		repaint();
 	}
-	
-	private int min(int[] ford){
-		int max=ford[0];
-		for(int i=1;i<ford.length;i++)
-			if(ford[i]<=max)
-				max=ford[i];
-		return max;
-	}
-	
 }
