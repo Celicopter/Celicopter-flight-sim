@@ -2,6 +2,7 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 import java.math.*;
@@ -26,7 +27,7 @@ public class ScreenObject{
 	/**Object can be an image. This variable holds that image*/
 	protected BufferedImage sprite;
 	/**The special frequency of the object corresponds to it's size on screen. The actual size of the object will depend not only on the special frequency but also the size on screen*/
-	protected double spatialFrequency;
+	protected double pixelDiameter;
 	/**The modulation represents how visible the object is. Modulation of 1 represents a sharp, completely visible object, whereas 0 represents a completely invisible object*/
 	protected double modulation;
 	
@@ -42,7 +43,7 @@ public class ScreenObject{
 		dy=0;
 		shape=null;
 		sprite=null;
-		spatialFrequency=182;
+		pixelDiameter=182;
 		modulation=1;
 	}
 	
@@ -60,7 +61,7 @@ public class ScreenObject{
 		dy=0;
 		shape=null;
 		sprite=null;
-		spatialFrequency=182;
+		pixelDiameter=182;
 		modulation=1;
 	}
 
@@ -80,7 +81,7 @@ public class ScreenObject{
 		dy=startDy;
 		shape=null;
 		sprite=null;
-		spatialFrequency=182;
+		pixelDiameter=182;
 		modulation=1;
 	}
 
@@ -100,7 +101,7 @@ public class ScreenObject{
 		dy=startDy;
 		shape=null;
 		sprite=null;
-		spatialFrequency=SF;
+		pixelDiameter=SF;
 		modulation=mod;
 	}
 	
@@ -117,9 +118,9 @@ public class ScreenObject{
 		dx=0;
 		dy=0;
 		sprite=null;
-		spatialFrequency=182;
+		pixelDiameter=182;
 		modulation=1;
-		shape=createPoly(numberOfSides,spatialFrequency);
+		shape=createPoly(numberOfSides,pixelDiameter);
 	}
 	
 	/**
@@ -138,9 +139,9 @@ public class ScreenObject{
 		dx=startDx;
 		dy=startDy;
 		sprite=null;
-		spatialFrequency=182;
+		pixelDiameter=182;
 		modulation=1;
-		shape=createPoly(numberOfSides,spatialFrequency);
+		shape=createPoly(numberOfSides,pixelDiameter);
 	}
 	
 	/**
@@ -161,9 +162,9 @@ public class ScreenObject{
 		dx=startDx;
 		dy=startDy;
 		sprite=null;
-		spatialFrequency=SF;
+		pixelDiameter=SF;
 		modulation=mod;
-		shape=createPoly(numberOfSides,spatialFrequency);
+		shape=createPoly(numberOfSides,pixelDiameter);
 	}
 	
 	/**
@@ -181,7 +182,7 @@ public class ScreenObject{
 		dy=0;
 		shape=null;
 		sprite=image;
-		spatialFrequency=182;
+		pixelDiameter=182;
 		modulation=1;
 	}
 	
@@ -202,7 +203,7 @@ public class ScreenObject{
 		dy=startDy;
 		shape=null;
 		sprite=image;
-		spatialFrequency=182;
+		pixelDiameter=182;
 		modulation=1;
 	}
 	
@@ -220,9 +221,9 @@ public class ScreenObject{
 		dx=0;
 		dy=0;
 		sprite=null;
-		spatialFrequency=startSF;
+		pixelDiameter=startSF;
 		modulation=1;
-		shape=createPoly(numberOfSides,spatialFrequency);
+		shape=createPoly(numberOfSides,pixelDiameter);
 	}
 	
 	/**
@@ -242,9 +243,9 @@ public class ScreenObject{
 		dx=startDx;
 		dy=startDy;
 		sprite=null;
-		spatialFrequency=startSF;
+		pixelDiameter=startSF;
 		modulation=1;
-		shape=createPoly(numberOfSides,spatialFrequency);
+		shape=createPoly(numberOfSides,pixelDiameter);
 	}
 	
 	/**
@@ -263,7 +264,7 @@ public class ScreenObject{
 		dy=0;
 		shape=null;
 		sprite=image;
-		spatialFrequency=startSF;
+		pixelDiameter=startSF;
 		modulation=startMod;
 	}
 	
@@ -284,12 +285,12 @@ public class ScreenObject{
 		dy=startDy;
 		shape=null;
 		sprite=image;
-		spatialFrequency=startSF;
+		pixelDiameter=startSF;
 		modulation=startMod;
 	}
 	
 	public void setSpatialFrequency(double spatialFrequency) {
-		this.spatialFrequency = spatialFrequency;
+		this.pixelDiameter = spatialFrequency;
 		if(shape!=null){
 			//TODO 
 		}
@@ -307,10 +308,10 @@ public class ScreenObject{
 	 * @param g The Graphics context to draw the object in
 	 */
 	public void draw(Graphics g){
-		Color c=new Color(0,0,0,(int) (255*modulation));
+		Color c=new Color(g.getColor().getRed(),g.getColor().getGreen(),g.getColor().getBlue(),(int) (255*modulation));
 		g.setColor(c);
 		if(shape==null && sprite==null){
-			g.fillOval((int)xPosition, (int)yPosition, (int)spatialFrequency, (int)spatialFrequency);
+			g.fillOval((int)xPosition, (int)yPosition, (int)pixelDiameter, (int)pixelDiameter);
 			return;
 		}
 		if(shape!=null){
@@ -324,7 +325,7 @@ public class ScreenObject{
 			Graphics2D g2d = (Graphics2D) tmpImg.getGraphics();
 			g2d.setComposite(AlphaComposite.SrcOver.derive((float)modulation)); 
 			g2d.drawImage(sprite, 0, 0, null);
-			g.drawImage(tmpImg, (int)xPosition, (int)yPosition, (int)spatialFrequency, (int)spatialFrequency, null);
+			g.drawImage(tmpImg, (int)xPosition, (int)yPosition, (int)pixelDiameter, (int)pixelDiameter, null);
 		}
 			
 	}
@@ -332,12 +333,12 @@ public class ScreenObject{
 		double newX=xPosition+dx*time;
 		double newY=yPosition+dy*time;
 		if(shape==null){
-		if(newX+spatialFrequency>screenWidth || newX<0){
+		if(newX+pixelDiameter>screenWidth || newX<0){
 			dx=-dx;
 		}
 		else
 			xPosition=newX;
-		if(newY+spatialFrequency>screenHeight || newY<0){
+		if(newY+pixelDiameter>screenHeight || newY<0){
 			dy=-dy;
 		}
 		else
@@ -388,5 +389,14 @@ public class ScreenObject{
 			if(ford[i]<=max)
 				max=ford[i];
 		return max;
+	}
+	
+	public Point centerPoint(){
+		Point d=new Point();
+		if(shape!=null)
+			d.setLocation(xPosition+pixelDiameter/2, yPosition+pixelDiameter/2);
+		else 
+			d.setLocation(xPosition+shape.getBounds2D().getWidth()/2, yPosition+shape.getBounds2D().getHeight()/2);
+		return d;
 	}
 }

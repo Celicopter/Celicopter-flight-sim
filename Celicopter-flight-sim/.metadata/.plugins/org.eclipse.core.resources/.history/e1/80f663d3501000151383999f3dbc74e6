@@ -1,0 +1,17 @@
+public class Target extends ScreenObject{
+	private WindFunction wind;
+	private DynamicsModel dyamicMod;
+	
+	public void setWind(WindFunction forcingFunction){
+		
+	}
+	public void setDynamicsModel(DynamicsModel dynamicsModel){
+		
+	}
+	public void setDx(long time){
+		
+	}
+	public void setDy(long time){
+		
+	}
+}

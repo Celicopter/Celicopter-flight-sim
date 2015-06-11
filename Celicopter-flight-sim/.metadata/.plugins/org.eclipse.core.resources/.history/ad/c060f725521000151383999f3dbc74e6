@@ -1,0 +1,23 @@
+public class Target extends ScreenObject{
+	private WindFunction wind;
+	private DynamicsModel dynamicMod;
+	
+	public void setWind(WindFunction forcingFunction){
+		wind=forcingFunction;
+	}
+	public void setDynamicsModel(DynamicsModel dynamicsModel){
+		dynamicMod=dynamicsModel;
+	}
+	
+	public void move(long time, int screenWidth, int screenHeight){
+		setDx(time);
+		setDy(time);
+		super.move(time, screenWidth, screenHeight);
+	}
+	public void setDx(long time){
+		dx=dynamicMod.solveDx(time)+wind.solveDx(time);
+	}
+	public void setDy(long time){
+		dy=dynamicMod.solveDy(time)+wind.solveDy(time);
+	}
+}

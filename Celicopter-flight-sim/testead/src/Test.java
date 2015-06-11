@@ -1,7 +1,11 @@
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 public class Test extends Canvas{
@@ -9,13 +13,13 @@ public class Test extends Canvas{
 	 * 
 	 */
 	public Rectangle virtualBounds;
-	public ScreenObject sc;
+	public Target sc;
 	public ScreenObject sc1;
 	public long lastLoopTime;
 
 	public static void main(String []args){
 		Test t=new Test();
-		Test t1=new Test();
+		//Test t1=new Test();
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		//Unpacks this object and gets a list of all peripheries 
 		GraphicsDevice[] gs = ge.getScreenDevices();
@@ -37,27 +41,28 @@ public class Test extends Canvas{
 	    f.setSize(xSize,ySize);
 		 */
 		
-		f.setBounds(gs[0].getConfigurations()[0].getBounds());
+		f.setBounds(t.virtualBounds);
 		f.add(t);
 		f.setVisible(true);
 		f.addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
 			}//closes window listener that closes the program when we exit out of the window
 		}//closes patch
 		);
 		
-		JFrame f1=new JFrame("Test1",gs[1].getConfigurations()[0]);
-		System.out.println(gs[1].getConfigurations()[0].getBounds());
-		f1.add(t1);
-		f1.setBounds(gs[1].getConfigurations()[0].getBounds());
-		f1.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				System.exit(0);
-			}//closes window listener that closes the program when we exit out of the window
-		}//closes patch
-		);
-		f1.setVisible(true);
+//		//JFrame f1=new JFrame("Test1",gs[1].getConfigurations()[0]);
+//		System.out.println(gs[1].getConfigurations()[0].getBounds());
+//		//f1.add(t1);
+//		//f1.setBounds(gs[1].getConfigurations()[0].getBounds());
+//		//f1.addWindowListener(new WindowAdapter() {
+//			public void windowClosing(WindowEvent e) {
+//				System.exit(0);
+//			}//closes window listener that closes the program when we exit out of the window
+//		}//closes patch
+//		);
+		//f1.setVisible(true);
 //		JFrame f2=new JFrame("");
 //		f2.add(t);
 //		f2.setSize(900,900);
@@ -88,18 +93,27 @@ public class Test extends Canvas{
 				virtualBounds =virtualBounds.union(gc[i].getBounds());
 			}
 		}
-		sc=new ScreenObject(100,0,0.1,0.1,182,1);
-		sc1=new ScreenObject(1920,100,0.1,-0.1,182,1);
+		sc=new Target(0,0,0,0,182,1,4);
+		sc1=new ScreenObject(1920,100,0.7,-0.7,182,1);
+//		BufferedImage op = null;
+//		try {
+//			op=ImageIO.read(new File("2881806-hoth.jpg"));
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		//sc1=new ScreenObject(0,0,0.7,0.7,op);
 		lastLoopTime = System.currentTimeMillis();
-		System.out.println(virtualBounds);
 	}
 	
+	@Override
 	public void paint(Graphics g){
-		//g.setColor(Color.WHITE);
-		//g.fillRect(0, 0, getWidth(), getHeight());
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, getWidth(), getHeight());
 		long delta=-1*(lastLoopTime-System.currentTimeMillis());
 		lastLoopTime = System.currentTimeMillis();
 		g.fillRect(100, 100, 100, 100);
+		g.setColor(Color.black);
 		sc.draw(g);
 		sc1.draw(g);
 		sc.move(delta, getWidth(), getHeight());

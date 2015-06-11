@@ -1,0 +1,14 @@
+//TODO Make class...
+public class DynamicsModel {
+
+	public double solveDx(long time) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public double solveDy(long time) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}
