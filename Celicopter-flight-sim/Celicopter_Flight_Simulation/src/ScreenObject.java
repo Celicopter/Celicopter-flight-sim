@@ -391,6 +391,10 @@ public class ScreenObject{
 		return max;
 	}
 	
+	/**
+	 * Used primarily in the implementation of the Curseor class
+	 * @return Point object holding the (x,y) center point of the object
+	 */
 	public Point centerPoint(){
 		Point d=new Point();
 		if(shape!=null)

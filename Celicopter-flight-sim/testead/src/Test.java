@@ -8,14 +8,23 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+//import net.java.games.input.Component;
+import net.java.games.input.Controller;
+import joystick.JInputJoystick;
+//import net.java.games.input.Component.Identifier;
+//import net.java.games.input.ControllerEnvironment;
+
 public class Test extends Canvas{
 	/**
 	 * 
 	 */
 	public Rectangle virtualBounds;
 	public Target sc;
-	public ScreenObject sc1;
+	public Curseor sc1;
 	public long lastLoopTime;
+	private JInputJoystick stick;
+	private int stickX;
+	private int stickY;
 
 	public static void main(String []args){
 		Test t=new Test();
@@ -23,10 +32,7 @@ public class Test extends Canvas{
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		//Unpacks this object and gets a list of all peripheries 
 		GraphicsDevice[] gs = ge.getScreenDevices();
-		JFrame f=new JFrame("Test",gs[0].getConfigurations()[0]);
-		System.out.println();
-		
-		
+		JFrame f=new JFrame("Ford");
 		/*
 		//Gets information related to the display screen. This only works for single-monitor devices
 		Toolkit tk = Toolkit.getDefaultToolkit();  
@@ -93,17 +99,49 @@ public class Test extends Canvas{
 				virtualBounds =virtualBounds.union(gc[i].getBounds());
 			}
 		}
-		sc=new Target(0,0,0,0,182,1,4);
-		sc1=new ScreenObject(1920,100,0.7,-0.7,182,1);
+		sc=new Target(100,100,-0.05,-0.02,182,1,7);
+		sc1=new Curseor(0,100,0.05,-0.05,182,1);
 //		BufferedImage op = null;
 //		try {
-//			op=ImageIO.read(new File("2881806-hoth.jpg"));
+//			op=ImageIO.read(new File("2881806-hoth.png.jpg"));
 //		} catch (IOException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		//sc1=new ScreenObject(0,0,0.7,0.7,op);
+//		sc1=new ScreenObject(0,0,0.05,0.05,op);
+		// Creates the joystick controller
+		stick = new JInputJoystick(Controller.Type.STICK, Controller.Type.GAMEPAD);
+
+		// Check if the controller was found.
+		if( !stick.isControllerConnected() )
+		{
+			System.out.println("No controller found!");
+			// Do some stuff.
+		}
+
+		// Get current state of joystick! And check, if joystick is disconnected.
+		if( !stick.pollController() ) {
+			System.out.println("Controller disconnected!");
+			// Do some stuff.
+		}
+
+		Thread t=new Thread(){
+			public void run(){
+				int i=stick.getXAxisPercentage();
+				int ii=stick.getYAxisPercentage();
+				try {
+					Thread.sleep(100);
+					stickX=i-50;
+					stickY=ii-50;
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		
 		lastLoopTime = System.currentTimeMillis();
+		
+
 	}
 	
 	@Override
@@ -115,11 +153,12 @@ public class Test extends Canvas{
 		g.fillRect(100, 100, 100, 100);
 		g.setColor(Color.black);
 		sc.draw(g);
+		g.setColor(Color.green);
 		sc1.draw(g);
 		sc.move(delta, getWidth(), getHeight());
 		sc1.move(delta, getWidth(), getHeight());
 		try {
-			Thread.sleep(2);
+			Thread.sleep(10);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

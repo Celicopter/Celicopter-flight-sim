@@ -1,0 +1,11 @@
+
+/**
+ * Represents of the on-screen object that the user controls
+ * @author Nathan_Schilling
+ *
+ */
+public class Curseor extends ScreenObject{
+
+	private WindFunction wind;
+	private DynamicsModel dynamicMod;
+}

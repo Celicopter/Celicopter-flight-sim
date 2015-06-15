@@ -3,5 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="src" path="/Celicopter_Flight_Simulation"/>
+	<classpathentry kind="lib" path="/Users/Nathan_Schilling/Downloads/jinput-test.jar"/>
+	<classpathentry kind="lib" path="/Users/Nathan_Schilling/Downloads/jinput.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
