@@ -37,7 +37,7 @@ public class JInputJoystick {
     private Controller controller;
         
     // Controller buttons states
-    private ArrayList buttonsValues;
+    private ArrayList<Boolean> buttonsValues;
     
     
     
@@ -69,7 +69,7 @@ public class JInputJoystick {
     private void initialize()
     {
         this.controller = null;
-        this.buttonsValues = new ArrayList();
+        this.buttonsValues = new ArrayList<Boolean>();
     }
     
     /**
@@ -224,7 +224,7 @@ public class JInputJoystick {
      * 
      * @return Array list of states of all controller buttons.
      */
-    public ArrayList getButtonsValues()
+    public ArrayList<Boolean> getButtonsValues()
     {
         return buttonsValues;
     }
@@ -246,7 +246,7 @@ public class JInputJoystick {
      * 
      * @return X Axis value.
      */
-    public float getXAxisValue()
+    public double getXAxisValue()
     {
         Identifier identifier = Component.Identifier.Axis.X;
         return controller.getComponent(identifier).getPollData();
@@ -262,7 +262,7 @@ public class JInputJoystick {
      */
     public int getXAxisPercentage()
     {
-        float xAxisValue = this.getXAxisValue();
+        double xAxisValue = this.getXAxisValue();
         int xAxisValuePercentage = (int)((2 - (1 - xAxisValue)) * 100) / 2;
         
         return xAxisValuePercentage;
@@ -274,7 +274,7 @@ public class JInputJoystick {
      * 
      * @return Y Axis value.
      */
-    public float getYAxisValue()
+    public double getYAxisValue()
     {
         Identifier identifier = Component.Identifier.Axis.Y;
         return controller.getComponent(identifier).getPollData();
@@ -290,7 +290,7 @@ public class JInputJoystick {
      */
     public int getYAxisPercentage()
     {
-        float yAxisValue = this.getYAxisValue();
+        double yAxisValue = this.getYAxisValue();
         int yAxisValuePercentage = (int)((2 - (1 - yAxisValue)) * 100) / 2;
         
         return yAxisValuePercentage;
@@ -438,7 +438,7 @@ public class JInputJoystick {
      * 
      * @return Float value (from -1.0f to 1.0f) corresponding to left controller joystick on x coordinate.
      */
-    public float getX_LeftJoystick_Value()
+    public double getX_LeftJoystick_Value()
     {
         return this.getXAxisValue();
     }
@@ -467,7 +467,7 @@ public class JInputJoystick {
      * 
      * @return Float value (from -1.0f to 1.0f) corresponding to left controller joystick on y coordinate.
      */
-    public float getY_LeftJoystick_Value()
+    public double getY_LeftJoystick_Value()
     {
         return this.getYAxisValue();
     }

@@ -289,17 +289,7 @@ public class ScreenObject{
 		modulation=startMod;
 	}
 	
-	public void setSpatialFrequency(double spatialFrequency) {
-		this.pixelDiameter = spatialFrequency;
-		if(shape!=null){
-			//TODO 
-		}
-	}
-
-	public void setModulation(double modulation) {
-		this.modulation = modulation;
-	}
-
+	
 	/**
 	 * Draws the object in the specified graphics context
 	 * If this object isn't a polygon or an image, a black circle is drawn

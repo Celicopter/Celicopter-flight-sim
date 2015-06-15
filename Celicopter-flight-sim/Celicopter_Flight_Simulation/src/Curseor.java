@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
 
+import joystick.JInputJoystick;
+
 
 /**
  * Represents of the on-screen object that the user controls
@@ -77,23 +79,31 @@ public class Curseor extends ScreenObject{
 	public void setDynamicsModel(DynamicsModel dynamicsModel){
 		dynamicMod=dynamicsModel;
 	}
-	
+	public void move(JInputJoystick s,long time,int sW,int sH){
+		
+	}
 	public void move(long time, int screenWidth, int screenHeight){
 		setDx(time);
 		setDy(time);
 		super.move(time, screenWidth, screenHeight);
 	}
+	public void setDx(double d){
+		dx=d;
+	}
+	public void setDy(double d){
+		dy=d;
+	}
 	public void setDx(long time){
 		if(dynamicMod!=null)
-			dx+=dynamicMod.solveDx(time,dx);
+			dx=dynamicMod.solveDx(time,dx);
 		if(wind!=null)
-			dx+=wind.solveDx(time,dx);
+			dx=wind.solveDx(time,dx);
 	}
 	public void setDy(long time){
 		if(dynamicMod!=null)
-			dy+=dynamicMod.solveDx(time,dy);
+			dy=dynamicMod.solveDy(time,dy);
 		if(wind!=null)
-			dy+=wind.solveDx(time,dy);
+			dy=wind.solveDy(time,dy);
 	}
 	public void draw(Graphics g){
 		Color c=new Color(g.getColor().getRed(),g.getColor().getGreen(),g.getColor().getBlue(),(int) (255*modulation));

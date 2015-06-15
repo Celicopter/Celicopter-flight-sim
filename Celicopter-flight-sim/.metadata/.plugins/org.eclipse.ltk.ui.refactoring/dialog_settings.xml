@@ -8,6 +8,9 @@
 	</section>
 	<section name="org.eclipse.ltk.ui.refactoring.settings">
 	</section>
+	<section name="RefactoringPropertyPage">
+		<item value="true" key="org.eclipse.ltk.ui.refactoring.sortRefactorings"/>
+	</section>
 	<section name="RefactoringWizard.Clean Up">
 		<item value="642" key="width"/>
 		<item value="400" key="height"/>

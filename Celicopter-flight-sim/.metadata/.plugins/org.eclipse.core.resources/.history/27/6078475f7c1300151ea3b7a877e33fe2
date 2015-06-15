@@ -1,0 +1,19 @@
+import java.awt.Rectangle;
+import java.util.ArrayList;
+
+
+public class MainResearchProgram {
+	
+	/**Represents the bounds of the window. Expands to occupt two monitors*/
+	public Rectangle virtualBounds;
+	/**Represents the target object to track*/
+	public Target sc;
+	/**Holds all the things on the screen that the user doesnt have to track. This is the scenery*/
+	public ArrayList<ScreenObject> scenery;
+	public Curseor sc1;
+	public long lastLoopTime;
+	
+	public static void main(String[] args){
+		
+	}
+}

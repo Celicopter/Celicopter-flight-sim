@@ -1,3 +1,5 @@
+import joystick.JInputJoystick;
+
 //TODO Make class...
 /**
  * Representation and encapsulation of the equations that 
@@ -7,14 +9,58 @@
  */
 public class DynamicsModel {
 
+	private JInputJoystick stick;
+	private double xGain;
+	private double yGain;
+
+	public DynamicsModel(){
+		stick=null;
+		xGain=0;
+		yGain=0;
+	}
+	public DynamicsModel(JInputJoystick stick, double xGain, double yGain) {
+		this.stick = stick;
+		this.xGain = xGain;
+		this.yGain = yGain;
+	}
 	public double solveDx(long time,double dx) {
-		// TODO Auto-generated method stub
-		return 0;
+		if(stick!=null){// Check if the controller was found.
+			if( !stick.isControllerConnected() )
+			{
+				System.err.println("No controller found!");
+				// Do some stuff.
+			}
+
+			// Get current state of joystick! And check, if joystick is disconnected.
+			if( !stick.pollController() ) {
+				System.err.println("Controller disconnected!");
+				// Do some stuff.
+			}
+			return xGain*(stick.getXAxisPercentage()-50)/100;
+		}
+		else
+			return dx;
 	}
 
 	public double solveDy(long time,double dy) {
 		// TODO Auto-generated method stub
-		return 0;
+		if(stick!=null){
+			// Check if the controller was found.
+			if( !stick.isControllerConnected() )
+			{
+				System.err.println("No controller found!");
+				// Do some stuff.
+			}
+
+			// Get current state of joystick! And check, if joystick is disconnected.
+			if( !stick.pollController() ) {
+				System.err.println("Controller disconnected!");
+				// Do some stuff.
+			}
+			return yGain*(stick.getYAxisPercentage()-50)/100;
+		}
+		else
+			return dy;
 	}
 
 }

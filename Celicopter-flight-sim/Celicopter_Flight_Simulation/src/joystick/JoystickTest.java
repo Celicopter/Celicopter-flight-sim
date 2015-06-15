@@ -116,7 +116,7 @@ public class JoystickTest {
             // Sets controller buttons
             JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 1, 1));
             buttonsPanel.setBounds(6, 19, 246, 110);
-            ArrayList buttonsValues = joystick.getButtonsValues();
+            ArrayList<Boolean> buttonsValues = joystick.getButtonsValues();
             for(int i=0; i < buttonsValues.size(); i++) {
                 JToggleButton aToggleButton = new JToggleButton(""+(i+1), (Boolean) buttonsValues.get(i));
                 aToggleButton.setPreferredSize(new Dimension(48, 25));

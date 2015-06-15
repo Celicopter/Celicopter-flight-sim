@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
-	<item value="/Users/Nathan_Schilling/Downloads" key="org.eclipse.jdt.ui.lastextjar"/>
+	<item value="/Users/NathanS/Celicopter-flight-sim" key="org.eclipse.jdt.ui.lastextjar"/>
+	<section name="GenerateConstructorUsingFieldsSelectionDialog">
+		<item value="false" key="OmitCallToSuper"/>
+	</section>
 	<section name="org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart">
 		<item value="2" key="layout"/>
 		<item value="true" key="group_libraries"/>
@@ -15,9 +18,16 @@
 			<item value="600" key="DIALOG_WIDTH"/>
 			<item value="1|.Helvetica Neue DeskInterface|11.0|0|COCOA|1|.HelveticaNeueDeskInterface-Regular" key="DIALOG_FONT_NAME"/>
 			<item value="500" key="DIALOG_HEIGHT"/>
-			<item value="-34" key="DIALOG_X_ORIGIN"/>
 			<item value="0" key="DIALOG_Y_ORIGIN"/>
+			<item value="-34" key="DIALOG_X_ORIGIN"/>
 		</section>
+	</section>
+	<section name="DialogBounds_GenerateConstructorUsingFieldsSelectionDialog">
+		<item value="509" key="DIALOG_WIDTH"/>
+		<item value="1|.Helvetica Neue DeskInterface|11.0|0|COCOA|1|.HelveticaNeueDeskInterface-Regular" key="DIALOG_FONT_NAME"/>
+		<item value="618" key="DIALOG_HEIGHT"/>
+		<item value="127" key="DIALOG_Y_ORIGIN"/>
+		<item value="706" key="DIALOG_X_ORIGIN"/>
 	</section>
 	<section name="NewClassWizardPage">
 		<item value="false" key="create_constructor"/>
@@ -59,6 +69,9 @@
 		<item value="570" key="DIALOG_HEIGHT"/>
 		<item value="0" key="DIALOG_Y_ORIGIN"/>
 		<item value="386" key="DIALOG_X_ORIGIN"/>
+	</section>
+	<section name="ClasspathContainerSelectionPage">
+		<item value="0" key="index"/>
 	</section>
 	<section name="BuildPathsPropertyPage">
 		<item value="2" key="pageIndex"/>
