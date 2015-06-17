@@ -3,6 +3,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -10,12 +11,12 @@ import javax.swing.*;
 import joystick.JInputJoystick;
 import net.java.games.input.Controller;
 
-public class MainResearchProgram extends Canvas{
-	
+public class MainResearchProgram extends JPanel implements Runnable{
+
 	/**Represents the bounds of the window. Expands to occupy two monitors*/
-	protected Rectangle virtualBounds;
+	private Dimension screenDimentions;
 	/**Holds the graphics object that stuff is drawn on*/
-	protected BufferStrategy canvas;
+	private BufferedImage canvas;
 	/**Represents the target object to track*/
 	private Target target;
 	/**Holds all the things on the screen that the user doesnt have to track. This is the scenery*/
@@ -38,13 +39,16 @@ public class MainResearchProgram extends Canvas{
 	private static final double distanceFromScreenInInches=48;
 	/**Array of modulation levels to test. 1.0 is full, sharp, black, 0.0 is fully invisible*/
 	private static final double[] modulations={1.0,0.0,0.5,0.25,0.75};
-	
-	
+	public Thread thread;
+	public Thread thread2;
+	public Object lock1=new Object();
+	protected static final int delayTime=10;
+
 	public MainResearchProgram(){
 		super();
 		/**This code should work for devices with multiple screens*/
 		//Defines a variable to hold the maximum bounds of the screen we will find shortly
-		virtualBounds = new Rectangle();
+		Rectangle virtualBounds = new Rectangle();
 		//Gets an object that encapsulates all periphery devices attached to this computer (screens, printers, etc.)
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		//Unpacks this object and gets a list of all peripheries 
@@ -60,45 +64,31 @@ public class MainResearchProgram extends Canvas{
 		}
 		//Creates new frame to hold and display our game object
 		JFrame jiff=new JFrame("IMPORTANT RESEARCH PROGRAME");
-		
-		JPanel panel = (JPanel) jiff.getContentPane();
-		panel.setLayout(null);
-		
-		// setup our canvas size and put it into the content of the frame
-		setBounds(virtualBounds);
-		panel.add(this);
-		
-		// Tell AWT not to bother repainting our canvas since we're
-		// going to do that our self in accelerated mode
-		setIgnoreRepaint(true);
-		
-		// finally make the window visible 
-		jiff.pack();
-		jiff.setVisible(true);
 
-		// request the focus so key events come to us
-		requestFocus();
-
-		//Makes the experiment double-buffered (animation looks smoother)
-		createBufferStrategy(2);
-		canvas = getBufferStrategy();
-		
 		//Sets the bounds of the experiment display to take up all the screens connected
 		jiff.setBounds(virtualBounds);
+		jiff.add(this);
+		//Makes the experiment double-buffered (animation looks smoother)
+		canvas=new BufferedImage(virtualBounds.width,virtualBounds.height,BufferedImage.TYPE_INT_ARGB);
 
-		
-		//Allows us to see the frame we just made so we can actually see our flight-sim
-		jiff.setVisible(true);
-		
 		//These couple lines make the program stop when we close the window. This is important for not making the computer excessively slow and preventing memory leaks
-		jiff.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				System.exit(0);
-			}//closes window listener that closes the program when we exit out of the window
-		}//closes patch
-		);
-		
+		jiff.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jiff.setResizable(true);
+		requestFocus();
+		lastLoopTime = System.currentTimeMillis();
+		thread=new Thread(this);
+		thread2=new Thread(){
+			public void run(){
+				while(Thread.currentThread()==thread2 && isRunning){
+				long delta=System.currentTimeMillis()-lastLoopTime;
+				lastLoopTime=System.currentTimeMillis();
+				synchronized(lock1){ 
+					moveObjects(delta,screenDimentions.width,screenDimentions.height);
+				}
+				try{ Thread.sleep(delayTime);} catch(InterruptedException e) {}
+				}
+			}
+		};
 		isRunning=true;
 		isCalibrated=false;
 		//Ties the joystick to the program so information can be pulled from the joystick
@@ -106,11 +96,18 @@ public class MainResearchProgram extends Canvas{
 		//Initializes the scenery
 		scenery=null;
 		//Initalizes the Target
-		target=new Target(100,getHeight()/2,0.3,0.3);
+		target=new Target(100,100,-0.2,0.1,50,1);
+		//Allows us to see the frame we just made so we can actually see our experiment
+		jiff.setVisible(true);
 		convertToSpacialFrequencies();
-		lastLoopTime = System.currentTimeMillis();
+
+
+		screenDimentions=new Dimension(virtualBounds.width,virtualBounds.height);
+
+		thread.start();
+		thread2.start();
 	}
-	
+
 	public void calibration(Graphics2D g){
 		String message="";
 		String message2="";
@@ -118,7 +115,7 @@ public class MainResearchProgram extends Canvas{
 			//Blanks out the current screen
 			g.setColor(Color.WHITE);
 			g.fillRect(0, 0, getWidth(), getHeight());
-			
+
 			//Sets the font our text will be displayed at to be 24pt Sans Serif (because I like Sans Serif font)
 			g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 24));
 			//Sets the text color to be black
@@ -129,14 +126,14 @@ public class MainResearchProgram extends Canvas{
 			{
 				//If not, print an error in annoying red
 				g.setColor(Color.red);
-				message="No controller found!";
+				message2="No controller found!";
 			} else
 
 				// Get current state of joystick! And check, if joystick is disconnected.
 				if( !stick.pollController() ) {
 					//If not, print an error in annoying red
 					g.setColor(Color.red);
-					message="Controller disconnected!";
+					message2="Controller disconnected!";
 				}
 				else {
 					/* Sets the text that will be displayed on screen, in this case a modified 
@@ -151,7 +148,7 @@ public class MainResearchProgram extends Canvas{
 					 */
 					message=(stick.getXAxisPercentage()-50)+", "+(stick.getYAxisPercentage()-50);
 					message2="Use the wheels by the joystick to make\nthe two numbers at the top zero!";
-					
+
 				}
 			if(stick.getXAxisPercentage()==50 && stick.getYAxisPercentage()==50){
 				message2="Calibration complete";
@@ -161,53 +158,97 @@ public class MainResearchProgram extends Canvas{
 			g.drawString(message2,getWidth()/2-g.getFontMetrics().stringWidth(message2),getHeight()/2-g.getFontMetrics().getMaxAscent());			
 		}
 	}
-	
-	public void mainLoop(){
-		
-		while(isRunning){
-			long delta=System.currentTimeMillis()-lastLoopTime;
-			lastLoopTime=System.currentTimeMillis();
-			Graphics2D g=(Graphics2D) canvas.getDrawGraphics();
-			g.setColor(getBackground());
-			g.fillRect(0, 0, getWidth(), getHeight());
-			drawObjectsOnScreen(g);
-			moveObjects(delta);
-			g.dispose();
-			canvas.show();
-			//Waits for 10 milliseconds before refreshing the screen
-			try { Thread.sleep(10); } catch (InterruptedException e) { }
-		}
-	}
-	
-	public void moveObjects(long t) {
-		target.move(t, getWidth(), getHeight());
-		
-	}
 
-	public void drawObjectsOnScreen(Graphics2D g){
-		g.setColor(Color.black);
-		g.fillRect(100, 100, Toolkit.getDefaultToolkit().getScreenResolution(),5);
-		target.draw(g);
-	}
-	
-	public static void main(String[] args){
-		//Creates the frame we will display everything on and titles it (text at the top) "IMPORTANT RESEARCH PROGRAME"
-		//Creates an instance of this class. Basically this line creates a 'canvas' (think painting canvas) that has a 
-				//picture of the way everything looks. This picture changes over time; this is the point of a flight simulator. 
-				//If it was a still picture it would be boring
-				MainResearchProgram m=new MainResearchProgram();
-		m.mainLoop();
-	}
-	
 	public void convertToSpacialFrequencies(){
 		//Makes the array of pixel widths the same size as the array of spatial frequencies-this allows the user to input in a array of spatial frequencies of any length
 		pixelWidths=new int[spacialFrequencies.length];
-		
+
 		//Gets the (approximate) resolution of the screen 
 		int dpi=Toolkit.getDefaultToolkit().getScreenResolution();
 		//Fills the array of pixel widths based on the input array spatial frequencies
 		for(int i=0;i<spacialFrequencies.length;i++){
 			pixelWidths[i]=(int) (distanceFromScreenInInches*dpi*Math.tan(1/spacialFrequencies[i]));
 		}
+	}
+
+	public void update(Graphics g){
+		paint(g);
+	}
+
+	public void paint(Graphics g){
+
+		//    checks the buffersize with the current panelsize
+		//    or initialises the image with the first paint
+		if(screenDimentions.width!=getWidth() || screenDimentions.height!=getHeight() || canvas==null)
+			resetBuffer();
+
+		if(canvas!=null){
+			Graphics2D g2=(Graphics2D) canvas.getGraphics();
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			//this clears the offscreen image, not the onscreen one
+			g2.clearRect(0,0,screenDimentions.width,screenDimentions.height);
+
+			//calls the paintbuffer method with 
+			//the offscreen graphics as a param
+			updateFrame(g2);
+
+			//we finaly paint the offscreen image onto the onscreen image
+			g.drawImage(canvas,0,0,this);
+		}
+	}
+
+	public void drawObjectsOnScreen(Graphics2D g){
+		target.draw(g);
+	}
+
+	public void moveObjects(long t, int w, int h) {
+		target.move(t, w, h);
+
+	}
+
+	public void updateFrame(Graphics2D g) {
+		g.setColor(Color.green);
+		synchronized(lock1){
+			drawObjectsOnScreen(g);
+		}
+
+	}
+
+	/** 
+	 * Reinitialize double buffered graphics when canvas changes size
+	 */
+	public void resetBuffer(){
+		// always keep track of the image size
+		screenDimentions=getSize();
+
+		//    clean up the previous image
+		if(canvas!=null){
+			canvas.flush();
+			canvas=null;
+		}
+		System.gc();
+
+		//    create the new image with the size of the panel
+		canvas=new BufferedImage(screenDimentions.width,screenDimentions.height,BufferedImage.TYPE_INT_ARGB);
+	}
+
+	@Override
+	public void run() {
+
+		while(Thread.currentThread()==thread){
+			repaint(delayTime);
+			//try{ Thread.sleep(delayTime);} catch(InterruptedException e) {}
+		}
+
+	}
+
+	public static void main(String[] args){
+
+		//Creates the frame we will display everything on and titles it (text at the top) "IMPORTANT RESEARCH PROGRAME"
+		//Creates an instance of this class. Basically this line creates a 'canvas' (think painting canvas) that has a 
+		//picture of the way everything looks. This picture changes over time; this is the point of a flight simulator. 
+		//If it was a still picture it would be boring
+		MainResearchProgram m=new MainResearchProgram();
+
 	}
 }

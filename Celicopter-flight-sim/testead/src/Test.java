@@ -112,8 +112,8 @@ public class Test extends JPanel implements Runnable{
 				virtualBounds =virtualBounds.union(gc[i].getBounds());
 			}
 		}
-		sc=new Target(100,100,-0.05,-0.02,182,1,7);
-		sc1=new Curseor(0,100,0.05,-0.05,182,1);
+		sc=new Target(100,100,-5,-7,182,1,7);
+		//sc1=new Curseor(0,100,0.05,-0.05,182,1);
 //		BufferedImage op = null;
 //		try {
 //			op=ImageIO.read(new File("2881806-hoth.png.jpg"));
@@ -134,31 +134,30 @@ public class Test extends JPanel implements Runnable{
 	
 	@Override
 	public void paint(Graphics g){
-//		g.setColor(Color.WHITE);
-//		g.fillRect(0, 0, getWidth(), getHeight());
-//		long delta=-1*(lastLoopTime-System.currentTimeMillis());
-//		lastLoopTime = System.currentTimeMillis();
+		Graphics2D g2=(Graphics2D) g;
+		g2.setColor(Color.WHITE);
+		g2.fillRect(0, 0, getWidth(), getHeight());
+		long delta=-1*(lastLoopTime-System.currentTimeMillis());
+		lastLoopTime = System.currentTimeMillis();
+		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 //		sc1.dx=stickX/25;
 //		sc1.dy=stickY/25;
 //		g.fillRect(100, 100, 100, 100);
-//		g.setColor(Color.black);
-//		sc.draw(g);
+		g2.setColor(Color.black);
+		sc.draw(g2);
 //		g.setColor(Color.green);
 //		sc1.draw(g);
-//		sc.move(delta, getWidth(), getHeight());
+		//sc.move(getWidth(), getHeight());
+		sc.move(delta, getWidth(), getHeight());
 //		sc1.move(delta, getWidth(), getHeight());
 //		Graphics2D g2=(Graphics2D) g;
 //		g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 //		g2.setColor(Color.black);
 //		String message=stick.getXAxisValue()+", "+stick.getYAxisValue();
 //		g2.drawString(message,0,g2.getFontMetrics().getMaxAscent());
-//		try {
-//			Thread.sleep(10);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//		repaint();
-		g.fillRect(100, 100, (int) (Toolkit.getDefaultToolkit().getScreenResolution()), 4);
+		try {Thread.sleep(100);} catch (InterruptedException e) {}
+		repaint();
+		//g.fillRect(100, 100, (int) (Toolkit.getDefaultToolkit().getScreenResolution()), 4);
 	}
 
 	@Override

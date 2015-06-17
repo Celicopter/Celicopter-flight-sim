@@ -319,6 +319,35 @@ public class ScreenObject{
 		}
 			
 	}
+	public void move(int screenWidth,int screenHeight){
+		double newX=xPosition+dx;
+		double newY=yPosition+dy;
+		if(shape==null){
+		if(newX+pixelDiameter>screenWidth || newX<0){
+			dx=-dx;
+		}
+		else
+			xPosition=newX;
+		if(newY+pixelDiameter>screenHeight || newY<0){
+			dy=-dy;
+		}
+		else
+			yPosition=newY;
+		}
+		if(shape!=null){
+			if(newX+shape.getBounds2D().getWidth()>screenWidth || newX<0){
+				dx=-dx;
+			}
+			else
+				xPosition=newX;
+			if(newY+shape.getBounds2D().getHeight()>screenHeight || newY<0){
+				dy=-dy;
+			}
+			else
+				yPosition=newY;
+			}
+	}
+	
 	public void move(long time, int screenWidth, int screenHeight){
 		double newX=xPosition+dx*time;
 		double newY=yPosition+dy*time;
