@@ -6,11 +6,6 @@ import java.io.File;
 import java.io.IOException;
 
 
-
-
-
-import javafx.stage.Screen;
-
 //import javafx.stage.Screen
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -20,13 +15,15 @@ import javax.swing.JFrame;
 
 
 
+import javax.swing.JPanel;
+
 //import net.java.games.input.Component;
 import net.java.games.input.Controller;
 import joystick.JInputJoystick;
 //import net.java.games.input.Component.Identifier;
 //import net.java.games.input.ControllerEnvironment;
 
-public class Test extends Canvas implements Runnable{
+public class Test extends JPanel implements Runnable{
 	/**
 	 * 
 	 */
