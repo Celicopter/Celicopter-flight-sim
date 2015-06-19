@@ -30,6 +30,8 @@ public class ScreenObject{
 	protected double pixelDiameter;
 	/**The modulation represents how visible the object is. Modulation of 1 represents a sharp, completely visible object, whereas 0 represents a completely invisible object*/
 	protected double modulation;
+	/**Keeps track of wheather the on-screen object is actually a circle or an oval*/
+	private boolean isOval;
 	
 	/**
 	 * Most basic constructor; represents on-screen a filled-in circle that starts 
@@ -107,7 +109,9 @@ public class ScreenObject{
 	
 	/**
 	 * Constructs an on-screen object meant to represent a regular polygon
-	 * This constructor assumes the spatial frequency is 182, modulation is 1, and the shape initially starts from rest
+	 * This constructor assumes the pixel width is 182, modulation is 1, and the shape initially starts from rest
+	 * Inputing a numberOfSides equal to 2 will result in an oval being displayed, with it's height half it's width
+	 * All other numberOfSides less than two will result in a circle of diameter pixelWidth being displayed
 	 * @param startX X-coordinate of the top right-hand corner where the object starts
 	 * @param startY Y-coordinate of the top right-hand corner where the object starts
 	 * @param numberOfSides The number of sides the polygon to be rendered on the screen has
@@ -127,6 +131,8 @@ public class ScreenObject{
 	 * Constructs an on-screen object meant to represent a regular polygon
 	 * This constructor assumes spatial frequency is 182, modulation is 1, and the shape 
 	 * initially starts with speed in the x and y direction specified by the user
+	 * Inputing a numberOfSides equal to 2 will result in an oval being displayed, with it's height half it's width
+	 * All other numberOfSides less than two will result in a circle of diameter pixelWidth being displayed
 	 * @param startX X-coordinate of the top right-hand corner where the object starts
 	 * @param startY Y-coordinate of the top right-hand corner where the object starts
 	 * @param startDx The starting speed of the polygon in the x-direction 
@@ -148,6 +154,8 @@ public class ScreenObject{
 	 * Constructs an on-screen object meant to represent a regular polygon
 	 * This constructor allows the user to specify a side-length, spatial frequency, modulation, and the shape 
 	 * initially starts with speed in the x and y direction specified by the user
+	 * Inputing a numberOfSides equal to 2 will result in an oval being displayed, with it's height half it's width
+	 * All other numberOfSides less than two will result in a circle of diameter pixelWidth being displayed
 	 * @param startX X-coordinate of the top right-hand corner where the object starts
 	 * @param startY Y-coordinate of the top right-hand corner where the object starts
 	 * @param startDx The starting speed of the polygon in the x-direction 
@@ -210,6 +218,8 @@ public class ScreenObject{
 	/**
 	 * Constructs an on-screen object meant to represent a regular polygon
 	 * This constructor assumes spatial frequency is 182, modulation is 1, and the shape initially starts from rest
+	 * Inputing a numberOfSides equal to 2 will result in an oval being displayed, with it's height half it's width
+	 * All other numberOfSides less than two will result in a circle of diameter pixelWidth being displayed
 	 * @param startX X-coordinate of the top right-hand corner where the object starts
 	 * @param startY Y-coordinate of the top right-hand corner where the object starts
 	 * @param startSF The user-specified starting spatial-frequency
@@ -230,6 +240,8 @@ public class ScreenObject{
 	 * Constructs an on-screen object meant to represent a regular polygon
 	 * This constructor assumes each side is to be 10 pixels long and the shape 
 	 * initially starts with speed in the x and y direction specified by the user
+	 * Inputing a numberOfSides equal to 2 will result in an oval being displayed, with it's height half it's width
+	 * All other numberOfSides less than two will result in a circle of diameter pixelWidth being displayed
 	 * @param startX X-coordinate of the top right-hand corner where the object starts
 	 * @param startY Y-coordinate of the top right-hand corner where the object starts
 	 * @param startDx The starting speed of the polygon in the x-direction 
@@ -301,7 +313,10 @@ public class ScreenObject{
 		Color c=new Color(g.getColor().getRed(),g.getColor().getGreen(),g.getColor().getBlue(),(int) (255*modulation));
 		g.setColor(c);
 		if(shape==null && sprite==null){
-			g.fillOval((int)xPosition, (int)yPosition, (int)pixelDiameter, (int)pixelDiameter);
+			if(isOval)
+				g.fillOval((int)xPosition, (int)yPosition, (int)pixelDiameter, (int)pixelDiameter/2);
+			else
+				g.fillOval((int)xPosition, (int)yPosition, (int)pixelDiameter, (int)pixelDiameter);
 			return;
 		}
 		if(shape!=null){
@@ -319,6 +334,13 @@ public class ScreenObject{
 		}
 			
 	}
+	/**
+	 * Method assumes the speeds set are in pixels/update and simply adds the speeds to the object's x and y Positions 
+	 * This method also bounces the object off the sides of the Frame it's in.
+	 * Frame size, in pixels is assumed to be screenWidth by screenHeight
+	 * @param screenWidth width of the screen/Frame the object is being drawn in pixels
+	 * @param screenHeight height of the screen/Frame the object is being drawn in pixels
+	 */
 	public void move(int screenWidth,int screenHeight){
 		double newX=xPosition+dx;
 		double newY=yPosition+dy;
@@ -348,6 +370,14 @@ public class ScreenObject{
 			}
 	}
 	
+	/**
+	 * Moves the ScreenObject based on it's speed, time elapses since it was last moved, the screen width and screen height.
+	 * If the object, will go past or thru the sides of the frame it is in (frame size depends on the input screenWidth and screenHeight),
+	 * it will instead bounce off the side
+	 * @param time elapsed since object was last moved
+	 * @param screenWidth Frame width, in pixels of the Frame/window the object is in
+	 * @param screenHeight Frame width, in pixels of the Frame/window the object is in 
+	 */
 	public void move(long time, int screenWidth, int screenHeight){
 		double newX=xPosition+dx*time;
 		double newY=yPosition+dy*time;
@@ -377,7 +407,17 @@ public class ScreenObject{
 			}
 	}
 
-	private Polygon createPoly(int numberOfSides,double SF){
+	/**
+	 * Inner method that creates a regular polygon with number of sides equal to numberOfSides, and pixel diameter SF
+	 * @param numberOfSides number of sides of regular polygon
+	 * @param SF pixel diameter. More specifically this is the diameter of the circumscribed circle of the regular polygon, ie the distance from the circumcenter to a given vertex 
+	 * @return a regular polygon with the specified number of sides and  pixel width
+	 */
+	protected Polygon createPoly(int numberOfSides,double SF){
+		if(numberOfSides==2)
+			isOval=true;
+		else
+			isOval=false;
 		if(numberOfSides>2){
 		int[] xPts=new int[numberOfSides];
 		int[] yPts=new int[numberOfSides];
@@ -402,6 +442,11 @@ public class ScreenObject{
 			return null;
 	}
 	
+	/**
+	 * Finds the minimum element of the input array ford
+	 * @param ford array to look for minimum value in
+	 * @return minimum value in array (not index)
+	 */
 	private int min(int[] ford){
 		int max=ford[0];
 		for(int i=1;i<ford.length;i++)

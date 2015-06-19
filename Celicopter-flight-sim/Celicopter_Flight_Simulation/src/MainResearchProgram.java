@@ -13,36 +13,47 @@ import net.java.games.input.Controller;
 
 public class MainResearchProgram extends JPanel implements Runnable{
 
-	/**Represents the bounds of the window. Expands to occupy two monitors*/
-	private Dimension screenDimentions;
+	/**Represents the total bounds of the window in which our experiment happens. 
+	 * Expands to occupy two monitors
+	 * This variable is dynamic and changes depending on the size of the screen is*/
+	protected Dimension screenDimentions;
 	/**Holds the graphics object that stuff is drawn on*/
-	private BufferedImage canvas;
+	protected BufferedImage canvas;
 	/**Represents the target object to track*/
-	private Target target;
-	/**Holds all the things on the screen that the user doesnt have to track. This is the scenery*/
-	private ArrayList<ScreenObject> scenery;
+	protected Target target;
+	/**Holds all the things to be displayed on the screen, including the Target, Curseor, and scenery objects (if there need be screen objects)*/
+	protected ArrayList<ScreenObject> allOnScreenObjects=new ArrayList<ScreenObject>();
 	/**Represents the on-screen object the user controls. The class name Cursor was already taken so for our class we simply misspelled the word*/
-	private Curseor warfighter;
+	protected Curseor warfighter;
 	/**Holds the last time the loop was run. Used to calculate the speeds at which everything on-screen moves*/
-	private long lastLoopTime;
+	protected long lastLoopTime;
 	/**True if stick and program are calibrated properly*/
-	private boolean isCalibrated;
+	protected boolean isCalibrated;
 	/**All the things you would ever want to know about the state of the control stick*/
-	private JInputJoystick stick;
+	protected JInputJoystick stick;
 	/**True if the experiment is running, false otherwise*/
-	private boolean isRunning;
+	protected boolean isRunning;
 	/**Array of spatial frequencies to test*/
-	private static final double[] spacialFrequencies={1,10,100};
+	protected static final double[] SPATIAL_FREQUENCIES={1,10,100};
 	/**Array of corresponding pixel widths. A pixel width is the width(diameter, whatever) of an on-screen object in screen pixels*/
-	private static int[] pixelWidths;
+	protected static int[] pixelWidths;
 	/**Test subject distance from screen in inches*/
-	private static final double distanceFromScreenInInches=48;
+	protected static final double DISTANCE_FROM_SCREEN_IN_INCHES=48;
 	/**Array of modulation levels to test. 1.0 is full, sharp, black, 0.0 is fully invisible*/
-	private static final double[] modulations={1.0,0.0,0.5,0.25,0.75};
-	public Thread thread;
-	public Thread thread2;
-	public Object lock1=new Object();
-	protected static final int delayTime=10;
+	protected static final double[] MODULATIONS={1.0,0.0,0.5,0.25,0.75};
+	/**The time delay, in milliseconds, between frame updates*/
+	protected static final int DELAY_TIME=30;
+	/**Number of objects on screen that are part of the scenery*/
+	protected static final int NUMBER_OF_SCENERY_OBJECTS=4;
+	/**First thread; handles drawing objects on-screen*/
+	protected Thread thread;
+	/**Seconds thread; handles moving on-screen objects*/
+	protected Thread thread2;
+	/**Locking object; used to prevent threads from potentially accessing the same data at the same time*/
+	protected Object lock1=new Object();
+	/**Graphics object that encapualates the graphics of the canvas*/
+	protected Graphics2D canvasGraphics;
+
 
 	public MainResearchProgram(){
 		super();
@@ -62,50 +73,108 @@ public class MainResearchProgram extends JPanel implements Runnable{
 				virtualBounds =virtualBounds.union(gc[i].getBounds());
 			}
 		}
+
 		//Creates new frame to hold and display our game object
 		JFrame jiff=new JFrame("IMPORTANT RESEARCH PROGRAME");
-
 		//Sets the bounds of the experiment display to take up all the screens connected
 		jiff.setBounds(virtualBounds);
+		//Adds our canvas to the frame
 		jiff.add(this);
-		//Makes the experiment double-buffered (animation looks smoother)
+		//Makes the program stop when we close the window. This is important for not making the computer excessively slow and preventing memory leaks
+		jiff.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//Allows us to resize the window if need be. Gives our program flexibility
+		jiff.setResizable(true);
+
+		/*Used to make the experiment double-buffered (animation looks smoother)
+		 * Double-buffering utilizes an offscreen image (that takes up the whole screen)
+		 * to draw to first. In actuality when one calls the paint(Graphics g) or repaint() method
+		 * on a canvas object in Java, Java will render to the screen, pixel row by pixcel row 
+		 * (starting at the top of the screen), the object. If one has lots of objects on the screen,
+		 * then this process takes long enough that oen can see the image forming, row by row, 
+		 * which looks ugly. By using double-buffering, one draws to an image first, then the image is 
+		 * effectively dumped onto the screen in one go, eliminating the lines and making the program run smoother*/
 		canvas=new BufferedImage(virtualBounds.width,virtualBounds.height,BufferedImage.TYPE_INT_ARGB);
 
-		//These couple lines make the program stop when we close the window. This is important for not making the computer excessively slow and preventing memory leaks
-		jiff.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		jiff.setResizable(true);
+		//Holds the Graphics object of the image. Commands to draw stuff on the screen (like the Target and Curseor) are sent to this object
+		canvasGraphics=(Graphics2D) canvas.getGraphics();
+
+		//Allows the program to get input off the joystick somewhat faster
 		requestFocus();
+
+		//Gets the current time off the processor
 		lastLoopTime = System.currentTimeMillis();
+
+
+		//Initializes both boolean flag variables. They are used for control flow
+		isRunning=true;
+		isCalibrated=false;
+
+		//Ties the joystick to the program so information can be pulled from the joystick
+		stick=new JInputJoystick(Controller.Type.STICK);
+
+		//Initializes all on-screen objects
+		initObjects();
+
+		//Allows us to see the frame we just made so we can actually see our experiment
+		jiff.setVisible(true);
+
+		//Does the arithmetic to convert the array of spatial frequencies at the top to an array for pixel widths that allows for easier drawing
+		convertToSpacialFrequencies();
+
+		//Sets the screen dimensions to the size of the window. 
+		screenDimentions=new Dimension(virtualBounds.width,virtualBounds.height);
+
+		//Creates the first thread that will handle the displaying of the objects on-screen
 		thread=new Thread(this);
+		
+		//Creates the second thread that will handle moving the objects 
 		thread2=new Thread(){
 			public void run(){
+				//Runs while thread is active and the experiment is running 
 				while(Thread.currentThread()==thread2 && isRunning){
-				long delta=System.currentTimeMillis()-lastLoopTime;
-				lastLoopTime=System.currentTimeMillis();
-				synchronized(lock1){ 
-					moveObjects(delta,screenDimentions.width,screenDimentions.height);
-				}
-				try{ Thread.sleep(delayTime);} catch(InterruptedException e) {}
+					//Gets the change in milliseconds since the last update
+					long delta=System.currentTimeMillis()-lastLoopTime;
+					//Updates the holder variable with the current time
+					lastLoopTime=System.currentTimeMillis();
+					
+					//The syncronized tag prevents the program from both moving and drawing everything on the screen at the same time
+					synchronized(lock1){
+						//Updates the positions of (moves) all the objects on the screen depending on how much time has passed since the last redraw, and the objects position (if the object is near the side of the screen it bounces off it)
+						for(ScreenObject o:allOnScreenObjects){
+							//prevents the null pointer exception throw
+							if(o!=null){
+								o.move(delta, screenDimentions.width, screenDimentions.height);
+							}
+						}
+					}
+					//Pauses for delayTime milliseconds to make things smoother
+					try{ Thread.sleep(DELAY_TIME);} catch(InterruptedException e) {e.printStackTrace();}
 				}
 			}
 		};
-		isRunning=true;
-		isCalibrated=false;
-		//Ties the joystick to the program so information can be pulled from the joystick
-		stick=new JInputJoystick(Controller.Type.STICK);
-		//Initializes the scenery
-		scenery=null;
-		//Initalizes the Target
-		target=new Target(100,100,-0.2,0.1,50,1);
-		//Allows us to see the frame we just made so we can actually see our experiment
-		jiff.setVisible(true);
-		convertToSpacialFrequencies();
 
-
-		screenDimentions=new Dimension(virtualBounds.width,virtualBounds.height);
-
+		//Starts the drawing thread which begins executing what's in the run() method of this program
 		thread.start();
+		
+		//Starts the thread that handles moving all on-screen objects
 		thread2.start();
+	}
+
+	public void initObjects(){
+		//Initializes Curseor
+		warfighter=new Curseor();
+		
+		//Allows the Curseor to take in joystick input
+		warfighter.setDynamicsModel(new DynamicsModel(stick,2,2));
+
+		//Initializes the Target
+		target=new Target();
+
+		//		for(int i=0;i<numberOfSceneryObjects;i++){
+		//			allOnScreenObjects.add(new ScreenObject());
+		//		}
+		allOnScreenObjects.add(target);
+		allOnScreenObjects.add(warfighter);
 	}
 
 	public void calibration(Graphics2D g){
@@ -161,13 +230,13 @@ public class MainResearchProgram extends JPanel implements Runnable{
 
 	public void convertToSpacialFrequencies(){
 		//Makes the array of pixel widths the same size as the array of spatial frequencies-this allows the user to input in a array of spatial frequencies of any length
-		pixelWidths=new int[spacialFrequencies.length];
+		pixelWidths=new int[SPATIAL_FREQUENCIES.length];
 
 		//Gets the (approximate) resolution of the screen 
 		int dpi=Toolkit.getDefaultToolkit().getScreenResolution();
 		//Fills the array of pixel widths based on the input array spatial frequencies
-		for(int i=0;i<spacialFrequencies.length;i++){
-			pixelWidths[i]=(int) (distanceFromScreenInInches*dpi*Math.tan(1/spacialFrequencies[i]));
+		for(int i=0;i<SPATIAL_FREQUENCIES.length;i++){
+			pixelWidths[i]=(int) (DISTANCE_FROM_SCREEN_IN_INCHES*dpi*Math.tan(1/SPATIAL_FREQUENCIES[i]));
 		}
 	}
 
@@ -179,35 +248,30 @@ public class MainResearchProgram extends JPanel implements Runnable{
 
 		//    checks the buffersize with the current panelsize
 		//    or initialises the image with the first paint
-		if(screenDimentions.width!=getWidth() || screenDimentions.height!=getHeight() || canvas==null)
+		if(screenDimentions.width!=getWidth() || screenDimentions.height!=getHeight() || canvas==null || canvasGraphics==null)
 			resetBuffer();
 
 		if(canvas!=null){
-			Graphics2D g2=(Graphics2D) canvas.getGraphics();
-			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
 			//this clears the offscreen image, not the onscreen one
-			g2.clearRect(0,0,screenDimentions.width,screenDimentions.height);
+			canvasGraphics.clearRect(0,0,screenDimentions.width,screenDimentions.height);
 
 			//calls the paintbuffer method with 
 			//the offscreen graphics as a param
-			updateFrame(g2);
+			updateFrame(canvasGraphics);
 
-			//we finaly paint the offscreen image onto the onscreen image
+			//we finally paint the offscreen image onto the onscreen image
 			g.drawImage(canvas,0,0,this);
 		}
 	}
 
 	public void drawObjectsOnScreen(Graphics2D g){
+		g.setColor(Color.green);
 		target.draw(g);
 	}
 
-	public void moveObjects(long t, int w, int h) {
-		target.move(t, w, h);
-
-	}
-
 	public void updateFrame(Graphics2D g) {
-		g.setColor(Color.green);
+
 		synchronized(lock1){
 			drawObjectsOnScreen(g);
 		}
@@ -226,17 +290,30 @@ public class MainResearchProgram extends JPanel implements Runnable{
 			canvas.flush();
 			canvas=null;
 		}
+		if(canvasGraphics!=null){
+			canvasGraphics.dispose();
+			canvasGraphics=null;
+		}
 		System.gc();
 
 		//    create the new image with the size of the panel
 		canvas=new BufferedImage(screenDimentions.width,screenDimentions.height,BufferedImage.TYPE_INT_ARGB);
+		canvasGraphics=(Graphics2D) canvas.getGraphics();
+		canvasGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		canvasGraphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+		canvasGraphics.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+		canvasGraphics.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+		canvasGraphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+		canvasGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		canvasGraphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		canvasGraphics.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 	}
 
 	@Override
 	public void run() {
 
 		while(Thread.currentThread()==thread){
-			repaint(delayTime);
+			repaint(DELAY_TIME);
 			//try{ Thread.sleep(delayTime);} catch(InterruptedException e) {}
 		}
 

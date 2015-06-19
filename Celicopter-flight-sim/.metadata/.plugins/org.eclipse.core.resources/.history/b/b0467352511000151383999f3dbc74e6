@@ -1,9 +1,0 @@
-//TODO make class
-public class WindFunction {
-
-	public double solveDx(long time) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-}

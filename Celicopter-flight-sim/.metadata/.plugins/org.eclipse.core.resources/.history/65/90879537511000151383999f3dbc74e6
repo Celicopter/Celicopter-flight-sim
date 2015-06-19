@@ -1,9 +1,0 @@
-//TODO Make class...
-public class DynamicsModel {
-
-	public int solveDx(long time) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-}

@@ -5,46 +5,46 @@
   <version>1.0.0-SNAPSHOT</version>
   <versioning>
     <snapshot>
-      <timestamp>20150522.121730</timestamp>
+      <timestamp>20150616.145022</timestamp>
       <buildNumber>6</buildNumber>
     </snapshot>
-    <lastUpdated>20150522121730</lastUpdated>
+    <lastUpdated>20150616145022</lastUpdated>
     <snapshotVersions>
       <snapshotVersion>
         <classifier>ctor</classifier>
         <extension>zip</extension>
-        <value>1.0.0-20150522.121730-6</value>
-        <updated>20150522121730</updated>
-      </snapshotVersion>
-      <snapshotVersion>
-        <classifier>ovrm</classifier>
-        <extension>zip</extension>
-        <value>1.0.0-20140604.182659-5</value>
-        <updated>20140604182659</updated>
+        <value>1.0.0-20150616.145022-6</value>
+        <updated>20150616145022</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>ovrp</classifier>
         <extension>zip</extension>
-        <value>1.0.0-20140604.182646-4</value>
-        <updated>20140604182646</updated>
+        <value>1.0.0-20150616.031310-5</value>
+        <updated>20150616031310</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <classifier>ovrm</classifier>
+        <extension>zip</extension>
+        <value>1.0.0-20150616.030910-4</value>
+        <updated>20150616030910</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>ovrd</classifier>
         <extension>zip</extension>
-        <value>1.0.0-20140604.182632-3</value>
-        <updated>20140604182632</updated>
+        <value>1.0.0-20150616.030300-3</value>
+        <updated>20150616030300</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>selfc</classifier>
         <extension>zip</extension>
-        <value>1.0.0-20140604.182613-2</value>
-        <updated>20140604182613</updated>
+        <value>1.0.0-20150616.011809-2</value>
+        <updated>20150616011809</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>call</classifier>
         <extension>zip</extension>
-        <value>1.0.0-20140604.182326-1</value>
-        <updated>20140604182326</updated>
+        <value>1.0.0-20150615.175205-1</value>
+        <updated>20150615175205</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>
