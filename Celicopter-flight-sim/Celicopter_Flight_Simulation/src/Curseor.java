@@ -1,7 +1,7 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Polygon;
-
 import joystick.JInputJoystick;
 
 
@@ -79,9 +79,6 @@ public class Curseor extends ScreenObject{
 	public void setDynamicsModel(DynamicsModel dynamicsModel){
 		dynamicMod=dynamicsModel;
 	}
-	public void move(JInputJoystick s,long time,int sW,int sH){
-		
-	}
 	public void move(long time, int screenWidth, int screenHeight){
 		setDx(time);
 		setDy(time);
@@ -105,18 +102,22 @@ public class Curseor extends ScreenObject{
 		if(wind!=null)
 			dy=wind.solveDy(time,dy);
 	}
-	public void draw(Graphics g){
+	public void draw(Graphics2D g){
 		Color c=new Color(g.getColor().getRed(),g.getColor().getGreen(),g.getColor().getBlue(),(int) (255*modulation));
+		BasicStroke b=(BasicStroke) g.getStroke();
 		g.setColor(c);
+		g.setStroke(new BasicStroke(2));
 		if(shape==null && sprite==null){
-			g.drawOval((int)xPosition, (int)yPosition, (int)pixelDiameter, (int)pixelDiameter);
+			g.drawOval((int)xCenterPosition-(int)pixelDiameter/2, (int)yCenterPosition-(int)pixelDiameter/2, (int)pixelDiameter, (int)pixelDiameter);
+			//g.setStroke(b);
 			return;
 		}
 		if(shape!=null){
 			Polygon sharpie=new Polygon(shape.xpoints,shape.ypoints,shape.npoints);
-			sharpie.translate((int) (xPosition), (int) (yPosition));
+			sharpie.translate((int) (xCenterPosition), (int) (yCenterPosition));
 			g.drawPolygon(sharpie);
 			sharpie=null;
+			//g.setStroke(b);
 		}	
 	}
 }

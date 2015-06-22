@@ -1,3 +1,8 @@
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 
 public class Target extends ScreenObject{
@@ -117,5 +122,33 @@ public class Target extends ScreenObject{
 			dy+=dynamicMod.solveDx(time,dy);
 		if(wind!=null)
 			dy+=wind.solveDx(time,dy);
+	}
+	
+	public void draw(Graphics g){
+		Color d=g.getColor();
+		Color c=Color.getHSBColor(0f,0f,(float) (0.5f*(1-modulation)));
+		g.setColor(c);
+		if(shape==null && sprite==null){
+			if(isOval)
+				g.fillOval((int)xCenterPosition-(int)pixelDiameter/2, (int)yCenterPosition-(int)pixelDiameter/2, (int)pixelDiameter, (int)pixelDiameter/2);
+			else
+				g.fillOval((int)xCenterPosition-(int)pixelDiameter/2, (int)yCenterPosition-(int)pixelDiameter/2, (int)pixelDiameter, (int)pixelDiameter);
+			g.setColor(d);
+			return;
+		}
+		if(shape!=null){
+			Polygon sharpie=new Polygon(shape.xpoints,shape.ypoints,shape.npoints);
+			sharpie.translate((int) (xCenterPosition), (int) (yCenterPosition));
+			g.fillPolygon(sharpie);
+			sharpie=null;
+		}
+		if(sprite!=null){
+			BufferedImage tmpImg = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g2d = (Graphics2D) tmpImg.getGraphics();
+			g2d.setComposite(AlphaComposite.SrcOver.derive((float)modulation)); 
+			g2d.drawImage(sprite, 0, 0, null);
+			g.drawImage(tmpImg, (int)xCenterPosition-(int)pixelDiameter/2, (int)yCenterPosition-(int)pixelDiameter/2, (int)pixelDiameter, (int)pixelDiameter, null);
+		}
+		g.setColor(d);	
 	}
 }

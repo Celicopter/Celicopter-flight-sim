@@ -11,9 +11,13 @@
 <fullyQualifiedTypeName name="joystick.JInputJoystick"/>
 <fullyQualifiedTypeName name="com.sun.glass.ui.Screen"/>
 <fullyQualifiedTypeName name="javafx.stage.Screen"/>
-<fullyQualifiedTypeName name="java.awt.Graphics2D"/>
 <fullyQualifiedTypeName name="java.awt.image.BufferStrategy"/>
 <fullyQualifiedTypeName name="javax.swing.JPanel"/>
 <fullyQualifiedTypeName name="java.awt.image.BufferedImage"/>
 <fullyQualifiedTypeName name="java.awt.Color"/>
+<fullyQualifiedTypeName name="java.util.TimerTask"/>
+<fullyQualifiedTypeName name="java.awt.event.ActionListener"/>
+<fullyQualifiedTypeName name="java.awt.Graphics2D"/>
+<fullyQualifiedTypeName name="java.awt.Stroke"/>
+<fullyQualifiedTypeName name="java.awt.BasicStroke"/>
 </qualifiedTypeNameHistroy>

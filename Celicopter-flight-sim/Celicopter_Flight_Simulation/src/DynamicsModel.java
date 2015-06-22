@@ -51,13 +51,13 @@ public class DynamicsModel {
 			if( !stick.isControllerConnected() )
 			{
 				System.err.println("No controller found!");
-				// Do some stuff.
+				return dx;
 			}
 
 			// Get current state of joystick! And check, if joystick is disconnected.
 			if( !stick.pollController() ) {
 				System.err.println("Controller disconnected!");
-				// Do some stuff.
+				return dx;
 			}
 			return xGain*(stick.getXAxisPercentage()-50)/100;
 		}
@@ -82,13 +82,13 @@ public class DynamicsModel {
 			if( !stick.isControllerConnected() )
 			{
 				System.err.println("No controller found!");
-				// Do some stuff.
+				return dy;
 			}
 
 			// Get current state of joystick! And check, if joystick is disconnected.
 			if( !stick.pollController() ) {
 				System.err.println("Controller disconnected!");
-				// Do some stuff.
+				return dy;
 			}
 			return yGain*(stick.getYAxisPercentage()-50)/100;
 		}

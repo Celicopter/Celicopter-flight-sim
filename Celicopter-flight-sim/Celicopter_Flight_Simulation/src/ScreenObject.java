@@ -14,10 +14,10 @@ import java.math.*;
  *
  */
 public class ScreenObject{
-	/**X axis Position of top lefthand corner of object. 0 corresponds to right side of screen*/
-	protected double xPosition;
-	/**Y axis Position of top lefthand corner of object. 0 corresponds to top of screen*/
-	protected double yPosition;
+	/**X axis Position of the center of the object. 0 corresponds to right side of screen*/
+	protected double xCenterPosition;
+	/**Y axis Position of the center of the object. 0 corresponds to top of screen*/
+	protected double yCenterPosition;
 	/**Velocity along x-axis in pixels/sec*/
 	protected double dx;
 	/**Velocity along y-axis in pixels/sec*/
@@ -31,7 +31,7 @@ public class ScreenObject{
 	/**The modulation represents how visible the object is. Modulation of 1 represents a sharp, completely visible object, whereas 0 represents a completely invisible object*/
 	protected double modulation;
 	/**Keeps track of wheather the on-screen object is actually a circle or an oval*/
-	private boolean isOval;
+	protected boolean isOval;
 	
 	/**
 	 * Most basic constructor; represents on-screen a filled-in circle that starts 
@@ -39,8 +39,8 @@ public class ScreenObject{
 	 * [coordinates (0,0)], from rest, with spatial frequency 182 and modulation 1
 	 */
 	public ScreenObject(){
-		xPosition=0;
-		yPosition=0;
+		xCenterPosition=0;
+		yCenterPosition=0;
 		dx=0;
 		dy=0;
 		shape=null;
@@ -57,8 +57,8 @@ public class ScreenObject{
 	 * @param startY Y-coordinate of the top right-hand corner where the circle starts
 	 */
 	public ScreenObject(double startX, double startY){
-		xPosition=startX;
-		yPosition=startY;
+		xCenterPosition=startX;
+		yCenterPosition=startY;
 		dx=0;
 		dy=0;
 		shape=null;
@@ -77,8 +77,8 @@ public class ScreenObject{
 	 * @param startDy start velocity along y-axis
 	 */
 	public ScreenObject(double startX, double startY, double startDx, double startDy){
-		xPosition=startX;
-		yPosition=startY;
+		xCenterPosition=startX;
+		yCenterPosition=startY;
 		dx=startDx;
 		dy=startDy;
 		shape=null;
@@ -97,8 +97,8 @@ public class ScreenObject{
 	 * @param mod modulation, dictates contrast of object on screen
 	 */
 	public ScreenObject(double startX, double startY, double startDx, double startDy,double SF,double mod){
-		xPosition=startX;
-		yPosition=startY;
+		xCenterPosition=startX;
+		yCenterPosition=startY;
 		dx=startDx;
 		dy=startDy;
 		shape=null;
@@ -117,8 +117,8 @@ public class ScreenObject{
 	 * @param numberOfSides The number of sides the polygon to be rendered on the screen has
 	 */
 	public ScreenObject(double startX, double startY, int numberOfSides){
-		xPosition=startX;
-		yPosition=startY;
+		xCenterPosition=startX;
+		yCenterPosition=startY;
 		dx=0;
 		dy=0;
 		sprite=null;
@@ -140,8 +140,8 @@ public class ScreenObject{
 	 * @param numberOfSides The number of sides the polygon to be rendered on the screen has
 	 */
 	public ScreenObject(double startX, double startY, double startDx, double startDy, int numberOfSides){
-		xPosition=startX;
-		yPosition=startY;
+		xCenterPosition=startX;
+		yCenterPosition=startY;
 		dx=startDx;
 		dy=startDy;
 		sprite=null;
@@ -165,8 +165,8 @@ public class ScreenObject{
 	 * @param mod Modulation
 	 */
 	public ScreenObject(double startX, double startY, double startDx, double startDy, int numberOfSides, double SF, double mod){
-		xPosition=startX;
-		yPosition=startY;
+		xCenterPosition=startX;
+		yCenterPosition=startY;
 		dx=startDx;
 		dy=startDy;
 		sprite=null;
@@ -184,8 +184,8 @@ public class ScreenObject{
 	 * @param image Image that represents on screen object
 	 */
 	public ScreenObject(double startX,double startY, BufferedImage image){
-		xPosition=startX;
-		yPosition=startY;
+		xCenterPosition=startX;
+		yCenterPosition=startY;
 		dx=0;
 		dy=0;
 		shape=null;
@@ -205,8 +205,8 @@ public class ScreenObject{
 	 * @param image Image that represents on screen object
 	 */
 	public ScreenObject(double startX, double startY, double startDx, double startDy, BufferedImage image){
-		xPosition=startX;
-		yPosition=startY;
+		xCenterPosition=startX;
+		yCenterPosition=startY;
 		dx=startDx;
 		dy=startDy;
 		shape=null;
@@ -226,8 +226,8 @@ public class ScreenObject{
 	 * @param numberOfSides The number of sides the polygon to be rendered on the screen has
 	 */
 	public ScreenObject(double startX, double startY, double startSF,int numberOfSides){
-		xPosition=startX;
-		yPosition=startY;
+		xCenterPosition=startX;
+		yCenterPosition=startY;
 		dx=0;
 		dy=0;
 		sprite=null;
@@ -250,8 +250,8 @@ public class ScreenObject{
 	 * @param numberOfSides The number of sides the polygon to be rendered on the screen has
 	 */
 	public ScreenObject(double startX, double startY, double startDx, double startDy, double startSF,int numberOfSides){
-		xPosition=startX;
-		yPosition=startY;
+		xCenterPosition=startX;
+		yCenterPosition=startY;
 		dx=startDx;
 		dy=startDy;
 		sprite=null;
@@ -270,8 +270,8 @@ public class ScreenObject{
 	 * @param image The BufferedImage meant to represent the object on-screen. Similar to a sprite in videogames
 	 */
 	public ScreenObject(double startX,double startY, BufferedImage image,double startSF, double startMod){
-		xPosition=startX;
-		yPosition=startY;
+		xCenterPosition=startX;
+		yCenterPosition=startY;
 		dx=0;
 		dy=0;
 		shape=null;
@@ -291,8 +291,8 @@ public class ScreenObject{
 	 * @param image
 	 */
 	public ScreenObject(double startX, double startY, double startDx, double startDy, double startSF,double startMod,BufferedImage image){
-		xPosition=startX;
-		yPosition=startY;
+		xCenterPosition=startX;
+		yCenterPosition=startY;
 		dx=startDx;
 		dy=startDy;
 		shape=null;
@@ -310,18 +310,20 @@ public class ScreenObject{
 	 * @param g The Graphics context to draw the object in
 	 */
 	public void draw(Graphics g){
-		Color c=new Color(g.getColor().getRed(),g.getColor().getGreen(),g.getColor().getBlue(),(int) (255*modulation));
+		Color d=g.getColor();
+		Color c=new Color(g.getColor().getRed(),g.getColor().getGreen(),g.getColor().getBlue(),(int) (125*modulation+125));
 		g.setColor(c);
 		if(shape==null && sprite==null){
 			if(isOval)
-				g.fillOval((int)xPosition, (int)yPosition, (int)pixelDiameter, (int)pixelDiameter/2);
+				g.fillOval((int)xCenterPosition-(int)pixelDiameter/2, (int)yCenterPosition-(int)pixelDiameter/2, (int)pixelDiameter, (int)pixelDiameter/2);
 			else
-				g.fillOval((int)xPosition, (int)yPosition, (int)pixelDiameter, (int)pixelDiameter);
+				g.fillOval((int)xCenterPosition-(int)pixelDiameter/2, (int)yCenterPosition-(int)pixelDiameter/2, (int)pixelDiameter, (int)pixelDiameter);
+			g.setColor(d);
 			return;
 		}
 		if(shape!=null){
 			Polygon sharpie=new Polygon(shape.xpoints,shape.ypoints,shape.npoints);
-			sharpie.translate((int) (xPosition), (int) (yPosition));
+			sharpie.translate((int) (xCenterPosition), (int) (yCenterPosition));
 			g.fillPolygon(sharpie);
 			sharpie=null;
 		}
@@ -330,9 +332,9 @@ public class ScreenObject{
 			Graphics2D g2d = (Graphics2D) tmpImg.getGraphics();
 			g2d.setComposite(AlphaComposite.SrcOver.derive((float)modulation)); 
 			g2d.drawImage(sprite, 0, 0, null);
-			g.drawImage(tmpImg, (int)xPosition, (int)yPosition, (int)pixelDiameter, (int)pixelDiameter, null);
+			g.drawImage(tmpImg, (int)xCenterPosition-(int)pixelDiameter/2, (int)yCenterPosition-(int)pixelDiameter/2, (int)pixelDiameter, (int)pixelDiameter, null);
 		}
-			
+		g.setColor(d);	
 	}
 	/**
 	 * Method assumes the speeds set are in pixels/update and simply adds the speeds to the object's x and y Positions 
@@ -342,31 +344,31 @@ public class ScreenObject{
 	 * @param screenHeight height of the screen/Frame the object is being drawn in pixels
 	 */
 	public void move(int screenWidth,int screenHeight){
-		double newX=xPosition+dx;
-		double newY=yPosition+dy;
+		double newX=xCenterPosition+dx;
+		double newY=yCenterPosition+dy;
 		if(shape==null){
-		if(newX+pixelDiameter>screenWidth || newX<0){
+		if(newX+pixelDiameter/2>screenWidth || newX<pixelDiameter/2){
 			dx=-dx;
 		}
 		else
-			xPosition=newX;
-		if(newY+pixelDiameter>screenHeight || newY<0){
+			xCenterPosition=newX;
+		if(newY+pixelDiameter/2>screenHeight || newY<pixelDiameter/2){
 			dy=-dy;
 		}
 		else
-			yPosition=newY;
+			yCenterPosition=newY;
 		}
 		if(shape!=null){
-			if(newX+shape.getBounds2D().getWidth()>screenWidth || newX<0){
+			if(newX+shape.getBounds2D().getWidth()/2>screenWidth || newX<shape.getBounds2D().getWidth()/2){
 				dx=-dx;
 			}
 			else
-				xPosition=newX;
-			if(newY+shape.getBounds2D().getHeight()>screenHeight || newY<0){
+				xCenterPosition=newX;
+			if(newY+shape.getBounds2D().getHeight()/2>screenHeight || newY<shape.getBounds2D().getHeight()/2){
 				dy=-dy;
 			}
 			else
-				yPosition=newY;
+				yCenterPosition=newY;
 			}
 	}
 	
@@ -379,31 +381,31 @@ public class ScreenObject{
 	 * @param screenHeight Frame width, in pixels of the Frame/window the object is in 
 	 */
 	public void move(long time, int screenWidth, int screenHeight){
-		double newX=xPosition+dx*time;
-		double newY=yPosition+dy*time;
+		double newX=xCenterPosition+dx*time;
+		double newY=yCenterPosition+dy*time;
 		if(shape==null){
-		if(newX+pixelDiameter>screenWidth || newX<0){
+		if(newX+pixelDiameter/2>screenWidth || newX<pixelDiameter/2){
 			dx=-dx;
 		}
 		else
-			xPosition=newX;
-		if(newY+pixelDiameter>screenHeight || newY<0){
+			xCenterPosition=newX;
+		if(newY+pixelDiameter/2>screenHeight || newY<pixelDiameter/2){
 			dy=-dy;
 		}
 		else
-			yPosition=newY;
+			yCenterPosition=newY;
 		}
 		if(shape!=null){
-			if(newX+shape.getBounds2D().getWidth()>screenWidth || newX<0){
+			if(newX+shape.getBounds2D().getWidth()/2>screenWidth || newX<shape.getBounds2D().getWidth()/2){
 				dx=-dx;
 			}
 			else
-				xPosition=newX;
-			if(newY+shape.getBounds2D().getHeight()>screenHeight || newY<0){
+				xCenterPosition=newX;
+			if(newY+shape.getBounds2D().getHeight()/2>screenHeight || newY<shape.getBounds2D().getHeight()/2){
 				dy=-dy;
 			}
 			else
-				yPosition=newY;
+				yCenterPosition=newY;
 			}
 	}
 
@@ -435,36 +437,10 @@ public class ScreenObject{
 			yPts[i]=(int) Math.round((r*Math.sin(theta+i*intAngle)));
 		}
 		Polygon p= new Polygon(xPts,yPts,numberOfSides);
-		p.translate(-1*min(xPts), -1*min(yPts));
+		//p.translate(-1*min(xPts), -1*min(yPts));
 		return p;
 		}
 		else
 			return null;
-	}
-	
-	/**
-	 * Finds the minimum element of the input array ford
-	 * @param ford array to look for minimum value in
-	 * @return minimum value in array (not index)
-	 */
-	private int min(int[] ford){
-		int max=ford[0];
-		for(int i=1;i<ford.length;i++)
-			if(ford[i]<=max)
-				max=ford[i];
-		return max;
-	}
-	
-	/**
-	 * Used primarily in the implementation of the Curseor class
-	 * @return Point object holding the (x,y) center point of the object
-	 */
-	public Point centerPoint(){
-		Point d=new Point();
-		if(shape!=null)
-			d.setLocation(xPosition+pixelDiameter/2, yPosition+pixelDiameter/2);
-		else 
-			d.setLocation(xPosition+shape.getBounds2D().getWidth()/2, yPosition+shape.getBounds2D().getHeight()/2);
-		return d;
 	}
 }
