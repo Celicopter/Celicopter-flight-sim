@@ -1,0 +1,34 @@
+import java.util.ArrayList;
+
+
+/**
+ * Represents a group of Target Objects
+ * @author Nathan_Schilling
+ *
+ */
+public class TargetGroup extends Target{
+	private ArrayList<Target> targets;
+	
+	public TargetGroup(){
+		targets=new ArrayList<Target>();
+	}
+	
+	public TargetGroup(ArrayList<Target> t){
+		targets=t;
+	}
+	
+	public boolean add(Target t){
+		return targets.add(t);
+	}
+	
+	public Target get(int index){
+		return targets.get(index);
+	}
+	
+	public void cacluateCenter(){
+		for(Target t:targets){
+			xCenterPosition+=t.xCenterPosition/targets.size();
+			yCenterPosition+=t.yCenterPosition/targets.size();
+		}
+	}
+}

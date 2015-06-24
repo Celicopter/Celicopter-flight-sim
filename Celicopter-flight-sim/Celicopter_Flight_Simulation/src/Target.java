@@ -95,10 +95,6 @@ public class Target extends ScreenObject{
 		dynamicMod=null;
 	}
 	
-	
-	
-	
-	
 	public void setWind(WindFunction forcingFunction){
 		wind=forcingFunction;
 	}
@@ -113,21 +109,23 @@ public class Target extends ScreenObject{
 	}
 	public void setDx(long time){
 		if(dynamicMod!=null)
-			dx+=dynamicMod.solveDx(time,dx);
+			dx=dynamicMod.solveDx(time,dx);
 		if(wind!=null)
-			dx+=wind.solveDx(time,dx);
+			dx=wind.solveDx(time,dx);
 	}
 	public void setDy(long time){
 		if(dynamicMod!=null)
-			dy+=dynamicMod.solveDx(time,dy);
+			dy=dynamicMod.solveDx(time,dy);
 		if(wind!=null)
-			dy+=wind.solveDx(time,dy);
+			dy=wind.solveDx(time,dy);
 	}
 	
-	public void draw(Graphics g){
+	public void draw(Graphics2D g){
 		Color d=g.getColor();
-		Color c=Color.getHSBColor(0f,0f,(float) (0.5f*(1-modulation)));
-		g.setColor(c);
+		setColor(Color.getHSBColor(0f,0f,(float) (0.5f*(1-modulation))));
+		
+		//No idea why I cant just do this.getColor()...
+		g.setColor(Color.getHSBColor(0f,0f,(float) (0.5f*(1-modulation))));
 		if(shape==null && sprite==null){
 			if(isOval)
 				g.fillOval((int)xCenterPosition-(int)pixelDiameter/2, (int)yCenterPosition-(int)pixelDiameter/2, (int)pixelDiameter, (int)pixelDiameter/2);

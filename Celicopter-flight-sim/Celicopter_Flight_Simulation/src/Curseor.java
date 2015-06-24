@@ -73,12 +73,20 @@ public class Curseor extends ScreenObject{
 		wind=null;
 		dynamicMod=null;
 	}
+	public WindFunction getWind() {
+		return wind;
+	}
+
 	public void setWind(WindFunction forcingFunction){
 		wind=forcingFunction;
 	}
 	public void setDynamicsModel(DynamicsModel dynamicsModel){
 		dynamicMod=dynamicsModel;
 	}
+	public DynamicsModel getDynamicMod() {
+		return dynamicMod;
+	}
+
 	public void move(long time, int screenWidth, int screenHeight){
 		setDx(time);
 		setDy(time);
@@ -119,5 +127,8 @@ public class Curseor extends ScreenObject{
 			sharpie=null;
 			//g.setStroke(b);
 		}	
+	}
+	public double getError(ScreenObject o){
+		return Math.sqrt(Math.pow(xCenterPosition-o.xCenterPosition,2)+Math.pow(yCenterPosition-o.yCenterPosition,2));
 	}
 }

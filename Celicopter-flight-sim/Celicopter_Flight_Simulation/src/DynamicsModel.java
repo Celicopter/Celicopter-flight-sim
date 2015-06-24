@@ -38,6 +38,30 @@ public class DynamicsModel {
 		this.yGain = yGain;
 	}
 	
+	public JInputJoystick getStick() {
+		return stick;
+	}
+
+	public void setStick(JInputJoystick stick) {
+		this.stick = stick;
+	}
+
+	public double getxGain() {
+		return xGain;
+	}
+
+	public void setxGain(double xGain) {
+		this.xGain = xGain;
+	}
+
+	public double getyGain() {
+		return yGain;
+	}
+
+	public void setyGain(double yGain) {
+		this.yGain = yGain;
+	}
+
 	/**
 	 * Calculates the dx based on the instantiated Dynamics model, 
 	 * joystick input and associated gain (if present)

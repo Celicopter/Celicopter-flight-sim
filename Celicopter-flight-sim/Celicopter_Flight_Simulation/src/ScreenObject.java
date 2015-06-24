@@ -32,6 +32,8 @@ public class ScreenObject{
 	protected double modulation;
 	/**Keeps track of wheather the on-screen object is actually a circle or an oval*/
 	protected boolean isOval;
+	/**Color of on-screen object*/
+	private Color color;
 	
 	/**
 	 * Most basic constructor; represents on-screen a filled-in circle that starts 
@@ -302,6 +304,14 @@ public class ScreenObject{
 	}
 	
 	
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*modulation));
+	}
+
 	/**
 	 * Draws the object in the specified graphics context
 	 * If this object isn't a polygon or an image, a black circle is drawn
@@ -309,7 +319,7 @@ public class ScreenObject{
 	 * If this object is an image, the image is drawn
 	 * @param g The Graphics context to draw the object in
 	 */
-	public void draw(Graphics g){
+	public void draw(Graphics2D g){
 		Color d=g.getColor();
 		Color c=new Color(g.getColor().getRed(),g.getColor().getGreen(),g.getColor().getBlue(),(int) (125*modulation+125));
 		g.setColor(c);
