@@ -1,0 +1,10 @@
+
+public class SumOfSines {
+	double[] apmlidutes;
+	double[] frequencies;
+	double[] phaseOffset;
+	
+	public SumOfSines(){
+		
+	}
+}

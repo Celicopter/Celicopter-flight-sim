@@ -2,6 +2,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.Rectangle2D.Double;
+
 import joystick.JInputJoystick;
 
 
@@ -32,18 +35,18 @@ public class Curseor extends ScreenObject{
 	 * @param startX X-coordinate of the top right-hand corner where the circle starts
 	 * @param startY Y-coordinate of the top right-hand corner where the circle starts
 	 */
-	public Curseor(double startX, double startY){
+	public Curseor(int startX, int startY){
 		super(startX,startY);
 		wind=null;
 		dynamicMod=null;
 	}
 	
-	public Curseor(double startX, double startY, double startDx, double startDy,double SF,double mod){
+	public Curseor(int startX, int startY, double startDx, double startDy,double SF,double mod){
 		super(startX,startY,startDx,startDy,SF,mod);
 		wind=null;
 		dynamicMod=null;
 	}
-	public Curseor(double startX, double startY, double startDx, double startDy){
+	public Curseor(int startX, int startY, double startDx, double startDy){
 		super(startX,startY,startDx,startDy);
 		wind=null;
 		dynamicMod=null;
@@ -53,22 +56,22 @@ public class Curseor extends ScreenObject{
 		wind=null;
 		dynamicMod=null;
 	}
-	public Curseor(double startX, double startY, int numberOfSides){
+	public Curseor(int startX, int startY, int numberOfSides){
 		super(startX,startY,numberOfSides);
 		wind=null;
 		dynamicMod=null;
 	}
-	public Curseor(double startX, double startY, double startDx, double startDy, int numberOfSides){
+	public Curseor(int startX, int startY, double startDx, double startDy, int numberOfSides){
 		super( startX,  startY,  startDx,  startDy,  numberOfSides);
 		wind=null;
 		dynamicMod=null;
 	}
-	public Curseor(double startX, double startY, double startDx, double startDy, double SF, double mod,int numberOfSides){
+	public Curseor(int startX, int startY, double startDx, double startDy, double SF, double mod,int numberOfSides){
 		super( startX,  startY,  startDx,  startDy,  numberOfSides,SF,mod);
 		wind=null;
 		dynamicMod=null;
 	}
-	public Curseor(double startX, double startY, double startDx, double startDy, double SF,int numberOfSides){
+	public Curseor(int startX, int startY, double startDx, double startDy, double SF,int numberOfSides){
 		super( startX,  startY,  startDx,  startDy, SF,numberOfSides);
 		wind=null;
 		dynamicMod=null;
@@ -111,13 +114,15 @@ public class Curseor extends ScreenObject{
 			dy=wind.solveDy(time,dy);
 	}
 	public void draw(Graphics2D g){
+		Color d=g.getColor();
 		Color c=new Color(g.getColor().getRed(),g.getColor().getGreen(),g.getColor().getBlue(),(int) (255*modulation));
 		BasicStroke b=(BasicStroke) g.getStroke();
 		g.setColor(c);
 		g.setStroke(new BasicStroke(2));
 		if(shape==null && sprite==null){
-			g.drawOval((int)xCenterPosition-(int)pixelDiameter/2, (int)yCenterPosition-(int)pixelDiameter/2, (int)pixelDiameter, (int)pixelDiameter);
-			//g.setStroke(b);
+			g.drawOval((int)xCenterPosition-(int)getPixelDiameter()/2, (int)yCenterPosition-(int)getPixelDiameter()/2, (int)getPixelDiameter(), (int)getPixelDiameter());
+			g.setStroke(b);
+			g.setColor(d);
 			return;
 		}
 		if(shape!=null){
@@ -125,7 +130,8 @@ public class Curseor extends ScreenObject{
 			sharpie.translate((int) (xCenterPosition), (int) (yCenterPosition));
 			g.drawPolygon(sharpie);
 			sharpie=null;
-			//g.setStroke(b);
+			g.setStroke(b);
+			g.setColor(d);
 		}	
 	}
 	public double getError(ScreenObject o){

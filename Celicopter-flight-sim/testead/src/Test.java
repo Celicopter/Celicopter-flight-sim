@@ -28,7 +28,8 @@ public class Test extends JPanel implements Runnable{
 	 * 
 	 */
 	public Rectangle virtualBounds;
-	public Target sc;
+	public TargetGroup sc;
+	public ScreenObject ford;
 	public Curseor sc1;
 	public long lastLoopTime;
 	private JInputJoystick stick;
@@ -112,8 +113,23 @@ public class Test extends JPanel implements Runnable{
 				virtualBounds =virtualBounds.union(gc[i].getBounds());
 			}
 		}
-		sc=new Target(100,100,-5,-7,182,1,7);
-		//sc1=new Curseor(0,100,0.05,-0.05,182,1);
+		Target sc=new Target(100,100,-0.3,0.2,182,1,7);
+		Target duh=new Target(200,500,0,0,98,1,4);
+		Target tt=new Target(500,300,0,0,45,1);
+		int[] r={3};
+		double d=56;
+		int x=700;
+		int y=300;
+		Target ford=new Target(x,y,0,0,d,r[0]);
+		double[] radii={200,110,60};
+		double[] thetas={60,180,-60};
+		Target[] scs={sc,duh,ford};
+		this.sc=new TargetGroup(300,400,0.3,-0.2,radii,thetas,scs);
+		sc1=new Curseor(500,100,-0.3,-0.2,182,1);
+		this.ford=new ScreenObject(100,100,-0.3,0.2,90,2);
+		//this.sc.add(tt);
+		//this.sc.add(diuh);
+//		this.sc.add(ford);
 //		BufferedImage op = null;
 //		try {
 //			op=ImageIO.read(new File("2881806-hoth.png.jpg"));
@@ -123,13 +139,11 @@ public class Test extends JPanel implements Runnable{
 //		}
 //		sc1=new ScreenObject(0,0,0.05,0.05,op);
 		// Creates the joystick controller
-		stick = new JInputJoystick(Controller.Type.MOUSE);
-		//sc1.setDynamicsModel(new DynamicsModel(stick,2,2));
-		tead=new Thread(this);
-		tead.start();
+		stick = new JInputJoystick(Controller.Type.STICK);
+		sc1.setDynamicsModel(new DynamicsModel(stick,3,2));
+		//tead.start();
 		lastLoopTime = System.currentTimeMillis();
-		
-
+		//this.sc.setDynamicsModel(new DynamicsModel(stick,2,2));
 	}
 	
 	@Override
@@ -140,22 +154,36 @@ public class Test extends JPanel implements Runnable{
 		long delta=-1*(lastLoopTime-System.currentTimeMillis());
 		lastLoopTime = System.currentTimeMillis();
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-//		sc1.dx=stickX/25;
-//		sc1.dy=stickY/25;
+//		if( !stick.isControllerConnected() )
+//		{
+//			System.err.println("No controller found!");
+//			// Do some stuff.
+//		}
+//
+//		// Get current state of joystick! And check, if joystick is disconnected.
+//		if( !stick.pollController() ) {
+//			System.err.println("Controller disconnected!");
+//			// Do some stuff.
+//		}
+//		sc1.dx=(stick.getXAxisPercentage()-50)/25;
+//		sc1.dy=(stick.getYAxisPercentage()-50)/25;
 //		g.fillRect(100, 100, 100, 100);
 		g2.setColor(Color.black);
 		sc.draw(g2);
-//		g.setColor(Color.green);
-//		sc1.draw(g);
-		//sc.move(getWidth(), getHeight());
 		sc.move(delta, getWidth(), getHeight());
-//		sc1.move(delta, getWidth(), getHeight());
+//		ford.draw(g2);
+//		ford.move(delta, getWidth(), getHeight());
+		g.setColor(Color.green);
+		sc1.draw(g2);
+		//sc.move(getWidth(), getHeight());
+		
+		sc1.move(delta, getWidth(), getHeight());
 //		Graphics2D g2=(Graphics2D) g;
-//		g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-//		g2.setColor(Color.black);
-//		String message=stick.getXAxisValue()+", "+stick.getYAxisValue();
-//		g2.drawString(message,0,g2.getFontMetrics().getMaxAscent());
-		try {Thread.sleep(100);} catch (InterruptedException e) {}
+		g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+		g2.setColor(Color.black);
+		String message=ford.dx+", "+ford.dy;
+		g2.drawString(message,0,g2.getFontMetrics().getMaxAscent());
+		try {Thread.sleep(34);} catch (InterruptedException e) {}
 		repaint();
 		//g.fillRect(100, 100, (int) (Toolkit.getDefaultToolkit().getScreenResolution()), 4);
 	}

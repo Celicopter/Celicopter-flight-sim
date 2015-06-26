@@ -1,9 +1,0 @@
-
-/**
- * Represents a group of Target Objects
- * @author Nathan_Schilling
- *
- */
-public class TargetGroup extends Target{
-	private ArrayList<Target> targets
-}
