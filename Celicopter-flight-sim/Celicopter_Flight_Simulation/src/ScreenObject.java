@@ -31,7 +31,7 @@ public class ScreenObject{
 	protected boolean isOval;
 	/**Color of on-screen object*/
 	private Color color;
-	
+
 	private int minY=0;
 	private int maxY=0;
 
@@ -312,7 +312,7 @@ public class ScreenObject{
 		if(shape!=null){
 			shape=createPoly(shape.npoints,pixelDiameter);
 		}
-			this.pixelDiameter = pixelDiameter;
+		this.pixelDiameter = pixelDiameter;
 	}
 
 	public Color getColor() {
@@ -334,7 +334,7 @@ public class ScreenObject{
 		Color d=g.getColor();
 		setColor(d);
 		g.setColor(color);
-		
+
 		drawObject(g);
 		g.setColor(d);	
 	}
@@ -372,36 +372,24 @@ public class ScreenObject{
 		int newX=(int) Math.round(xCenterPosition+dx);
 		int newY=(int) Math.round(yCenterPosition+dy);
 		if(shape==null){
-			if(newX+pixelDiameter/2>screenWidth || newX<pixelDiameter/2){
+			if(distanceFromRightSide(newX,screenWidth)<0 || distanceFromLeftSide(newX)<0){
 				dx=-dx;
 			}
 			else
 				xCenterPosition=newX;
-			if(newY+pixelDiameter/2>screenHeight || newY<pixelDiameter/2){
+			if(distanceFromBottom(newY,screenHeight)<0 || distanceFromTop(newY)<0){
 				dy=-dy;
 			}
 			else
 				yCenterPosition=newY;
 		}
-		if(shape!=null){
-			if(newX+shape.getBounds2D().getWidth()/2>screenWidth || newX<shape.getBounds2D().getWidth()/2){
-				dx=-dx;
-			}
-			else
-				xCenterPosition=newX;
-			if(newY+pixelDiameter/2>screenHeight || newY<pixelDiameter/2){
-				dy=-dy;
-			}
-			else
-				yCenterPosition=newY;
-		}
-		if(isAtLeftSide(xCenterPosition))
+		if(distanceFromLeftSide(xCenterPosition)<0)
 			xCenterPosition=0;
-		if(isAtTop(yCenterPosition))
+		if(distanceFromTop(yCenterPosition)<0)
 			yCenterPosition=0;
-		if(isAtRightSide(yCenterPosition,screenWidth))
+		if(distanceFromRightSide(yCenterPosition,screenWidth)<0)
 			yCenterPosition=(int) (screenWidth-pixelDiameter/2);
-		if(isAtBottom(yCenterPosition,screenHeight))
+		if(distanceFromBottom(yCenterPosition,screenHeight)<0)
 			yCenterPosition=(int) (screenHeight-pixelDiameter/2);
 	}
 
@@ -417,88 +405,83 @@ public class ScreenObject{
 	public void move(long time, int screenWidth, int screenHeight){
 		int newX=(int) Math.round(xCenterPosition+dx*time);
 		int newY=(int) Math.round(yCenterPosition+dy*time);
-			if(isAtRightSide(newX,screenWidth) || isAtLeftSide(newX)){
-				dx=-dx;
-			}
-			else
-				xCenterPosition=newX;
-			if(isAtBottom(newY,screenHeight) || isAtTop(newY)){
-				dy=-dy;
-			}
-			else
-				yCenterPosition=newY;
-		if(isAtLeftSide(xCenterPosition)){
+		if(distanceFromRightSide(newX,screenWidth)<0 || distanceFromLeftSide(newX)<0){
+			dx=-dx;
+		}
+		else
+			xCenterPosition=newX;
+		if(distanceFromBottom(newY,screenHeight)<0 || distanceFromTop(newY)<0){
+			dy=-dy;
+		}
+		else
+			yCenterPosition=newY;
+		if(distanceFromLeftSide(xCenterPosition)<0){
 			if(shape!=null)
 				xCenterPosition=(int) (shape.getBounds2D().getWidth()/2);
-			else if(isOval)
-					xCenterPosition=(int) (pixelDiameter/3);
-				 else
-					 xCenterPosition=(int) (pixelDiameter/2);
-				
+			else 
+				xCenterPosition=(int) (pixelDiameter/2);
+
 		}
-			
-		if(isAtTop(yCenterPosition)){
-			if(shape==null && !isOval)
-				yCenterPosition=(int) (pixelDiameter/2);
-			if(shape==null && isOval)
-				yCenterPosition=(int) (pixelDiameter/3);
-			else
+		if(distanceFromTop(yCenterPosition)<0){
+			if(shape!=null)
 				yCenterPosition=(int) (shape.getBounds2D().getHeight()/2);
+			else if(isOval)
+				yCenterPosition=(int) (pixelDiameter/3);
+				else
+					yCenterPosition=(int) (pixelDiameter/2);
 		}
-		if(isAtRightSide(yCenterPosition,screenWidth)){
-			if(shape==null && !isOval)
-				xCenterPosition=(int) (screenWidth-pixelDiameter/2);
-			if(shape==null && isOval)
-				xCenterPosition=(int) (screenWidth-pixelDiameter/3);
-			else
+		if(distanceFromRightSide(yCenterPosition,screenWidth)<0){
+			if(shape!=null)
 				xCenterPosition=(int) (screenWidth-shape.getBounds2D().getWidth()/2);
+			else 
+				xCenterPosition=(int) (screenWidth-pixelDiameter/2);				
 		}
-			
-		if(isAtBottom(yCenterPosition,screenHeight)){
-			if(shape==null && !isOval)
-				yCenterPosition=(int) (screenHeight-pixelDiameter/2);
-			if(shape==null && isOval)
-				yCenterPosition=(int) (screenHeight-pixelDiameter/3);
-			else
+
+		if(distanceFromBottom(yCenterPosition,screenHeight)<0){
+			if(shape!=null)
 				yCenterPosition=(int) (screenHeight-shape.getBounds2D().getHeight()/2);
+			else if(isOval)
+				yCenterPosition=(int) (screenHeight-pixelDiameter/3);
+				else
+					yCenterPosition=(int) (screenHeight-pixelDiameter/2);
 		}
 	}
 
-	public boolean isAtLeftSide(int x){
+	public double distanceFromLeftSide(int x){
 		if(shape==null)
-			return x<pixelDiameter/2;
+			return x-pixelDiameter/2;
 		else
-			return x<shape.getBounds2D().getWidth()/2;
+			return x-shape.getBounds2D().getWidth()/2;
 	}
-	
-	public boolean isAtTop(int y){
+
+	public double distanceFromTop(int y){
 		if(isOval)
-			return y<pixelDiameter/3;
+			return y-pixelDiameter/3;
 		if(shape==null)
-			return y<pixelDiameter/2;
+			return y-pixelDiameter/2;
 		else
-			return y<minY;
+			return y-minY;
 	}
-	
-	public boolean isAtBottom(int y,int screenHeight){
+
+	public double distanceFromBottom(int y,int screenHeight){
 		if(isOval)
-			return y+pixelDiameter/3>screenHeight;
+			return screenHeight-(y+pixelDiameter/3);
 		if(shape==null)
-			return y+pixelDiameter/2>screenHeight;
+			return screenHeight-(y+pixelDiameter/2);
 		else
-			return y+maxY>screenHeight;
+			return screenHeight-(y+maxY);
 	}
-	
-	public boolean isAtRightSide(int x,int screenWidth){
+
+	public double distanceFromRightSide(int x,int screenWidth){
 		if(shape==null)
-			return x+pixelDiameter/2>screenWidth;
+			return screenWidth-(x+pixelDiameter/2);
 		else
-			return x+shape.getBounds2D().getWidth()/2>screenWidth;
+			return screenWidth-(x+shape.getBounds2D().getWidth()/2);
 	}
-	
+
 	public boolean isAtBoundary(int x,int y, int screenWidth,int screenHeight){
-			return isAtTop(y) || isAtLeftSide(x) 
-					|| isAtRightSide(x,screenWidth) || isAtBottom(y,screenHeight);
+		return distanceFromTop(y)<0 ||distanceFromLeftSide(x)<0 
+				|| distanceFromRightSide(x,screenWidth)<0 || distanceFromBottom(y,screenHeight)<0;
 	}
 
 	/**
@@ -537,7 +520,7 @@ public class ScreenObject{
 		else
 			return null;
 	}
-	
+
 	private int min(int[] ints){
 		int min=ints[0];
 		for(int i=1;i<ints.length;i++)
@@ -545,12 +528,25 @@ public class ScreenObject{
 				min=ints[i];
 		return min;
 	}
-	
+
 	private int max(int[] ints){
 		int max=ints[0];
 		for(int i=1;i<ints.length;i++)
 			if(ints[i]>max)
 				max=ints[i];
 		return max;
+	}
+	
+	public String toString(){
+		String str="";
+		str="This "+this.getClass()+" is centered at "+xCenterPosition+","+yCenterPosition+"\ntravels with x-direction speed "+dx+" and y-direction speed "+dy+".\n";
+		str="This object has a pixel dimater of "+pixelDiameter+".\n";
+		str+="This object is ";
+		if(!isOval)
+			str+="NOT ";
+		str+="an oval.\n";
+		if(shape!=null)
+			str+="This object has "+shape.npoints+" sides.";
+		return str;
 	}
 }

@@ -28,4 +28,5 @@
 <fullyQualifiedTypeName name="java.lang.Math"/>
 <fullyQualifiedTypeName name="java.awt.geom.Rectangle2D"/>
 <fullyQualifiedTypeName name="java.awt.geom.Rectangle2D.Double"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
 </qualifiedTypeNameHistroy>

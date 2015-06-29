@@ -116,16 +116,18 @@ public class Test extends JPanel implements Runnable{
 		Target sc=new Target(100,100,-0.3,0.2,182,1,7);
 		Target duh=new Target(200,500,0,0,98,1,4);
 		Target tt=new Target(500,300,0,0,45,1);
+		sc.modulation=0.1;
+		duh.modulation=0.5;
 		int[] r={3};
 		double d=56;
 		int x=700;
 		int y=300;
 		Target ford=new Target(x,y,0,0,d,r[0]);
 		double[] radii={200,110,60};
-		double[] thetas={60,180,-60};
+		double[] thetas={90,180,-90};
 		Target[] scs={sc,duh,ford};
 		this.sc=new TargetGroup(300,400,0.3,-0.2,radii,thetas,scs);
-		sc1=new Curseor(500,100,-0.3,-0.2,182,1);
+		sc1=new Curseor(500,100,-0.3,-0.2,182,3);
 		this.ford=new ScreenObject(100,100,-0.3,0.2,90,2);
 		//this.sc.add(tt);
 		//this.sc.add(diuh);
@@ -148,8 +150,9 @@ public class Test extends JPanel implements Runnable{
 	
 	@Override
 	public void paint(Graphics g){
+		System.out.println("Height is:"+getHeight());
 		Graphics2D g2=(Graphics2D) g;
-		g2.setColor(Color.WHITE);
+		g2.setColor(Color.white);
 		g2.fillRect(0, 0, getWidth(), getHeight());
 		long delta=-1*(lastLoopTime-System.currentTimeMillis());
 		lastLoopTime = System.currentTimeMillis();
@@ -168,13 +171,17 @@ public class Test extends JPanel implements Runnable{
 //		sc1.dx=(stick.getXAxisPercentage()-50)/25;
 //		sc1.dy=(stick.getYAxisPercentage()-50)/25;
 //		g.fillRect(100, 100, 100, 100);
-		g2.setColor(Color.black);
+		g2.setColor(Color.green);
+		sc1.draw(g2);
+		sc.move(sc.xCenterPosition, sc.yCenterPosition,getWidth(),getHeight());
 		sc.draw(g2);
-		sc.move(delta, getWidth(), getHeight());
+		//sc.move(getWidth(),getHeight(), getWidth(), getHeight());
+		for(Target t:sc.getTargets())
+			System.out.println(t.distanceFromBottom(t.yCenterPosition, getHeight()));
 //		ford.draw(g2);
 //		ford.move(delta, getWidth(), getHeight());
 		g.setColor(Color.green);
-		sc1.draw(g2);
+		
 		//sc.move(getWidth(), getHeight());
 		
 		sc1.move(delta, getWidth(), getHeight());

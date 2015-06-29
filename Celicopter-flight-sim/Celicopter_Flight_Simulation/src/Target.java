@@ -130,10 +130,11 @@ public class Target extends ScreenObject{
 	
 	public void draw(Graphics2D g){
 		Color d=g.getColor();
-		setColor(Color.getHSBColor(0f,0f,(float) (0.5f*(1-modulation))));
-		
+		//setColor(Color.getHSBColor(0f,0f,(float) (0.5f*(1-modulation))));
+		setColor(d);
+		g.setColor(this.getColor());
 		//No idea why I cant just do this.getColor()...
-		g.setColor(Color.getHSBColor(0f,0f,(float) (0.5f*(1-modulation))));
+		//g.setColor(Color.getHSBColor(0f,0f,(float) (0.5f*(1-modulation))));
 		drawObject(g);
 		g.setColor(d);	
 	}
