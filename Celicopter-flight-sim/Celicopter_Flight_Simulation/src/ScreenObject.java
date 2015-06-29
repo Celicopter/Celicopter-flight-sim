@@ -555,6 +555,8 @@ public class ScreenObject{
 		}
 		o.minY=this.minY;
 		o.maxY=this.maxY;
+		System.out.println(this);
+		System.out.println(o);
 		return o;
 	}
 	

@@ -121,13 +121,15 @@ public class Test extends JPanel implements Runnable{
 		duh.modulation=0.5;
 		int x=700;
 		int y=300;
-		Target ford=new Target(x,y,0,0,56,3);
+		Target ford=new Target(x,y,0,0,56,5);
 		double[] radii={200,110,300};
 		double[] thetas={60,180,-60};
 		Target[] scs={duh,tt,ford};
 		this.sc=new TargetGroup(300,400,radii,thetas,scs);
 		sc1=new Curseor(500,100,-0.3,-0.2,182,3);
-		this.ford=new ScreenObject(100,100,-0.3,0.2,90,2);
+		ford.xCenterPosition=700;
+		ford.yCenterPosition=300;
+		this.ford=ford.clone();
 		//this.sc.add(tt);
 		//this.sc.add(diuh);
 //		this.sc.add(ford);

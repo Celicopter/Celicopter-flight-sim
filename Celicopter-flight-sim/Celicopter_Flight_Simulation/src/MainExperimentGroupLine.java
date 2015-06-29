@@ -63,7 +63,7 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 	/**Graphics object that encapsulate the graphics of the canvas*/
 	protected Graphics2D canvasGraphics;
 	/**Index of current position in pixelWidths array*/
-	protected int pixelWidthIndex=0;
+	protected int iterationsNumber=0;
 	/**Index of current position in modulations array*/
 	protected int modIndex=0;
 	/**Target Position Index*/
@@ -188,7 +188,14 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 				   break;
 		}
 		
+		double[] a={1.22,1.116,0.978,0.707,0.457,0.251,0.143,0.091,0.07,0.061};
+		double[] wd={0.230,0.460,0.690,1.151,1.764,2.838,4.449,7.056,11.121,17.487};
+		double[] pO={0.365,1.990,0.873,-0.306,-1.461,0.131,3.240,0.235,-2.423,-2.249};
 		
+		targetPositions=new int[680];
+		SumOfSines s=new SumOfSines(a,wd,pO);
+//		for(int i=0;i<targetPositions.length;i++)
+//			targetPositions[i]=(int) Math.round(25*s.evaluate((long) (2*Math.PI/(i*Math.random()))));
 		//Sets the screen dimensions to the size of the window. 
 		screenDimentions=new Dimension(virtualBounds.width,virtualBounds.height);
 		
@@ -282,6 +289,7 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 		long delta2=System.currentTimeMillis()-lastIterationTime;
 		if(delta2>=ITERATIONS_DELAY){
 			lastIterationTime=System.currentTimeMillis();
+			iterationsNumber++;
 			flag=true;
 			return;
 		}
@@ -310,6 +318,10 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 			warfighter.yCenterPosition=target.yCenterPosition;
 			flag=false;
 		}
+		if(iterationsNumber>7){
+			System.out.println("Writing to file...Done!");
+			System.exit(0);
+		}
 	}
 	
 	public void initObjects(){
@@ -320,14 +332,14 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 		warfighter.setDynamicsModel(new DynamicsModel(stick,XGain,0));
 
 		//Initializes the Target
-		Target t1=new Target(200.0,0.018);
-		Target t3=new Target(200.0,0.018);
-		Target t5=new Target(200.0,0.018);
+		Target t1=new Target(200.0,0.06);
+		Target t3=new Target(200.0,0.06);
+		Target t5=new Target(200.0,0.06);
 		Target t2=new Target(20.0,1.0);
 		Target t4=new Target(20.0,1.0);
 		Target t6=new Target(20.0,1.0);
 		double[] radii={200,200,200,200,200,200};
-		double[] thetas={0,60,120,180,240,300};
+		double[] thetas={-30,-90,-150,-210,-270,-330};
 		Target[] scs={t1,t2,t3,t4,t5,t6};
 		target=new TargetGroup(targetPositions[0],screenDimentions.height/2,0,0,radii,thetas,scs);
 
