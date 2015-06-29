@@ -76,6 +76,54 @@ public class Curseor extends ScreenObject{
 		wind=null;
 		dynamicMod=null;
 	}
+	
+
+	public Curseor(ScreenObject o){
+		this.xCenterPosition=o.xCenterPosition;
+		this.yCenterPosition=o.yCenterPosition;
+		this.dx=o.dx;
+		this.dy=o.dy;
+		this.shape=o.shape;
+		this.sprite=o.sprite;
+		this.setPixelDiameter(o.getPixelDiameter());
+		this.modulation=o.modulation;
+		this.isOval=o.isOval;
+		if(o.getColor()!=null){
+			Color c=new Color(o.getColor().getRed(),o.getColor().getGreen(),o.getColor().getBlue());
+			this.setColor(c);
+		}
+		this.minY=o.minY;
+		this.maxY=o.maxY;
+		wind=null;
+		dynamicMod=null;
+	}
+	
+	public Curseor(ScreenObject o,WindFunction windF,DynamicsModel dynamod){
+		this.xCenterPosition=o.xCenterPosition;
+		this.yCenterPosition=o.yCenterPosition;
+		this.dx=o.dx;
+		this.dy=o.dy;
+		this.shape=o.shape;
+		this.sprite=o.sprite;
+		this.setPixelDiameter(o.getPixelDiameter());
+		this.modulation=o.modulation;
+		this.isOval=o.isOval;
+		if(o.getColor()!=null){
+			Color c=new Color(o.getColor().getRed(),o.getColor().getGreen(),o.getColor().getBlue());
+			this.setColor(c);
+		}
+		this.minY=o.minY;
+		this.maxY=o.maxY;
+		wind=windF;
+		dynamicMod=dynamod;
+	}
+	
+	public Curseor(int startX, int startY, double startDx, double startDy,int numberOfSides, double sF, double mod) {
+		super(startX,startY,startDx,startDy,numberOfSides,sF,mod);
+		wind=null;
+		dynamicMod=null;
+	}
+
 	public WindFunction getWind() {
 		return wind;
 	}

@@ -32,8 +32,8 @@ public class ScreenObject{
 	/**Color of on-screen object*/
 	private Color color;
 
-	private int minY=0;
-	private int maxY=0;
+	protected int minY=0;
+	protected int maxY=0;
 
 	/**
 	 * Most basic constructor; represents on-screen a filled-in circle that starts 
@@ -47,7 +47,7 @@ public class ScreenObject{
 		dy=0;
 		shape=null;
 		sprite=null;
-		pixelDiameter=182;
+		pixelDiameter=10;
 		modulation=1;
 	}
 
@@ -65,7 +65,7 @@ public class ScreenObject{
 		dy=0;
 		shape=null;
 		sprite=null;
-		pixelDiameter=182;
+		pixelDiameter=10;
 		modulation=1;
 	}
 
@@ -106,7 +106,7 @@ public class ScreenObject{
 		dy=startDy;
 		shape=null;
 		sprite=null;
-		pixelDiameter=182;
+		pixelDiameter=10;
 		modulation=1;
 	}
 
@@ -145,7 +145,7 @@ public class ScreenObject{
 		dx=0;
 		dy=0;
 		sprite=null;
-		pixelDiameter=182;
+		pixelDiameter=10;
 		modulation=1;
 		shape=createPoly(numberOfSides,pixelDiameter);
 	}
@@ -168,7 +168,7 @@ public class ScreenObject{
 		dx=startDx;
 		dy=startDy;
 		sprite=null;
-		pixelDiameter=182;
+		pixelDiameter=10;
 		modulation=1;
 		shape=createPoly(numberOfSides,pixelDiameter);
 	}
@@ -213,7 +213,7 @@ public class ScreenObject{
 		dy=0;
 		shape=null;
 		sprite=image;
-		pixelDiameter=182;
+		pixelDiameter=10;
 		modulation=1;
 	}
 
@@ -234,7 +234,7 @@ public class ScreenObject{
 		dy=startDy;
 		shape=null;
 		sprite=image;
-		pixelDiameter=182;
+		pixelDiameter=10;
 		modulation=1;
 	}
 
@@ -535,6 +535,27 @@ public class ScreenObject{
 			if(ints[i]>max)
 				max=ints[i];
 		return max;
+	}
+	
+	public ScreenObject clone(){
+		ScreenObject o=new ScreenObject();
+		o.xCenterPosition=this.xCenterPosition;
+		o.yCenterPosition=this.yCenterPosition;
+		o.dx=this.dx;
+		o.dy=this.dy;
+		o.shape=this.shape;
+		o.sprite=this.sprite;
+		o.setPixelDiameter(this.pixelDiameter);
+		o.modulation=this.modulation;
+		o.isOval=this.isOval;
+		Color c;
+		if(color!=null){
+			c=new Color(this.color.getRed(),this.color.getGreen(),this.color.getBlue());
+		o.setColor(c);
+		}
+		o.minY=this.minY;
+		o.maxY=this.maxY;
+		return o;
 	}
 	
 	public String toString(){

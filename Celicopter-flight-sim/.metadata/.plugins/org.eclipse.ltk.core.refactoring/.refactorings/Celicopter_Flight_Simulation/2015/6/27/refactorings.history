@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Encapsulate field &apos;CursorLine.screenHeight&apos; in &apos;CursorLine&apos;&#x0A;- Original project: &apos;Celicopter_Flight_Simulation&apos;&#x0A;- Original element: &apos;CursorLine.screenHeight&apos;&#x0A;- Getter method name: &apos;getScreenHeight&apos;&#x0A;- Setter method name: &apos;setScreenHeight&apos;&#x0A;- Field visibility: &apos;public&apos;&#x0A;- Use getter and setter methods in declaring type" comments="false" declaring="true" description="Encapsulate field &apos;screenHeight&apos;" flags="589830" getter="getScreenHeight" id="org.eclipse.jdt.ui.self.encapsulate" input="/src&lt;{CursorLine.java[CursorLine^screenHeight" insertion="9" setter="setScreenHeight" stamp="1435602422659" version="1.0" visibility="1"/>
+</session>

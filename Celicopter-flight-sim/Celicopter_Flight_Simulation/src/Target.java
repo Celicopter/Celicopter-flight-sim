@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 public class Target extends ScreenObject{
 	private WindFunction wind;
 	private DynamicsModel dynamicMod;
-	
+
 	/**
 	 * Most basic constructor; represents on-screen a filled-in Target Object that starts 
 	 * with it's top right-hand corner in the top right hand corner of the window 
@@ -19,7 +19,7 @@ public class Target extends ScreenObject{
 		wind=null;
 		dynamicMod=null;
 	}
-	
+
 	/**
 	 * Next-level basic constructor; represents on-screen a filled-in circle that starts 
 	 * with it's top right-hand corner at coordinates specified by the user, from rest, 
@@ -32,7 +32,7 @@ public class Target extends ScreenObject{
 		wind=null;
 		dynamicMod=null;
 	}
-	
+
 	public Target(int startX, int startY, double startDx, double startDy,double SF,double mod){
 		super(startX,startY,startDx,startDy,SF,mod);
 		wind=null;
@@ -94,14 +94,61 @@ public class Target extends ScreenObject{
 		wind=null;
 		dynamicMod=null;
 	}
-	
+
+	public Target(double sF,double mod){
+		super();
+		setPixelDiameter(sF);
+		modulation=mod;
+		wind=null;
+		dynamicMod=null;
+	}
+	public Target(ScreenObject o){
+		this.xCenterPosition=o.xCenterPosition;
+		this.yCenterPosition=o.yCenterPosition;
+		this.dx=o.dx;
+		this.dy=o.dy;
+		this.shape=o.shape;
+		this.sprite=o.sprite;
+		this.setPixelDiameter(o.getPixelDiameter());
+		this.modulation=o.modulation;
+		this.isOval=o.isOval;
+		if(o.getColor()!=null){
+			Color c=new Color(o.getColor().getRed(),o.getColor().getGreen(),o.getColor().getBlue());
+			this.setColor(c);
+		}
+		this.minY=o.minY;
+		this.maxY=o.maxY;
+		wind=null;
+		dynamicMod=null;
+	}
+
+	public Target(ScreenObject o,WindFunction wind,DynamicsModel dynamod){
+		this.xCenterPosition=o.xCenterPosition;
+		this.yCenterPosition=o.yCenterPosition;
+		this.dx=o.dx;
+		this.dy=o.dy;
+		this.shape=o.shape;
+		this.sprite=o.sprite;
+		this.setPixelDiameter(o.getPixelDiameter());
+		this.modulation=o.modulation;
+		this.isOval=o.isOval;
+		if(o.getColor()!=null){
+			Color c=new Color(o.getColor().getRed(),o.getColor().getGreen(),o.getColor().getBlue());
+			this.setColor(c);
+		}
+		this.minY=o.minY;
+		this.maxY=o.maxY;
+		this.wind=wind;
+		dynamicMod=dynamod;
+	}
+
 	public void setWind(WindFunction forcingFunction){
 		wind=forcingFunction;
 	}
 	public void setDynamicsModel(DynamicsModel dynamicsModel){
 		dynamicMod=dynamicsModel;
 	}
-	
+
 	public WindFunction getWind() {
 		return wind;
 	}
@@ -127,7 +174,7 @@ public class Target extends ScreenObject{
 		if(wind!=null)
 			dy=wind.solveDy(time,dy);
 	}
-	
+
 	public void draw(Graphics2D g){
 		Color d=g.getColor();
 		//setColor(Color.getHSBColor(0f,0f,(float) (0.5f*(1-modulation))));
@@ -137,5 +184,9 @@ public class Target extends ScreenObject{
 		//g.setColor(Color.getHSBColor(0f,0f,(float) (0.5f*(1-modulation))));
 		drawObject(g);
 		g.setColor(d);	
+	}
+
+	public Target clone(){
+		return new Target(super.clone(),wind,dynamicMod);
 	}
 }

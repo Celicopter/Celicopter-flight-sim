@@ -32,8 +32,12 @@ public class TargetGroup extends Target{
 				scs[i].xCenterPosition=(int) (x+radii[i]*Math.cos(Math.PI*thetas[i]/180));
 				scs[i].yCenterPosition=(int) (y+radii[i]*Math.sin(Math.PI*thetas[i]/180));
 			}
-			for(int i=0;i<scs.length;i++)
-				targets.add(scs[i]);
+			for(int i=0;i<scs.length;i++){
+				if(!targets.contains(scs[i]))
+					targets.add(scs[i]);
+				else
+					targets.add(scs[i].clone());
+			}
 		}
 		else{
 			System.err.println("Fatal Error--array dimentions no not agree");
@@ -260,10 +264,6 @@ public class TargetGroup extends Target{
 					minYdist=bottomTarget.distanceFromBottom(mostTy, screenHeight);
 				}
 			}
-			System.out.println(leftTarget);
-			System.out.println(rightTarget);
-			System.out.println(topTarget);
-			System.out.println(bottomTarget);
 			if(leftTarget!=null || rightTarget!=null){
 				if(leftTarget!=null && rightTarget!=null){
 					deltaX=0;
@@ -286,7 +286,6 @@ public class TargetGroup extends Target{
 						deltaY+=(int) Math.round(bottomTarget.distanceFromBottom(mostTy,screenHeight));
 				}
 			}
-		System.out.println(deltaX+","+deltaY);
 		xCenterPosition+=deltaX;
 		yCenterPosition+=deltaY;
 		for(Target t:targets){
