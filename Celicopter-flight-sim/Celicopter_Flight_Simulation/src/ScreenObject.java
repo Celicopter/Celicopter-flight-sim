@@ -5,8 +5,8 @@ import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 
 /**
- * Represents an object on the screen
- * Object can be defined by the x and y coordinates of it's topmost corner
+ * Represents an object on the screen-either a circle, oval with height two-thirds it's width, n-sided regular polygon, or image
+ * Object can be defined by the x and y coordinates of it's center
  * @author NathanS
  *
  */
@@ -71,21 +71,20 @@ public class ScreenObject{
 
 	/**
 	 * Constructs an on-screen object meant to represent a regular polygon
-	 * This constructor assumes spatial frequency is 182, modulation is 1, and the shape initially starts from rest
+	 * This constructor assumes the pixel width is 182, modulation is 1, and the shape initially starts from rest
 	 * Inputing a numberOfSides equal to 2 will result in an oval being displayed, with it's height half it's width
 	 * All other numberOfSides less than two will result in a circle of diameter pixelWidth being displayed
 	 * @param startX X-coordinate of the top right-hand corner where the object starts
 	 * @param startY Y-coordinate of the top right-hand corner where the object starts
-	 * @param startSF The user-specified starting spatial-frequency
 	 * @param numberOfSides The number of sides the polygon to be rendered on the screen has
 	 */
-	public ScreenObject(int startX, int startY, double startSF,int numberOfSides){
+	public ScreenObject(int startX, int startY, int numberOfSides){
 		xCenterPosition=startX;
 		yCenterPosition=startY;
 		dx=0;
 		dy=0;
 		sprite=null;
-		pixelDiameter=startSF;
+		pixelDiameter=10;
 		modulation=1;
 		shape=createPoly(numberOfSides,pixelDiameter);
 	}
@@ -111,46 +110,6 @@ public class ScreenObject{
 	}
 
 	/**
-	 * Represents a fill-in circle on screen
-	 * @param startX X-coordinate of the top right-hand corner where the circle starts
-	 * @param startY Y-coordinate of the top right-hand corner where the circle starts
-	 * @param startDx The starting velocity of the object in the x-direction 
-	 * @param startDy The starting velocity of the object in the y-direction (up and down)
-	 * @param SF spatial frequency, dictates object's size on screen
-	 * @param mod modulation, dictates contrast of object on screen
-	 */
-	public ScreenObject(int startX, int startY, double startDx, double startDy,double SF,double mod){
-		xCenterPosition=startX;
-		yCenterPosition=startY;
-		dx=startDx;
-		dy=startDy;
-		shape=null;
-		sprite=null;
-		pixelDiameter=SF;
-		modulation=mod;
-	}
-
-	/**
-	 * Constructs an on-screen object meant to represent a regular polygon
-	 * This constructor assumes the pixel width is 182, modulation is 1, and the shape initially starts from rest
-	 * Inputing a numberOfSides equal to 2 will result in an oval being displayed, with it's height half it's width
-	 * All other numberOfSides less than two will result in a circle of diameter pixelWidth being displayed
-	 * @param startX X-coordinate of the top right-hand corner where the object starts
-	 * @param startY Y-coordinate of the top right-hand corner where the object starts
-	 * @param numberOfSides The number of sides the polygon to be rendered on the screen has
-	 */
-	public ScreenObject(int startX, int startY, int numberOfSides){
-		xCenterPosition=startX;
-		yCenterPosition=startY;
-		dx=0;
-		dy=0;
-		sprite=null;
-		pixelDiameter=10;
-		modulation=1;
-		shape=createPoly(numberOfSides,pixelDiameter);
-	}
-
-	/**
 	 * Constructs an on-screen object meant to represent a regular polygon
 	 * This constructor assumes spatial frequency is 182, modulation is 1, and the shape 
 	 * initially starts with speed in the x and y direction specified by the user
@@ -171,6 +130,50 @@ public class ScreenObject{
 		pixelDiameter=10;
 		modulation=1;
 		shape=createPoly(numberOfSides,pixelDiameter);
+	}
+
+	/**
+	 * Constructs an on-screen object meant to represent a regular polygon
+	 * This constructor assumes each side is to be 10 pixels long and the shape 
+	 * initially starts with speed in the x and y direction specified by the user
+	 * Inputing a numberOfSides equal to 2 will result in an oval being displayed, with it's height half it's width
+	 * All other numberOfSides less than two will result in a circle of diameter pixelWidth being displayed
+	 * @param startX X-coordinate of the top right-hand corner where the object starts
+	 * @param startY Y-coordinate of the top right-hand corner where the object starts
+	 * @param startDx The starting speed of the polygon in the x-direction 
+	 * @param startDy The starting speed of the polygon in the y-direction (up and down)
+	 * @param startSF The user-specified starting spatial-frequency
+	 * @param numberOfSides The number of sides the polygon to be rendered on the screen has
+	 */
+	public ScreenObject(int startX, int startY, double startDx, double startDy, double startSF,int numberOfSides){
+		xCenterPosition=startX;
+		yCenterPosition=startY;
+		dx=startDx;
+		dy=startDy;
+		sprite=null;
+		pixelDiameter=startSF;
+		modulation=1;
+		shape=createPoly(numberOfSides,pixelDiameter);
+	}
+
+	/**
+	 * Represents a fill-in circle on screen
+	 * @param startX X-coordinate of the top right-hand corner where the circle starts
+	 * @param startY Y-coordinate of the top right-hand corner where the circle starts
+	 * @param startDx The starting velocity of the object in the x-direction 
+	 * @param startDy The starting velocity of the object in the y-direction (up and down)
+	 * @param SF spatial frequency, dictates object's size on screen
+	 * @param mod modulation, dictates contrast of object on screen
+	 */
+	public ScreenObject(int startX, int startY, double startDx, double startDy,double SF,double mod){
+		xCenterPosition=startX;
+		yCenterPosition=startY;
+		dx=startDx;
+		dy=startDy;
+		shape=null;
+		sprite=null;
+		pixelDiameter=SF;
+		modulation=mod;
 	}
 
 	/**
@@ -239,30 +242,6 @@ public class ScreenObject{
 	}
 
 	/**
-	 * Constructs an on-screen object meant to represent a regular polygon
-	 * This constructor assumes each side is to be 10 pixels long and the shape 
-	 * initially starts with speed in the x and y direction specified by the user
-	 * Inputing a numberOfSides equal to 2 will result in an oval being displayed, with it's height half it's width
-	 * All other numberOfSides less than two will result in a circle of diameter pixelWidth being displayed
-	 * @param startX X-coordinate of the top right-hand corner where the object starts
-	 * @param startY Y-coordinate of the top right-hand corner where the object starts
-	 * @param startDx The starting speed of the polygon in the x-direction 
-	 * @param startDy The starting speed of the polygon in the y-direction (up and down)
-	 * @param startSF The user-specified starting spatial-frequency
-	 * @param numberOfSides The number of sides the polygon to be rendered on the screen has
-	 */
-	public ScreenObject(int startX, int startY, double startDx, double startDy, double startSF,int numberOfSides){
-		xCenterPosition=startX;
-		yCenterPosition=startY;
-		dx=startDx;
-		dy=startDy;
-		sprite=null;
-		pixelDiameter=startSF;
-		modulation=1;
-		shape=createPoly(numberOfSides,pixelDiameter);
-	}
-
-	/**
 	 * Constructs a ScreenObject meant to represent an on-screen image rather than a shape.
 	 * The image starts from rest
 	 * @param startX X-coordinate of the top right-hand corner where the object starts
@@ -325,10 +304,12 @@ public class ScreenObject{
 
 	/**
 	 * Draws the object in the specified graphics context
+	 * <p>
 	 * If this object isn't a polygon or an image, a circle is drawn
-	 * If this object is a polygon,
+	 * If the object is an oval (isOval field is true), an ellipse is drawn with it's height equal to two-thirds it's width 
+	 * If this object is a polygon, it is drawn
 	 * If this object is an image, the image is drawn
-	 * @param g The Graphics context to draw the object in
+	 * @param g The Graphics2D context to draw the object in
 	 */
 	public void draw(Graphics2D g){
 		Color d=g.getColor();

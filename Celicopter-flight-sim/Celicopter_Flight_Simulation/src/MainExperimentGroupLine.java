@@ -192,8 +192,8 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 		double[] wd={0.230,0.460,0.690,1.151,1.764,2.838,4.449,7.056,11.121,17.487};
 		double[] pO={0.365,1.990,0.873,-0.306,-1.461,0.131,3.240,0.235,-2.423,-2.249};
 		
-		targetPositions=new int[680];
-		SumOfSines s=new SumOfSines(a,wd,pO);
+//		targetPositions=new int[680];
+//		SumOfSines s=new SumOfSines(a,wd,pO);
 //		for(int i=0;i<targetPositions.length;i++)
 //			targetPositions[i]=(int) Math.round(25*s.evaluate((long) (2*Math.PI/(i*Math.random()))));
 		//Sets the screen dimensions to the size of the window. 
@@ -326,8 +326,7 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 	
 	public void initObjects(){
 		//Initializes Curseor
-		warfighter=new CursorLine(screenDimentions.width/8);
-		warfighter.setScreenHeight(screenDimentions.height);
+		warfighter=new CursorLine(screenDimentions.width/8,screenDimentions.height);
 		//Allows the Curseor to take in joystick input
 		warfighter.setDynamicsModel(new DynamicsModel(stick,XGain,0));
 
