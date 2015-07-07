@@ -290,7 +290,7 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 		if(delta2>=ITERATIONS_DELAY){
 			lastIterationTime=System.currentTimeMillis();
 			iterationsNumber++;
-			//flag=true;
+			flag=true;
 			return;
 		}
 		else if(delta2>=ITERATIONS_DELAY/2){
@@ -326,9 +326,9 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 	
 	public void initObjects(){
 		//Initializes Curseor
-		warfighter=new CursorLine(screenDimentions.width/8,screenDimentions.height,0,0);
+		warfighter=new CursorLine(screenDimentions.height/8,screenDimentions.width,0,0);
 		//Allows the Curseor to take in joystick input
-		warfighter.setDynamicsModel(new DynamicsModel(stick,4,XGain));
+		warfighter.setDynamicsModel(new DynamicsModel(stick,XGain,4));
 
 		//Initializes the Target
 		Target t1=new Target(200.0,0.06);

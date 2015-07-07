@@ -117,6 +117,7 @@ public class CursorLine extends Curseor{
 		Color c=g.getColor();
 		g.setColor(getColor());
 		g.setStroke(new BasicStroke(2));
+		System.out.println(xCenterPosition);
 		if(xCenterPosition<0){
 			if(getPixelDiameter()==MAX_LENGTH || getPixelDiameter()>windowDimention-20)
 				g.drawLine(10, yCenterPosition, windowDimention-10,yCenterPosition);
@@ -133,24 +134,30 @@ public class CursorLine extends Curseor{
 	}
 	
 	public void move(long delta,int screenWidth,int screenHeight){
-		System.out.println(xCenterPosition);
+		int tempX,tempY;
+		double tempPB=getPixelDiameter();
+		setPixelDiameter(0);
 		if(xCenterPosition<0){
 			setWindowDimention(screenWidth);
 			dx=0;
-			setDy(delta);
+			tempX=xCenterPosition;
+			if(getDynamicMod()!=null)
+				getDynamicMod().setxGain(0);
+			xCenterPosition=windowDimention/2;
+			super.move(delta, screenWidth, screenHeight);
+			xCenterPosition=tempX;
 		}
 		else{
 			setWindowDimention(screenHeight);
 			dy=0;
-			setDx(delta);
-		}
-		if(getDynamicMod()!=null){
-			if(xCenterPosition<0)
-				getDynamicMod().setxGain(0);
-			else
+			tempY=yCenterPosition;
+			yCenterPosition=windowDimention/2;
+			if(getDynamicMod()!=null)
 				getDynamicMod().setyGain(0);
-		}
-		super.move(delta, screenWidth, screenHeight);
+			super.move(delta, screenWidth, screenHeight);
+			yCenterPosition=tempY;
+		}	
+		setPixelDiameter(tempPB);
 	}
 	/**Returns the current screen height, according to this object*/
 	public int getWindowDimention() {

@@ -72,6 +72,7 @@ public class CursorLine extends Curseor{
 	 */
 	public CursorLine(int startY,int sW,double startDy,double startDx){
 		super(-100,startY,0,startDy);
+		setPixelDiameter(MAX_LENGTH);
 		setColor(Color.red);
 		windowDimention=sW;
 	}
@@ -136,13 +137,13 @@ public class CursorLine extends Curseor{
 		int tempX,tempY;
 		double tempPB=getPixelDiameter();
 		setPixelDiameter(0);
+		System.out.println(xCenterPosition);
 		if(xCenterPosition<0){
 			setWindowDimention(screenWidth);
 			dx=0;
 			tempX=xCenterPosition;
-			if(getDynamicMod()!=null)
+			if(getDynamicMod()!=null && getDynamicMod().getxGain()!=0)
 				getDynamicMod().setxGain(0);
-			xCenterPosition=windowDimention/2;
 			super.move(delta, screenWidth, screenHeight);
 			xCenterPosition=tempX;
 		}
@@ -150,8 +151,7 @@ public class CursorLine extends Curseor{
 			setWindowDimention(screenHeight);
 			dy=0;
 			tempY=yCenterPosition;
-			yCenterPosition=windowDimention/2;
-			if(getDynamicMod()!=null)
+			if(getDynamicMod()!=null && getDynamicMod().getyGain()!=0)
 				getDynamicMod().setyGain(0);
 			super.move(delta, screenWidth, screenHeight);
 			yCenterPosition=tempY;

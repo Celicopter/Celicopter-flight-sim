@@ -290,7 +290,7 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 		if(delta2>=ITERATIONS_DELAY){
 			lastIterationTime=System.currentTimeMillis();
 			iterationsNumber++;
-			//flag=true;
+			flag=true;
 			return;
 		}
 		else if(delta2>=ITERATIONS_DELAY/2){
