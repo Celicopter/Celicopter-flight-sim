@@ -78,36 +78,6 @@ public class CursorLine extends Curseor{
 	}
 	
 	/**
-	 * Makes vertical line 
-	 * @param startX x-coordinate the line will start at
-	 * @param sH starting height the window this line exists in
-	 * @param startDx starting speed along the x-axis for the line
-	 * @param l length of the line in pixels
-	 * @param mod modulation
-	 */
-	public CursorLine(int startX,int sH,double startDx, double l,double mod){
-		super(startX,-100,startDx,0,l,mod);
-		setColor(Color.red);
-		setWindowDimention(sH);
-	}
-	
-	/**
-	 * Makes a horizontal line
-	 * The startDx parameter is not used; it is there simply to cheat the complier into allowing us to construct the line to be horizontal
-	 * @param startY y-coordinate the line starts at
-	 * @param sW starting width of the window the line exists in
-	 * @param startDx (meaningless)
-	 * @param startDy starting velocity along the y-axis
-	 * @param l length of the line in pixels
-	 * @param mod modulation
-	 */
-	public CursorLine(int startY,int sW,double startDx, double startDy,double l,double mod){
-		super(-100,startY,0,startDy,l,mod);
-		setColor(Color.red);
-		setWindowDimention(sW);
-	}
-	
-	/**
 	 * Draws line in the specified Graphics2D context g.
 	 * <p>
 	 * If the xCenterPosition is negative, the line is defined by it's yCenterPosition and is horizontal.

@@ -28,6 +28,12 @@ public class Curseor extends ScreenObject{
 		dynamicMod=null;
 	}
 	
+	public Curseor(int numberOfSides){
+		super(0,0,numberOfSides);
+		wind=null;
+		dynamicMod=null;
+	}
+
 	/**
 	 * Next-level basic constructor; represents on-screen a filled-in circle that starts 
 	 * with it's top right-hand corner at coordinates specified by the user, from rest, 
@@ -41,43 +47,41 @@ public class Curseor extends ScreenObject{
 		dynamicMod=null;
 	}
 	
-	public Curseor(int startX, int startY, double startDx, double startDy,double SF,double mod){
-		super(startX,startY,startDx,startDy,SF,mod);
-		wind=null;
-		dynamicMod=null;
-	}
-	public Curseor(int startX, int startY, double startDx, double startDy){
-		super(startX,startY,startDx,startDy);
-		wind=null;
-		dynamicMod=null;
-	}
-	public Curseor(int numberOfSides){
-		super(0,0,numberOfSides);
-		wind=null;
-		dynamicMod=null;
-	}
 	public Curseor(int startX, int startY, int numberOfSides){
 		super(startX,startY,numberOfSides);
 		wind=null;
 		dynamicMod=null;
 	}
+
+	public Curseor(int startX, int startY, double startDx, double startDy){
+		super(startX,startY,startDx,startDy);
+		wind=null;
+		dynamicMod=null;
+	}
+
 	public Curseor(int startX, int startY, double startDx, double startDy, int numberOfSides){
 		super( startX,  startY,  startDx,  startDy,  numberOfSides);
 		wind=null;
 		dynamicMod=null;
 	}
-	public Curseor(int startX, int startY, double startDx, double startDy, double SF, double mod,int numberOfSides){
-		super( startX,  startY,  startDx,  startDy,  numberOfSides,SF,mod);
-		wind=null;
-		dynamicMod=null;
-	}
+
 	public Curseor(int startX, int startY, double startDx, double startDy, double SF,int numberOfSides){
 		super( startX,  startY,  startDx,  startDy, SF,numberOfSides);
 		wind=null;
 		dynamicMod=null;
 	}
-	
 
+	public Curseor(int startX, int startY, double startDx, double startDy,int numberOfSides, double sF, double mod) {
+		super(startX,startY,startDx,startDy,numberOfSides,sF,mod);
+		wind=null;
+		dynamicMod=null;
+	}
+
+	public Curseor(int startX, int startY, double startDx, double startDy, double SF, double mod,int numberOfSides){
+		super( startX,  startY,  startDx,  startDy,  numberOfSides,SF,mod);
+		wind=null;
+		dynamicMod=null;
+	}
 	public Curseor(ScreenObject o){
 		this.xCenterPosition=o.xCenterPosition;
 		this.yCenterPosition=o.yCenterPosition;
@@ -118,12 +122,6 @@ public class Curseor extends ScreenObject{
 		dynamicMod=dynamod;
 	}
 	
-	public Curseor(int startX, int startY, double startDx, double startDy,int numberOfSides, double sF, double mod) {
-		super(startX,startY,startDx,startDy,numberOfSides,sF,mod);
-		wind=null;
-		dynamicMod=null;
-	}
-
 	public WindFunction getWind() {
 		return wind;
 	}

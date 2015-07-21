@@ -20,12 +20,18 @@ public class Target extends ScreenObject{
 		dynamicMod=null;
 	}
 
+	public Target(int numberOfSides){
+		super(0,0,numberOfSides);
+		wind=null;
+		dynamicMod=null;
+	}
+
 	/**
 	 * Next-level basic constructor; represents on-screen a filled-in circle that starts 
 	 * with it's top right-hand corner at coordinates specified by the user, from rest, 
 	 * with spatial frequency 182 and modulation 1
-	 * @param startX X-coordinate of the top right-hand corner where the circle starts
-	 * @param startY Y-coordinate of the top right-hand corner where the circle starts
+	 * @param startX X-coordinate of the center where the circle starts
+	 * @param startY Y-coordinate of the center where the circle starts
 	 */
 	public Target(int startX, int startY){
 		super(startX,startY);
@@ -33,23 +39,14 @@ public class Target extends ScreenObject{
 		dynamicMod=null;
 	}
 
-	public Target(int startX, int startY, double startDx, double startDy,double SF,double mod){
-		super(startX,startY,startDx,startDy,SF,mod);
-		wind=null;
-		dynamicMod=null;
-	}
-	public Target(int startX, int startY, double startDx, double startDy){
-		super(startX,startY,startDx,startDy);
-		wind=null;
-		dynamicMod=null;
-	}
-	public Target(int numberOfSides){
-		super(0,0,numberOfSides);
-		wind=null;
-		dynamicMod=null;
-	}
 	public Target(int startX, int startY, int numberOfSides){
 		super(startX,startY,numberOfSides);
+		wind=null;
+		dynamicMod=null;
+	}
+
+	public Target(int startX, int startY, double startDx, double startDy){
+		super(startX,startY,startDx,startDy);
 		wind=null;
 		dynamicMod=null;
 	}
@@ -58,13 +55,14 @@ public class Target extends ScreenObject{
 		wind=null;
 		dynamicMod=null;
 	}
-	public Target(int startX, int startY, double startDx, double startDy, double SF, double mod,int numberOfSides){
-		super( startX,  startY,  startDx,  startDy,  numberOfSides,SF,mod);
+	public Target(int startX, int startY, double startDx, double startDy, double SF,int numberOfSides){
+		super( startX,  startY,  startDx,  startDy, SF,numberOfSides);
 		wind=null;
 		dynamicMod=null;
 	}
-	public Target(int startX, int startY, double startDx, double startDy, double SF,int numberOfSides){
-		super( startX,  startY,  startDx,  startDy, SF,numberOfSides);
+
+	public Target(int startX, int startY, double startDx, double startDy, double SF, double mod,int numberOfSides){
+		super( startX,  startY,  startDx,  startDy,  numberOfSides,SF,mod);
 		wind=null;
 		dynamicMod=null;
 	}
@@ -157,6 +155,7 @@ public class Target extends ScreenObject{
 		return dynamicMod;
 	}
 
+	@Override
 	public void move(long time, int screenWidth, int screenHeight){
 		setDx(time);
 		setDy(time);
@@ -174,18 +173,8 @@ public class Target extends ScreenObject{
 		if(wind!=null)
 			dy=wind.solveDy(time,dy);
 	}
-
-	public void draw(Graphics2D g){
-		Color d=g.getColor();
-		//setColor(Color.getHSBColor(0f,0f,(float) (0.5f*(1-modulation))));
-		setColor(d);
-		g.setColor(this.getColor());
-		//No idea why I cant just do this.getColor()...
-		//g.setColor(Color.getHSBColor(0f,0f,(float) (0.5f*(1-modulation))));
-		drawObject(g);
-		g.setColor(d);	
-	}
-
+	
+	@Override
 	public Target clone(){
 		return new Target(super.clone(),wind,dynamicMod);
 	}

@@ -24,9 +24,7 @@ import net.java.games.input.Controller;
 
 public class MainExperimentGroupLine extends JPanel implements Runnable{
 
-	/**
-	 * 
-	 */
+	/**Unique number identifier thing*/
 	private static final long serialVersionUID = -8042350635458523909L;
 	/**Represents the total bounds of the window in which our experiment happens. 
 	 * Expands to occupy two monitors
@@ -43,7 +41,7 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 	/**Holds the last time the loop was run. Used to calculate the speeds at which everything on-screen moves*/
 	protected long lastDrawTime;
 	/**True if stick and program are calibrated properly*/
-	protected boolean isCalibrated=false;
+	protected boolean isCalibrated=true;
 	/**All the things you would ever want to know about the state of the control stick*/
 	protected JInputJoystick stick;
 	/**True if the experiment is running, false otherwise*/
@@ -143,9 +141,6 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 				//Scanner reader = new Scanner(new FileReader("InputTable.txt"));
 				Scanner reader = new Scanner(new FileReader("NewSoS.txt"));
 				reader.nextLine();
-//				String str=reader.nextLine();
-//				String[] strs=str.split(",");
-//				str.
 				for(int i=0;i<targetPossiblePossitionsArray1.length;i++)
 					if(reader.hasNextInt())
 						targetPossiblePossitionsArray1[i]=reader.nextInt();
@@ -328,23 +323,18 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 		//Initializes Curseor
 		warfighter=new CursorLine(screenDimentions.width/8,screenDimentions.height,0,0);
 		//Allows the Curseor to take in joystick input
-		warfighter.setDynamicsModel(new DynamicsModel(stick,4,XGain));
+		//warfighter.setDynamicsModel(new DynamicsModel(stick,4,XGain));
 
 		//Initializes the Target
 		Target t1=new Target(200.0,0.06);
-		Target t3=new Target(200.0,0.06);
-		Target t5=new Target(200.0,0.06);
 		Target t2=new Target(20.0,1.0);
-		Target t4=new Target(20.0,1.0);
-		Target t6=new Target(20.0,1.0);
+		t1.setColor(Color.black);
+		t2.setColor(Color.black);
 		double[] radii={200,200,200,200,200,200};
 		double[] thetas={-30,-90,-150,-210,-270,-330};
-		Target[] scs={t1,t2,t3,t4,t5,t6};
+		Target[] scs={t1,t2,t1,t2,t1,t2};
 		target=new TargetGroup(targetPositions[0],screenDimentions.height/2,0,0,radii,thetas,scs);
 
-		//		for(int i=0;i<numberOfSceneryObjects;i++){
-		//			allOnScreenObjects.add(new ScreenObject());
-		//		}
 		allOnScreenObjects.add(target);
 		allOnScreenObjects.add(warfighter);
 	}
@@ -379,8 +369,8 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 				else {
 					/* Sets the text that will be displayed on screen, in this case a modified 
 					 * value of the current position the joystick is in. A value of 50 from either 
-					 * the .getXAxisPercentage() or getYAxisPercentage() on the stick indicates 
-					 * the stick is in the exact center (not pushed) either way with those axes.
+					 * the getXAxisPercentage() or getYAxisPercentage() on the stick indicates 
+					 * the stick is in the exact center (not pushed) in either direction with respect to those axes.
 					 * For the calibration procedure and to make things simpler, we subtract 50 before display. 
 					 * This makes the numbers the user sees on the screen either positive, negative, or zero.
 					 * Zero is what the user should aim for. A positive number means the calibration wheel 
@@ -422,20 +412,27 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 			canvasGraphics.fillRect(0,0,screenDimentions.width,screenDimentions.height);
 
 			//calls the paintbuffer method with 
-			//the offscreen graphics as a param
+			//the offscreen graphics as a paramater
 			updateFrame(canvasGraphics);
 
-			//we finally paint the offscreen image onto the onscreen image
+			//finally paint the offscreen image onto the onscreen image
 			g.drawImage(canvas,0,0,this);
 		}
 	}
 
+	/**
+	 * Draws all object on screen in the graphics context provided; this is always the graphics context of the buffered image we are painting on-screen for double-buffered support
+	 * @param g Graphics Context wo draw all on-screen objects on
+	 */
 	public void drawObjectsOnScreen(Graphics2D g){
+		
+		//If the controller isn't calibrated properly already, calibrate it
 		if(!isCalibrated){
 			calibration(g);
 		}
 		else {
-			g.setColor(Color.black);
+			
+			//g.setColor(Color.black);
 			target.draw(g);
 			g.setColor(Color.red);
 			warfighter.draw(g);
@@ -485,11 +482,12 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 
 	@Override
 	public void run() {
-
+		//While the program is still running and we're still taking data, keep updating display on the screen every number of milliseconds equal to DELAY_TIME
 		while(Thread.currentThread()==thread && isRunning){
 			try{ Thread.sleep(DELAY_TIME);} catch(InterruptedException e) {}
 			if(!isRunning)
 				break;
+			//repaint what's on screen after waiting DELAY_TIME number of milliseconds
 			repaint();
 		}
 	}
@@ -501,19 +499,16 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 		//picture of the way everything looks. This picture changes over time; this is the point of a flight simulator. 
 		//If it was a still picture it would be boring
 		MainExperimentGroupLine m=new MainExperimentGroupLine();
+		
+		//While the program is still running, wait to close the file writer
 		while(m.isRunning){
 			try{Thread.sleep(MainExperimentGroupLine.DELAY_TIME);} catch(InterruptedException e) {}
 		}
+		
+		//When we're done, tell the user we're done
 		System.out.println("Writing complete! Closing...");
+		
+		//Exit the program window
 		System.exit(0);
-	}
-	
-	public int stringToInt(String str){
-		str=str.trim();
-		int out=0;
-		for(int i=0;i<str.length();i++){
-			out+=Math.pow(10,(str.length()-1-i))*((int)str.charAt(i)-48);
-		}
-		return out;
 	}
 }

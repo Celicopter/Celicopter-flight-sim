@@ -13,78 +13,108 @@ public class TargetGroup extends Target{
 	private ArrayList<Target> targets;
 	private Rectangle boundary;
 
+	/**
+	 * Creates and empty TargetGroup (no Targets)
+	 * Targets must be added to this group for it to work
+	 */
 	public TargetGroup(){
 		super();
 		targets=new ArrayList<Target>();
 	}
 
+	/**
+	 * Creates a TargetGroup with it center at coordinates (x,y) based on an array of Target objects. 
+	 * The position of each Target is specified in polar coordinates by corresponding entries in the raddi and theta arrays.
+	 * This means, with this constructor, radii[1] and thetas[1] and used to specify the position in polar coordinates (relative to the x,y center)
+	 * of scs[1]. This also means that the arrays passed to this method must all be the same size. Otherwise this method will fail.
+	 * @param x X-coordinate of the center of the group
+	 * @param y Y-corrdinate of the center of the group
+	 * @param radii Array holding the corresponding radii of each Target
+	 * @param thetas Array holding the corresponding thetas of each Target
+	 * @param scs Array holding the actual Target objects. Only the size, shape, and color of each Target object is used; all other values are discarded.
+	 */
 	public TargetGroup(int x, int y,double[] radii,double[] thetas,Target[] scs){
-		super();
-		targets=new ArrayList<Target>();
-		for(int i=0;i<scs.length;i++){
-			scs[i].xCenterPosition=0;
-			scs[i].yCenterPosition=0;
-			scs[i].dx=0;
-			scs[i].dy=0;
-		}
+		super(x,y);
 		if(radii.length==thetas.length && radii.length==scs.length){
+			targets=new ArrayList<Target>();
 			for(int i=0;i<scs.length;i++){
-				scs[i].xCenterPosition=(int) (x+radii[i]*Math.cos(Math.PI*thetas[i]/180));
-				scs[i].yCenterPosition=(int) (y+radii[i]*Math.sin(Math.PI*thetas[i]/180));
-			}
-			for(int i=0;i<scs.length;i++){
+				scs[i].xCenterPosition=0;
+				scs[i].yCenterPosition=0;
+				scs[i].dx=0;
+				scs[i].dy=0;
+				scs[i].setWind(null);
+				scs[i].setDynamicsModel(null);
 				if(!targets.contains(scs[i]))
 					targets.add(scs[i]);
 				else
 					targets.add(scs[i].clone());
 			}
-		}
-		else{
-			System.err.println("Fatal Error--array dimentions no not agree");
-			System.exit(0);
-		}
-		xCenterPosition=x;
-		yCenterPosition=y;
-	}
-	
-	public TargetGroup(int x, int y,double dx,double dy,double[] radii,double[] thetas,Target[] scs){
-		super();
-		targets=new ArrayList<Target>();
-		for(int i=0;i<scs.length;i++){
-			scs[i].xCenterPosition=0;
-			scs[i].yCenterPosition=0;
-			scs[i].dx=0;
-			scs[i].dy=0;
-		}
-		if(radii.length==thetas.length && radii.length==scs.length){
 			for(int i=0;i<scs.length;i++){
-				scs[i].xCenterPosition=(int) (x+radii[i]*Math.cos(Math.PI*thetas[i]/180));
-				scs[i].yCenterPosition=(int) (y+radii[i]*Math.sin(Math.PI*thetas[i]/180));
+				targets.get(i).xCenterPosition=(int) (x+radii[i]*Math.cos(Math.PI*thetas[i]/180));
+				targets.get(i).yCenterPosition=(int) (y+radii[i]*Math.sin(Math.PI*thetas[i]/180));
 			}
-			for(int i=0;i<scs.length;i++)
-				targets.add(scs[i]);
 		}
 		else{
 			System.err.println("Fatal Error--array dimentions no not agree");
 			System.exit(0);
 		}
-		xCenterPosition=x;
-		yCenterPosition=y;
-		this.dx=dx;
-		this.dy=dy;
 	}
 	
+	/**
+	 * Creates a TargetGroup with it center at coordinates (x,y) based on an array of Target objects. 
+	 * The position of each Target is specified in polar coordinates by corresponding entries in the raddi and theta arrays.
+	 * This means, with this constructor, radii[1] and thetas[1] and used to specify the position in polar coordinates (relative to the x,y center)
+	 * of scs[1]. This also means that the arrays passed to this method must all be the same size. Otherwise this method will fail.
+	 * This constructor also allows the user to set the x and y axis velocies of the group
+	 * @param x X-coordinate of the center of the group
+	 * @param y Y-corrdinate of the center of the group
+	 * @param dx velocity along the x-axis of the group
+	 * @param dy velocity along the y-axis of the group
+	 * @param radii Array holding the corresponding radii of each Target
+	 * @param thetas Array holding the corresponding thetas of each Target
+	 * @param scs Array holding the actual Target objects. Only the size, shape, and color of each Target object is used; all other values are discarded.
+	 */
+	public TargetGroup(int x, int y,double dx,double dy,double[] radii,double[] thetas,Target[] scs){
+		super(x,y,dx,dy);
+		if(radii.length==thetas.length && radii.length==scs.length){
+			targets=new ArrayList<Target>();
+			for(int i=0;i<scs.length;i++){
+				scs[i].xCenterPosition=0;
+				scs[i].yCenterPosition=0;
+				scs[i].dx=0;
+				scs[i].dy=0;
+				if(!targets.contains(scs[i]))
+					targets.add(scs[i]);
+				else
+					targets.add(scs[i].clone());
+			}
+			for(int i=0;i<scs.length;i++){
+				targets.get(i).xCenterPosition=(int) (x+radii[i]*Math.cos(Math.PI*thetas[i]/180));
+				targets.get(i).yCenterPosition=(int) (y+radii[i]*Math.sin(Math.PI*thetas[i]/180));
+			}
+		}
+		else{
+			System.err.println("Fatal Error--array dimentions no not agree");
+			System.exit(0);
+		}
+	}
+	
+	/**
+	 * Creates a TargetGroup with one starting Target in it
+	 * @param t Target 'seed'; the only Target in the group so far
+	 */
 	public TargetGroup(Target t){
-		super();
+		super(t.xCenterPosition,t.yCenterPosition,t.dx,t.dy);
 		targets=new ArrayList<Target>();
-		xCenterPosition=t.xCenterPosition;
-		yCenterPosition=t.yCenterPosition;
-		dx=t.dx;
-		dy=t.dy;
 		this.add(t);
 		calculateCenter();
 	}
 
+	/**
+	 * Creates a TargetGroup based on the parameter passed to this method.
+	 * This method zeros out all 
+	 * @param ts
+	 */
 	public TargetGroup(ArrayList<Target> ts){
 		super();
 		targets=ts;
@@ -164,10 +194,10 @@ public class TargetGroup extends Target{
 				b=targets.add(t);
 			else
 				System.err.println("This element is already in the list");
-				t.dx=dx;
-				t.dy=dy;
-				calculateCenter();
-				return b;
+			t.dx=dx;
+			t.dy=dy;
+			calculateCenter();
+			return b;
 			}
 		else
 			System.err.println("This group has a null targets/is undefined");

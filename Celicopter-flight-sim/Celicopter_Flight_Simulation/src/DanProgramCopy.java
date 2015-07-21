@@ -356,7 +356,8 @@ public class DanProgramCopy extends JPanel implements Runnable{
 		System.out.println(warfighter.dx);
 		//Initializes the Target
 		target=new Target(screenDimentions.width/8,screenDimentions.height/2);
-
+		target.setColor(Color.black);
+		
 		//		for(int i=0;i<numberOfSceneryObjects;i++){
 		//			allOnScreenObjects.add(new ScreenObject());
 		//		}
