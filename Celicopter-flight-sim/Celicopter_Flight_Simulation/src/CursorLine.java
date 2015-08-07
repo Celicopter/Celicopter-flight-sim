@@ -107,7 +107,6 @@ public class CursorLine extends Curseor{
 		int tempX,tempY;
 		double tempPB=getPixelDiameter();
 		setPixelDiameter(0);
-		System.out.println(xCenterPosition);
 		if(xCenterPosition<0){
 			setWindowDimention(screenWidth);
 			dx=0;

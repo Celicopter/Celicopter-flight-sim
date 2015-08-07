@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move element &apos;&apos; to &apos;MainExperimentGroupLine.writeErrorToFile()&apos;&#x0A;- Original project: &apos;Celicopter_Flight_Simulation&apos;&#x0A;- Destination element: &apos;MainExperimentGroupLine.writeErrorToFile()&apos;&#x0A;- Original element: &apos;MainExperimentGroupLine.initObjects()&apos;&#x0A;- Textual move only&#x0A;- Update references to refactored element" description="Move method" destination="/src&lt;{MainExperimentGroupLine.java[MainExperimentGroupLine~writeErrorToFile" element1="/src&lt;{MainExperimentGroupLine.java[MainExperimentGroupLine~initObjects" flags="589830" id="org.eclipse.jdt.ui.move" members="1" policy="org.eclipse.jdt.ui.moveMembers" stamp="1438973870411" version="1.0"/>
+</session>

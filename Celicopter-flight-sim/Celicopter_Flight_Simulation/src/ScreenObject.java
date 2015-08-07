@@ -32,9 +32,9 @@ public class ScreenObject{
 	/**Color of on-screen object. This color has it's alpha set by modulation*/
 	private Color color;
 
-	/**Holds the minimum y-coordinate of the vertices of polygon (if the object is represented by a polygon). Used exclusively for determining the bounds of the object with respect to the y-axis. If the object isn't a polygon, this value isn't used.*/
+	/**Holds the minimum y-coordinate of the vertices of polygon (if the object is represented by a polygon). Used exclusively for determining the bounds of the object with respect to the y-axis (proper collision-handling/bounds checking). If the object isn't a polygon, this value isn't used.*/
 	protected int minY=0;
-	/**Holds the maximum y-coordinate of the vertices of polygon (if the object is represented by a polygon). Used exclusively for determining the bounds of the object with respect to the y-axis. If the object isn't a polygon, this value isn't used.*/
+	/**Holds the maximum y-coordinate of the vertices of polygon (if the object is represented by a polygon). Used exclusively for determining the bounds of the object with respect to the y-axis (proper collision-handling/bounds checking). If the object isn't a polygon, this value isn't used.*/
 	protected int maxY=0;
 
 	/**
@@ -301,7 +301,11 @@ public class ScreenObject{
 		g.setColor(d);	
 	}
 
-	public void drawObject(Graphics2D g){
+	/**
+	 * Actually draws the object in the specified context g
+	 * @param g Graphics2D context to draw the object in
+	 */
+	private void drawObject(Graphics2D g){
 		if(shape==null && sprite==null){
 			if(isOval)
 				g.fillOval((int)xCenterPosition-(int)pixelDiameter/2, (int)yCenterPosition-(int)pixelDiameter/2, (int)pixelDiameter, (int) (2*pixelDiameter/3));
@@ -367,6 +371,8 @@ public class ScreenObject{
 	public void move(long time, int screenWidth, int screenHeight){
 		int newX=(int) Math.round(xCenterPosition+dx*time);
 		int newY=(int) Math.round(yCenterPosition+dy*time);
+		
+		//Makes the object 'bounce' off walls
 		if(distanceFromRightSide(newX,screenWidth)<0 || distanceFromLeftSide(newX)<0){
 			dx=-dx;
 		}
@@ -377,6 +383,8 @@ public class ScreenObject{
 		}
 		else
 			yCenterPosition=newY;
+		
+		//If the user simply does xCenterPosotion=some value or yCenterPosition=some value, these lines ensure that even if the user specifies an off-screen value, the object is moved so it is barely on-screen, thereby staying off screen.
 		if(distanceFromLeftSide(xCenterPosition)<0){
 			if(shape!=null)
 				xCenterPosition=(int) (shape.getBounds2D().getWidth()/2);
@@ -409,13 +417,16 @@ public class ScreenObject{
 		}
 	}
 
+	/**Calculates the distance from the left-most part of the object to the left side of the screen in pixels. Negative if the object is partially obscured by, or completely off the left side of the screen.
+	 * @param x current x-position in pixels*/
 	public double distanceFromLeftSide(int x){
 		if(shape==null)
 			return x-pixelDiameter/2;
 		else
 			return x-shape.getBounds2D().getWidth()/2;
 	}
-
+	/**Calculates the distance from the top-most part of the object to the top of the screen in pixels. Negative if the object is partially obscured by, or completely off the top of the screen.
+	 * @param y current y-position in pixels*/
 	public double distanceFromTop(int y){
 		if(isOval)
 			return y-pixelDiameter/3;
@@ -425,6 +436,9 @@ public class ScreenObject{
 			return y-minY;
 	}
 
+	/**Calculates the distance from the bottom-most part of the object to the bottom of the screen in pixels. Negative if the object is partially obscured by, or completely off the bottom of the screen.
+	 * @param y current y-position in pixels
+	 * @param screenHeigth Current height of the screen in pixels*/
 	public double distanceFromBottom(int y,int screenHeight){
 		if(isOval)
 			return screenHeight-(y+pixelDiameter/3);
@@ -434,6 +448,9 @@ public class ScreenObject{
 			return screenHeight-(y+maxY);
 	}
 
+	/**Calculates the distance from the right-most part of the object to the right-side of the screen in pixels. Negative if the object is partially obscured by, or completely off the right-side of the screen.
+	 * @param x current x-position in pixels
+	 * @param screenWidth Current width of the screen in pixels*/
 	public double distanceFromRightSide(int x,int screenWidth){
 		if(shape==null)
 			return screenWidth-(x+pixelDiameter/2);
@@ -441,13 +458,21 @@ public class ScreenObject{
 			return screenWidth-(x+shape.getBounds2D().getWidth()/2);
 	}
 
+	/**
+	 * Calculates and returns true if the object is at or past the bounds of the screen
+	 * @param x Current x-position of the object in pixels
+	 * @param y Current y-position of the object in pixels
+	 * @param screenWidth Current width of the screen in pixels
+	 * @param screenHeight Current height of the screen in pixels
+	 * @return true if the object is at or past the bounds of the screen, false otherwise
+	 */
 	public boolean isAtBoundary(int x,int y, int screenWidth,int screenHeight){
 		return distanceFromTop(y)<0 ||distanceFromLeftSide(x)<0 
 				|| distanceFromRightSide(x,screenWidth)<0 || distanceFromBottom(y,screenHeight)<0;
 	}
 
 	/**
-	 * Inner method that creates a regular polygon with number of sides equal to numberOfSides, and pixel diameter SF
+	 * Inner method that creates a regular polygon by creating a circumscribed circle around the polygon and filling in the same number of evenly-space vertices as sides
 	 * @param numberOfSides number of sides of regular polygon
 	 * @param SF pixel diameter. More specifically this is the diameter of the circumscribed circle of the regular polygon, ie the distance from the circumcenter to a given vertex 
 	 * @return a regular polygon with the specified number of sides and  pixel width
@@ -483,7 +508,12 @@ public class ScreenObject{
 			return null;
 	}
 
-	private int min(int[] ints){
+	/**
+	 * Finds and returns the numerical minimum value (value closest to negative infinity) in an array of ints. Used exclusively to calculate minY, but can be used by other programs to calculate other minimums.
+	 * @param ints array of ints 
+	 * @return value in array closest to negative infinity
+	 */
+	public static int min(int[] ints){
 		int min=ints[0];
 		for(int i=1;i<ints.length;i++)
 			if(ints[i]<min)
@@ -491,7 +521,12 @@ public class ScreenObject{
 		return min;
 	}
 
-	private int max(int[] ints){
+	/**
+	 * Finds and returns the numerical maximum value (value closest to positive infinity) in an array of ints. Used exclusively to calculate maxY, but can be used by other programs to calculate other maximums.
+	 * @param ints array of ints 
+	 * @return value in array closest to positive infinity
+	 */
+	public static int max(int[] ints){
 		int max=ints[0];
 		for(int i=1;i<ints.length;i++)
 			if(ints[i]>max)
@@ -499,6 +534,10 @@ public class ScreenObject{
 		return max;
 	}
 	
+	/**
+	 * Returns a clone of the current object. Used for copying 
+	 * @return an object with the exact same properties as this object but a different address in memory 
+	 */
 	public ScreenObject clone(){
 		ScreenObject o=new ScreenObject();
 		o.xCenterPosition=this.xCenterPosition;
@@ -517,11 +556,11 @@ public class ScreenObject{
 		}
 		o.minY=this.minY;
 		o.maxY=this.maxY;
-		System.out.println(this);
-		System.out.println(o);
 		return o;
 	}
-	
+	/**
+	 * Prints out information about the object when the object has System.out.println called on it
+	 */
 	public String toString(){
 		String str="";
 		str="This "+this.getClass()+" is centered at "+xCenterPosition+","+yCenterPosition+"\ntravels with x-direction speed "+dx+" and y-direction speed "+dy+".\n";

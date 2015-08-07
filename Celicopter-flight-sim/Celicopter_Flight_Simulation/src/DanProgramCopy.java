@@ -22,11 +22,13 @@ import javax.swing.JPanel;
 import joystick.JInputJoystick;
 import net.java.games.input.Controller;
 
+/**
+ * A copy of Dan's program using object-oriented organization and multi-threading for enhanced performace
+ * @author NathanS
+ *
+ */
 public class DanProgramCopy extends JPanel implements Runnable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8042350635458523909L;
 	/**Represents the total bounds of the window in which our experiment happens. 
 	 * Expands to occupy two monitors
@@ -84,7 +86,9 @@ public class DanProgramCopy extends JPanel implements Runnable{
 	protected PrintWriter outputFile;
 	/**The time according to the internal clock that the program starts at*/
 	protected long startTime;
+	/**Flag that tells us when a new trial iteration is started and we must move the cursor over to where the target circle is starting*/
 	protected boolean flag;
+	/**Holds the gain from the joystick for movement along the x-axis. Making the value bigger makes the cursor move faster with less input. Making it smaller gives the user more control*/
 	protected static int XGain=2;
 	
 	
@@ -257,9 +261,11 @@ public class DanProgramCopy extends JPanel implements Runnable{
 			public void run(){
 				//Runs while thread is active and the experiment is running 
 				while(Thread.currentThread()==thread2 && isRunning){
-					//The syncronized tag prevents the program from both moving and drawing everything on the screen at the same time
+					//The syncronized tag prevents the program from both moving and drawing everything on the screen at the same time, which would be bad
 					synchronized(lock1){
-						moveObjects();
+						//If the joystick is calibrated, the objects on-screen can move. If it isnt calibrated, do nothing
+						if(isCalibrated)
+							moveObjects();
 					}
 					//Pauses for delayTime milliseconds to make things smoother
 					try{ Thread.sleep(DELAY_TIME);} catch(InterruptedException e) {e.printStackTrace();}
@@ -271,6 +277,7 @@ public class DanProgramCopy extends JPanel implements Runnable{
 		
 		//Starts the thread that handles moving all on-screen objects
 		thread2.start();
+		//Initializes flag to be false. We will handle this shortly.
 		flag=false;
 	}
 

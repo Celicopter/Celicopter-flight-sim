@@ -41,7 +41,7 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 	/**Holds the last time the loop was run. Used to calculate the speeds at which everything on-screen moves*/
 	protected long lastDrawTime;
 	/**True if stick and program are calibrated properly*/
-	protected boolean isCalibrated=true;
+	protected boolean isCalibrated=false;
 	/**All the things you would ever want to know about the state of the control stick*/
 	protected JInputJoystick stick;
 	/**True if the experiment is running, false otherwise*/
@@ -75,7 +75,7 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 	/**The time according to the internal clock that the program starts at*/
 	protected long startTime;
 	protected boolean flag;
-	protected static int XGain=2;
+	protected static int XGain=4;
 	
 	
 	public MainExperimentGroupLine(){
@@ -88,15 +88,18 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 		
 		//Creates the file-writer
 		try {
+			//Creates/opens the file Data_Output.csv for us to put our data in
 			outputFile = new PrintWriter("Data_Output.csv");
+			//Prints a header for us
 			outputFile.println("Spatial Frequency(Hz),Modulation(0-1),System time(milliseconds),Target Position(pixels),Cursor Position(pixels),Error(pixels),x-axis gain");
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
+			//If for some unseen reason we cant open/create the file, an error is thrown and the program closes
 			e1.printStackTrace();
 			System.err.println("Output file could not be created-Fatal error. Program closing...");
 			System.exit(0);
 		}
 		
+		//Get the current time off the processor in milliseconds
 		startTime=System.currentTimeMillis();
 		
 		/**This code should work for devices with multiple screens*/
@@ -274,6 +277,26 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 			outputFile.println(warfighter.getDynamicMod().getxGain() + "," );
 	}
 	
+	public void initObjects(){
+		//Initializes Curseor
+		warfighter=new CursorLine(screenDimentions.width/8,screenDimentions.height);
+		//Allows the Curseor to take in joystick input
+		warfighter.setDynamicsModel(new DynamicsModel(stick,XGain,0));
+	
+		//Initializes the Target
+		Target t1=new Target(200.0,0.06);
+		Target t2=new Target(20.0,1.0);
+		t1.setColor(Color.black);
+		t2.setColor(Color.black);
+		double[] radii={200,200,200,200,200,200};
+		double[] thetas={-30,-90,-150,-210,-270,-330};
+		Target[] scs={t1,t2,t1,t2,t1,t2};
+		target=new TargetGroup(targetPositions[0],screenDimentions.height/2,0,0,radii,thetas,scs);
+	
+		allOnScreenObjects.add(target);
+		allOnScreenObjects.add(warfighter);
+	}
+
 	public void moveObjects(){
 		//Gets the change in milliseconds since the last update
 		long delta=System.currentTimeMillis()-lastDrawTime;
@@ -319,26 +342,6 @@ public class MainExperimentGroupLine extends JPanel implements Runnable{
 		}
 	}
 	
-	public void initObjects(){
-		//Initializes Curseor
-		warfighter=new CursorLine(screenDimentions.width/8,screenDimentions.height,0,0);
-		//Allows the Curseor to take in joystick input
-		//warfighter.setDynamicsModel(new DynamicsModel(stick,4,XGain));
-
-		//Initializes the Target
-		Target t1=new Target(200.0,0.06);
-		Target t2=new Target(20.0,1.0);
-		t1.setColor(Color.black);
-		t2.setColor(Color.black);
-		double[] radii={200,200,200,200,200,200};
-		double[] thetas={-30,-90,-150,-210,-270,-330};
-		Target[] scs={t1,t2,t1,t2,t1,t2};
-		target=new TargetGroup(targetPositions[0],screenDimentions.height/2,0,0,radii,thetas,scs);
-
-		allOnScreenObjects.add(target);
-		allOnScreenObjects.add(warfighter);
-	}
-
 	public void calibration(Graphics2D g){
 		String message="";
 		String message2="";

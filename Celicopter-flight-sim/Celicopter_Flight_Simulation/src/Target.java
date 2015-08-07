@@ -4,9 +4,15 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
-
+/**
+ * Represents a non-user controlled Target on-screen
+ * @author NathanS
+ *
+ */
 public class Target extends ScreenObject{
+	/**Function that resolves this object's position. Usually this function is some sort of a model of how a helicopter behaves in a gust. It can be time-dependent, or not*/
 	private WindFunction wind;
+	/**Function that resolves this object's position. Usually this function is some sort of a model of how a helicopter responds to control inputs. It can be time-dependent, or not*/
 	private DynamicsModel dynamicMod;
 
 	/**
@@ -20,6 +26,8 @@ public class Target extends ScreenObject{
 		dynamicMod=null;
 	}
 
+	/**Creates a Target represented on-screen by a regular polygon
+	 * @param numberOfSides Number of sides the regular polygon is to have*/
 	public Target(int numberOfSides){
 		super(0,0,numberOfSides);
 		wind=null;
@@ -39,6 +47,12 @@ public class Target extends ScreenObject{
 		dynamicMod=null;
 	}
 
+	/**
+	 * @see ScreenObject#ScreenObject(int, int, int)
+	 * @param startX
+	 * @param startY
+	 * @param numberOfSides
+	 */
 	public Target(int startX, int startY, int numberOfSides){
 		super(startX,startY,numberOfSides);
 		wind=null;

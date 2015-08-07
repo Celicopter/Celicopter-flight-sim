@@ -85,7 +85,7 @@ public class DynamicsModel {
 				System.err.println("Controller disconnected!");
 				return dx;
 			}
-			return xGain*(stick.getXAxisPercentage()-50)/100;
+			return xGain*(stick.getXAxisPercentage()-50.0)/100;
 		}
 		else {
 			//Just returns the input speed if not controller was found
@@ -116,7 +116,7 @@ public class DynamicsModel {
 				System.err.println("Controller disconnected!");
 				return dy;
 			}
-			return yGain*(stick.getYAxisPercentage()-50)/100;
+			return yGain*(stick.getYAxisPercentage()-50.0)/100;
 		}
 		else {
 			//Just returns the input speed if not controller was found
