@@ -1,6 +1,5 @@
 INDEX VERSION 1.127+/Users/NathanS/Celicopter-flight-sim/.metadata/.plugins/org.eclipse.jdt.core
 1761014631.index
-3053709671.index
 3321539481.index
 2171826273.index
 419607439.index
@@ -16,7 +15,6 @@ INDEX VERSION 1.127+/Users/NathanS/Celicopter-flight-sim/.metadata/.plugins/org.
 2802271970.index
 1242869121.index
 3266567714.index
-1378064381.index
 1040376109.index
 1384487945.index
 306326927.index

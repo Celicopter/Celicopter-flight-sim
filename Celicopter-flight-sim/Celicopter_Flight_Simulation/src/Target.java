@@ -48,10 +48,8 @@ public class Target extends ScreenObject{
 	}
 
 	/**
+	 * Same as ScreenObject in See Also, but with null WindFunction and DynamicsModel
 	 * @see ScreenObject#ScreenObject(int, int, int)
-	 * @param startX
-	 * @param startY
-	 * @param numberOfSides
 	 */
 	public Target(int startX, int startY, int numberOfSides){
 		super(startX,startY,numberOfSides);
@@ -59,54 +57,104 @@ public class Target extends ScreenObject{
 		dynamicMod=null;
 	}
 
+	/**
+	 * Same as ScreenObject in See Also, but with null WindFunction and DynamicsModel
+	 * @see ScreenObject#ScreenObject(int, int, double,double)
+	 */
 	public Target(int startX, int startY, double startDx, double startDy){
 		super(startX,startY,startDx,startDy);
 		wind=null;
 		dynamicMod=null;
 	}
+	
+	/**
+	 * Same as ScreenObject in See Also, but with null WindFunction and DynamicsModel
+	 * @see ScreenObject#ScreenObject(int, int, double,double,int)
+	 */
 	public Target(int startX, int startY, double startDx, double startDy, int numberOfSides){
 		super( startX,  startY,  startDx,  startDy,  numberOfSides);
 		wind=null;
 		dynamicMod=null;
 	}
+	/**
+	 * Same as ScreenObject in See Also, but with null WindFunction and DynamicsModel
+	 * @see ScreenObject#ScreenObject(int, int, double,double,double,int)
+	 */
 	public Target(int startX, int startY, double startDx, double startDy, double SF,int numberOfSides){
 		super( startX,  startY,  startDx,  startDy, SF,numberOfSides);
 		wind=null;
 		dynamicMod=null;
 	}
 
+	/**
+	 * Same as ScreenObject in See Also, but with null WindFunction and DynamicsModel 
+	 * @see ScreenObject#ScreenObject(int, int, double,double,double,double,int)
+	 */
 	public Target(int startX, int startY, double startDx, double startDy, double SF, double mod,int numberOfSides){
 		super( startX,  startY,  startDx,  startDy,  numberOfSides,SF,mod);
 		wind=null;
 		dynamicMod=null;
 	}
+	
+	/**
+	 * Same as ScreenOject in See Also, but with null WindFunction and DynamicsModel, and the Image starts with it's top left corner at the top left corner of the screen
+	 * @see ScreenObject#ScreenObject(int,int,BufferedImage)
+	 */
 	public Target(BufferedImage i){
 		super();
+		xCenterPosition=(int) (getPixelDiameter()/2);
+		yCenterPosition=(int) (getPixelDiameter()/2);
 		sprite=i;
 		wind=null;
 		dynamicMod=null;
 	}
+	
+	/**
+	 * Same as ScreenObject in See Also, but with null WindFunction and DynamicsModel 
+	 * @see ScreenObject#ScreenObject(int,int,BufferedImage)
+	 */
 	public Target(int startX,int startY,BufferedImage image){
 		super(startX,startY,image);
 		wind=null;
 		dynamicMod=null;
 	}
+	
+	/**
+	 * Same as ScreenObject in See Also, but with null WindFunction and DynamicsModel 
+	 * @see ScreenObject#ScreenObject(int,int,double,double,BufferedImage)
+	 */
 	public Target(int startX, int startY, double startDx, double startDy, BufferedImage image){
 		super(startX,startY,startDx,startDy,image);
 		wind=null;
 		dynamicMod=null;
 	}
+	/**
+	 * Same as ScreenObject in See Also, but with null WindFunction and DynamicsModel 
+	 * @see ScreenObject#ScreenObject(int,int,BufferedImage,double,double)
+	 */
 	public Target(int startX, int startY, BufferedImage image,double SF, double mod){
 		super(startX,startY,image,SF,mod);
 		wind=null;
 		dynamicMod=null;
 	}
+	/**
+	 * Same as ScreenObject in See Also, but with null WindFunction and DynamicsModel 
+	 * @see ScreenObject#ScreenObject(int,int,double,double,double,doubleBufferedImage)
+	 */
 	public Target(int startX, int startY, double startDx, double startDy, double SF, double mod,BufferedImage image){
 		super(startX,startY,startDx,startDy,SF,mod,image);
 		wind=null;
 		dynamicMod=null;
 	}
 
+	/**
+	 * Creates a Target with the same display properties as a default ScreenObject (see See Also)
+	 * but with null WindFunction and DynamicsModel and user-specified pixelDiamter and modulation
+	 * @param sF user specified pixelDiameter
+	 * @param mod user-specified modulation (0-1.0)
+	 * @see ScreenObject#ScreenObject()
+	 * @see ScreenObject#getPixelDiameter()
+	 */
 	public Target(double sF,double mod){
 		super();
 		setPixelDiameter(sF);
@@ -114,6 +162,11 @@ public class Target extends ScreenObject{
 		wind=null;
 		dynamicMod=null;
 	}
+	/**
+	 * Creates a Target with null WindFunction and DynamicsModel that displays and moves like the ScreenObject parameter passed to it
+	 * @param o ScreenObject the Target bases itself off
+	 * @see ScreenObject
+	 */
 	public Target(ScreenObject o){
 		this.xCenterPosition=o.xCenterPosition;
 		this.yCenterPosition=o.yCenterPosition;
@@ -134,6 +187,15 @@ public class Target extends ScreenObject{
 		dynamicMod=null;
 	}
 
+	/**
+	 * Creates a Target with user-specified WindFunction and DynamicsModel that displays and moves like the ScreenObject parameter passed to it
+	 * @param o ScreenObject the Target bases itself off
+	 * @param wind WindFunction that controls how the Target moves on-screen
+	 * @param dynamod DynamicsModel that controls how the Target moves on-screen
+	 * @see ScreenObject
+	 * @see WindFunction
+	 * @see DynamicsModel
+	 */
 	public Target(ScreenObject o,WindFunction wind,DynamicsModel dynamod){
 		this.xCenterPosition=o.xCenterPosition;
 		this.yCenterPosition=o.yCenterPosition;
@@ -154,6 +216,10 @@ public class Target extends ScreenObject{
 		dynamicMod=dynamod;
 	}
 
+	/**
+	 * Sets the Target's WindFunction to specified param
+	 * @param forcingFunction this Target's WindFunction is set to this param
+	 */
 	public void setWind(WindFunction forcingFunction){
 		wind=forcingFunction;
 	}

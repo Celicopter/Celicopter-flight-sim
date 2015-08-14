@@ -23,7 +23,7 @@ public class ScreenObject{
 	protected Polygon shape;
 	/**Object can be an image. This variable holds that image. Image is reformatted to a square of length and height pixelDiamter */
 	protected BufferedImage sprite;
-	/**The diameter of the circle, representing the object, in pixels OR if the object is a polygon, the diameter of the circumscribed circle of the polygon in pixels, OR if the object is an image, the width and height of said image. Images are displayed as squares*/
+	/**The diameter of the circle, representing the object, in pixels OR if the object is a polygon, the diameter of the circumscribed circle of the polygon in pixels, OR if the object is an image, the width and height of said image. Images are displayed as perfect squares*/
 	private double pixelDiameter;
 	/**The modulation represents how visible the object is. Modulation of 1 represents a sharp, completely visible object, whereas 0 represents a completely invisible object*/
 	protected double modulation;
@@ -118,8 +118,8 @@ public class ScreenObject{
 	 * initially starts with speed in the x and y direction specified by the user
 	 * Inputing a numberOfSides equal to 2 will result in an oval being displayed, with it's height half it's width
 	 * All other numberOfSides less than two will result in a circle of diameter pixelWidth being displayed
-	 * @param startX X-coordinate of the top right-hand corner where the object starts
-	 * @param startY Y-coordinate of the top right-hand corner where the object starts
+	 * @param startX X-coordinate of the center where the object starts
+	 * @param startY Y-coordinate of the center where the object starts
 	 * @param startDx The starting speed of the polygon in the x-direction 
 	 * @param startDy The starting speed of the polygon in the y-direction (up and down)
 	 * @param numberOfSides The number of sides the polygon to be rendered on the screen has
@@ -141,11 +141,11 @@ public class ScreenObject{
 	 * initially starts with speed in the x and y direction specified by the user
 	 * Inputing a numberOfSides equal to 2 will result in an oval being displayed, with it's height half it's width
 	 * All other numberOfSides less than two will result in a circle of diameter pixelWidth being displayed
-	 * @param startX X-coordinate of the top right-hand corner where the object starts
-	 * @param startY Y-coordinate of the top right-hand corner where the object starts
+	 * @param startX X-coordinate of the center where the object starts
+	 * @param startY Y-coordinate of the center where the object starts
 	 * @param startDx The starting speed of the polygon in the x-direction 
 	 * @param startDy The starting speed of the polygon in the y-direction (up and down)
-	 * @param startSF The user-specified starting spatial-frequency
+	 * @param startSF The user-specified starting width/height of the object in pixels
 	 * @param numberOfSides The number of sides the polygon to be rendered on the screen has
 	 */
 	public ScreenObject(int startX, int startY, double startDx, double startDy, double startSF,int numberOfSides){
@@ -164,12 +164,12 @@ public class ScreenObject{
 	 * initially starts with speed in the x and y direction specified by the user
 	 * Inputing a numberOfSides equal to 2 will result in an oval being displayed, with it's height half it's width
 	 * All other numberOfSides less than two will result in a circle of diameter pixelWidth being displayed
-	 * @param startX X-coordinate of the top right-hand corner where the object starts
-	 * @param startY Y-coordinate of the top right-hand corner where the object starts
+	 * @param startX X-coordinate of the center where the object starts
+	 * @param startY Y-coordinate of the center where the object starts
 	 * @param startDx The starting speed of the polygon in the x-direction 
 	 * @param startDy The starting speed of the polygon in the y-direction (up and down)
 	 * @param numberOfSides The number of sides the polygon to be rendered on the screen has
-	 * @param SF Spatial frequency
+	 * @param SF starting width/height of the object in pixels
 	 * @param mod Modulation
 	 */
 	public ScreenObject(int startX, int startY, double startDx, double startDy, int numberOfSides, double SF, double mod){
@@ -185,8 +185,7 @@ public class ScreenObject{
 
 	/**
 	 * Creates an on-screen object,represented at a user-specified image
-	 * with it's top lefthand corner at user-specified coordinates 
-	 * that starts from rest
+	 * with center at user-specified coordinates that starts from rest
 	 * @param startX starting x-coordinate 
 	 * @param startY starting y-coordinate
 	 * @param image Image that represents on screen object
@@ -204,10 +203,10 @@ public class ScreenObject{
 
 	/**
 	 * Creates an on-screen object,represented at a user-specified image
-	 * with it's top lefthand corner at user-specified coordinates and 
+	 * with it's center at user-specified coordinates and 
 	 * user-specified x and y velocities
-	 * @param startX starting x-coordinate 
-	 * @param startY starting y-coordinate
+	 * @param startX starting center x-coordinate 
+	 * @param startY starting center y-coordinate
 	 * @param startDx starting x-axis velocity
 	 * @param startDy staring y-axis velocity
 	 * @param image Image that represents on screen object
@@ -226,11 +225,11 @@ public class ScreenObject{
 	/**
 	 * Constructs a ScreenObject meant to represent an on-screen image rather than a shape.
 	 * The image starts from rest
-	 * @param startX X-coordinate of the top right-hand corner where the object starts
-	 * @param startY Y-coordinate of the top right-hand corner where the object starts
-	 * @param startSF The user-specified starting spatial-frequency
+	 * @param startX X-coordinate of the center where the object starts
+	 * @param startY Y-coordinate of the center where the object starts
+	 * @param startSF The user-specified starting width/height of the object in pixels
 	 * @param startMod The user-specified starting modulation as a decimal 0-1 inclusive
-	 * @param image The BufferedImage meant to represent the object on-screen. Similar to a sprite in videogames
+	 * @param image The BufferedImage meant to represent the object on-screen. Similar to a sprite in video-games
 	 */
 	public ScreenObject(int startX,int startY, BufferedImage image,double startSF, double startMod){
 		xCenterPosition=startX;
@@ -244,14 +243,17 @@ public class ScreenObject{
 	}
 
 	/**
-	 * 
-	 * @param startX
-	 * @param startY
-	 * @param startDx
-	 * @param startDy
-	 * @param startSF
-	 * @param startMod
-	 * @param image
+	 * Super-expanded constructor for a ScreenObject that is represented on-screen by an Image. Has maximum functionality
+	 * with the user being able to specify where the center starts in the x,y coordinate space, velocities along both 
+	 * the x and y axes, the starting width/height of the object in pixels, the starting modulation (0-1.0), 
+	 * as well as the image the object will be represented on-screen by.
+	 * @param startXX-coordinate of the center where the object starts
+	 * @param startY Y-coordinate of the center where the object starts
+	 * @param startDx starting x-axis velocity
+	 * @param startDy staring y-axis velocity
+	 * @param startSF User-specified starting width/height of the object in pixels
+	 * @param startMod The user-specified starting modulation as a decimal 0-1 inclusive
+	 * @param image The BufferedImage meant to represent the object on-screen. Similar to a sprite in video-games
 	 */
 	public ScreenObject(int startX, int startY, double startDx, double startDy, double startSF,double startMod,BufferedImage image){
 		xCenterPosition=startX;
@@ -265,10 +267,26 @@ public class ScreenObject{
 
 	}
 
+	/**
+	 * Accesses and returns the width/height (the object is approximated to be a square with the same width and height) of the on-screen object.
+	 * <p>
+	 * The pixel diameter is the diameter of the circle, representing the object, in pixels 
+	 * OR if the object is a polygon, the diameter of the circumscribed circle of the polygon in pixels, 
+	 * OR if the object is an image, the width and height of said image. Images are displayed as perfect squares.
+	 * @return the width/height of the object in pixels
+	 */
 	public double getPixelDiameter() {
 		return pixelDiameter;
 	}
 
+	/**
+	 * Changes the width/height of the object to a user-specified value (the object is approximated to be a square with the same width and height).
+	 * <p>
+	 * The pixel diameter is the diameter of the circle, representing the object, in pixels 
+	 * OR if the object is a polygon, the diameter of the circumscribed circle of the polygon in pixels, 
+	 * OR if the object is an image, the width and height of said image. Images are displayed as perfect squares.
+	 * @param pixelDiameter new width/height the object will be set to
+	 */
 	public void setPixelDiameter(double pixelDiameter) {
 		if(shape!=null){
 			shape=createPoly(shape.npoints,pixelDiameter);
@@ -276,10 +294,18 @@ public class ScreenObject{
 		this.pixelDiameter = pixelDiameter;
 	}
 
+	/**
+	 * Gets the color of this object
+	 * @return the color of this object as a Color object
+	 */
 	public Color getColor() {
 		return color;
 	}
 
+	/**
+	 * Sets the color of this object
+	 * @param color the new Color object that will be associated with this ScreenObject
+	 */
 	public void setColor(Color color) {
 		this.color = new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) (255*modulation));
 	}
@@ -384,7 +410,10 @@ public class ScreenObject{
 		else
 			yCenterPosition=newY;
 		
-		//If the user simply does xCenterPosotion=some value or yCenterPosition=some value, these lines ensure that even if the user specifies an off-screen value, the object is moved so it is barely on-screen, thereby staying off screen.
+		/*If the user simply does xCenterPosotion=some value or yCenterPosition=some value, 
+		 * these lines ensure that even if the user specifies an off-screen value, 
+		 * the object is moved so it is barely on-screen, thereby staying on screen.
+		 */
 		if(distanceFromLeftSide(xCenterPosition)<0){
 			if(shape!=null)
 				xCenterPosition=(int) (shape.getBounds2D().getWidth()/2);
