@@ -286,7 +286,7 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 	public void initObjects(String participantName){
 		try {
 			//Starts methodology for loading certain input parameters from file
-			Scanner fileReader=new Scanner(new File("InputSpecifications.txt"));
+			Scanner fileReader=new Scanner(new File(participantName+"InputSpecifications.txt"));
 //			for(int i=0;i<3;i++)
 //				fileReader.nextLine();
 			int[] pixelDiams=new int[2];
@@ -366,8 +366,7 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 			double[] thetas={37.5,124.3,237,348};
 			Target[] scs={t1,t2,t1,t2};
 			target=new TargetGroup(targetPositions[0],screenDimentions.height/2,0,0,radii,thetas,scs);
-			for(Target t:target.getTargets())
-				System.out.println(t);
+
 			//Initializes Curseor
 			warfighter=new CursorLine(screenDimentions.width/8,screenDimentions.height);
 			//Allows the Curseor to take in joystick input
@@ -395,10 +394,14 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 			//flag=true;
 			return;
 		}
-		else{
-				 target.move((int) Math.round(targetPositions[targetPositionIndex]+screenDimentions.getWidth()/2), (int) Math.round(screenDimentions.getHeight()/2), screenDimentions.width, screenDimentions.height);
+		else if(delta2>=ITERATIONS_DELAY/2){
+				target.move((int) Math.round(targetPositions[targetPositionIndex]+2*screenDimentions.getWidth()/3), (int) Math.round(screenDimentions.getHeight()/2), screenDimentions.width, screenDimentions.height);
+				targetPositionIndex++;
+			 }
+			 else {
+				 target.move((int) Math.round(targetPositions[targetPositionIndex]+screenDimentions.getWidth()/4), (int) Math.round(screenDimentions.getHeight()/2), screenDimentions.width, screenDimentions.height);
 				 targetPositionIndex++;
-			}
+			 }
 		
 		if(targetPositionIndex>=targetPositions.length){
 			targetPositionIndex=0;
@@ -487,6 +490,12 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 			resetBuffer();
 
 		if(canvas!=null){
+			Color backgroundColor = Color.white;
+			
+			//this clears the offscreen image, not the onscreen one
+			canvasGraphics.setColor(backgroundColor);
+			writeErrorToFile();
+			canvasGraphics.fillRect(0,0,screenDimentions.width,screenDimentions.height);
 
 			//calls the paintbuffer method with 
 			//the offscreen graphics as a paramater
@@ -510,7 +519,7 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 		else {
 			
 			//g.setColor(Color.black);
-			target.draw(g,screenDimentions.width,screenDimentions.height);
+			target.draw(g);
 			g.setColor(Color.red);
 			warfighter.draw(g);
 		}

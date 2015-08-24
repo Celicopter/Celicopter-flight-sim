@@ -395,10 +395,10 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 			//flag=true;
 			return;
 		}
-		else{
-				 target.move((int) Math.round(targetPositions[targetPositionIndex]+screenDimentions.getWidth()/2), (int) Math.round(screenDimentions.getHeight()/2), screenDimentions.width, screenDimentions.height);
+		else {
+				 target.move((int) Math.round(targetPositions[targetPositionIndex]+screenDimentions.getWidth()/4), (int) Math.round(screenDimentions.getHeight()/2), screenDimentions.width, screenDimentions.height);
 				 targetPositionIndex++;
-			}
+			 }
 		
 		if(targetPositionIndex>=targetPositions.length){
 			targetPositionIndex=0;

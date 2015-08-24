@@ -373,7 +373,6 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 			//Allows the Curseor to take in joystick input
 			warfighter.setDynamicsModel(new DynamicsModel(stick,XGain,0));
 			
-			allOnScreenObjects.add(target);
 			allOnScreenObjects.add(warfighter);
 		} catch (FileNotFoundException e) {
 			System.err.println("Cannot read input file");
@@ -395,10 +394,10 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 			//flag=true;
 			return;
 		}
-		else{
+		else {
 				 target.move((int) Math.round(targetPositions[targetPositionIndex]+screenDimentions.getWidth()/2), (int) Math.round(screenDimentions.getHeight()/2), screenDimentions.width, screenDimentions.height);
 				 targetPositionIndex++;
-			}
+			 }
 		
 		if(targetPositionIndex>=targetPositions.length){
 			targetPositionIndex=0;
