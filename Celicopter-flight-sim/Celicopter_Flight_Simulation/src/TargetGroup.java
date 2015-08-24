@@ -369,10 +369,25 @@ public class TargetGroup extends Target{
 		}
 	}
 
-	public void draw(Graphics2D g){
+	public void draw(Graphics2D g, int screenWidth, int screenHeight){
 		//g.fillRect(xCenterPosition, yCenterPosition, 3, 3);
-		if(targets!=null && !targets.isEmpty())
-			for(Target t:targets)
-				t.draw(g);
+		int minVal=255;
+		if(targets!=null && !targets.isEmpty()){
+			for(Target t:targets){
+				int val=(int) (t.midPoint+125*t.modulation);
+				if(val<0)
+					val=0;
+				if(val>255)
+					val=255;
+				minVal=Math.min(minVal, val);
+			}
+			g.setColor(new Color(minVal,minVal,minVal));
+			g.fillRect(0,0,screenWidth,screenHeight);
+			for(Target t:targets){
+				t.setColor(Color.black);
+				g.setColor(t.getColor());
+				t.drawObject(g);
+			}
+		}	
 	}
 }

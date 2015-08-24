@@ -242,7 +242,7 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 		stick=new JInputJoystick(Controller.Type.STICK);
 
 		//Initializes all on-screen objects
-		initObjects();
+		initObjects(participantName);
 
 		//Allows us to see the frame we just made so we can actually see our experiment
 		jiff.setVisible(true);
@@ -283,22 +283,22 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 			outputFile.println(warfighter.getDynamicMod().getxGain() + "," );
 	}
 	
-	public void initObjects(){
+	public void initObjects(String participantName){
 		try {
-			Scanner fileReader=new Scanner(new File("InputSpecifications.txt"));
-			for(int i=0;i<3;i++)
-				fileReader.nextLine();
-			Scanner subReader=new Scanner(fileReader.nextLine());
-			int[] spacialFrequencies=new int[2];
+			//Starts methodology for loading certain input parameters from file
+			Scanner fileReader=new Scanner(new File(participantName+"InputSpecifications.txt"));
+//			for(int i=0;i<3;i++)
+//				fileReader.nextLine();
+			int[] pixelDiams=new int[2];
 			int c=0;
 			double[] modulations=new double[2];
-			while(subReader.hasNextLine()){
-				String line=subReader.nextLine();
+			while(fileReader.hasNextLine()){
+				String line=fileReader.nextLine();
 				String[] words=line.split(" ");
 				if(words[0].equalsIgnoreCase("Spatial")){
 					for(int i=0;i<words.length;i++)
 						try{
-							spacialFrequencies[c]=Integer.parseInt(words[i]);
+							pixelDiams[c]=Integer.parseInt(words[i]);
 							c++;
 						}
 						catch(NumberFormatException e){
@@ -306,21 +306,65 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 						}
 					c=0;
 				}
+				if(words[0].equalsIgnoreCase("Modulations")){
+					for(int i=0;i<words.length;i++)
+						try{
+							modulations[c]=Double.parseDouble(words[i]);
+							c++;
+						}
+						catch(NumberFormatException e){
+							continue;
+						}
+					c=0;
+				}
+				if(words[0].equalsIgnoreCase("Delay") && words[1].equalsIgnoreCase("time")){
+					for(int i=0;i<words.length;i++)
+						try{
+							DELAY_TIME=Integer.parseInt(words[i]);
+							break;
+						}
+						catch(NumberFormatException e){
+							continue;
+						}
+				}
+				if(words[0].equalsIgnoreCase("Iterations") && words[1].equalsIgnoreCase("delay")){
+					for(int i=0;i<words.length;i++)
+						try{
+							ITERATIONS_DELAY=Integer.parseInt(words[i]);
+							break;
+						}
+						catch(NumberFormatException e){
+							continue;
+						}
+				}
+				if(words[0].equalsIgnoreCase("XGain")){
+					for(int i=0;i<words.length;i++)
+						try{
+							XGain=Integer.parseInt(words[i]);
+							break;
+						}
+						catch(NumberFormatException e){
+							continue;
+						}
+				}
 			}
+			//Ends Input Specifications read-in from file
+			
 			//Initializes the Targets
 			/**Big hard-to-see Target*/
 			Target t1=new Target();
 			/**Small easy-to-see Target*/
 			Target t2=new Target();
-			t1.setPixelDiameter(Math.max(spacialFrequencies[0],spacialFrequencies[1]));
-			t2.setPixelDiameter(Math.min(spacialFrequencies[0],spacialFrequencies[1]));
+			int maxPD=Math.max(pixelDiams[0],pixelDiams[1]);
+			t1.setPixelDiameter(maxPD);
+			t2.setPixelDiameter(Math.min(pixelDiams[0],pixelDiams[1]));
 			t1.modulation=Math.min(modulations[0], modulations[1]);
 			t2.modulation=Math.max(modulations[0], modulations[1]);
 			t1.setColor(Color.black);
 			t2.setColor(Color.black);
-			double[] radii={200,200,200,200,200,200};
-			double[] thetas={-30,-90,-150,-210,-270,-330};
-			Target[] scs={t1,t2,t1,t2,t1,t2};
+			double[] radii={maxPD*1.15,maxPD*0.85,maxPD*1.15,maxPD*0.85};
+			double[] thetas={37.5,124.3,237,348};
+			Target[] scs={t1,t2,t1,t2};
 			target=new TargetGroup(targetPositions[0],screenDimentions.height/2,0,0,radii,thetas,scs);
 
 			//Initializes Curseor

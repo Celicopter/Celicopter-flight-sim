@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -34,7 +35,7 @@ public class test2{
 	
 	public static void main(String []args){
 		System.out.println("Program start");
-		String [] stringyStrings="Delay time (milliseconds): 30".split(" ");
+		String [] stringyStrings="Delay time (milliseconds):30 45 60".split(" ");
 		for(int i=0;i<stringyStrings.length;i++)
 			try{
 			System.out.println(Integer.parseInt(stringyStrings[i]));
@@ -42,5 +43,6 @@ public class test2{
 			catch(NumberFormatException e){
 				continue;
 			}
+		System.out.println(new Color(245,125,4));
 	}
 }

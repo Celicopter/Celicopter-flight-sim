@@ -10,6 +10,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
@@ -51,19 +52,19 @@ public class DanProgramCopy extends JPanel implements Runnable{
 	/**True if the experiment is running, false otherwise*/
 	protected boolean isRunning=true;
 	/**Array of spatial frequencies to test*/
-	protected static final double[] SPATIAL_FREQUENCIES={1000,24,60};
+	protected static double[] SPATIAL_FREQUENCIES={1000};
 	/**Array of corresponding pixel widths. A pixel width is the width(diameter, whatever) of an on-screen object in screen pixels*/
 	protected static int[] pixelWidths;
 	/**Test subject distance from screen in inches*/
-	protected static final double DISTANCE_FROM_SCREEN_IN_INCHES=48;
+	protected static double DISTANCE_FROM_SCREEN_IN_INCHES=48;
 	/**Array of modulation levels to test. 1.0 is full, sharp, 0.0 is fully invisible*/
-	protected static final double[] MODULATIONS={1.0,0.5,0.1};
+	protected static double[] MODULATIONS={1.0};
 	/**The time delay, in milliseconds, between frame updates*/
-	protected static final int DELAY_TIME=30;
+	protected static int DELAY_TIME=30;
 	/**Number of objects on screen that are part of the scenery*/
 	protected static final int NUMBER_OF_SCENERY_OBJECTS=4;
 	/**Delay between iterations (an iteration is composed of a modulation-spatial frequency combination) in milliseconds*/
-	protected static final int ITERATIONS_DELAY=8000;
+	protected static int ITERATIONS_DELAY=8000;
 	/**First thread; handles drawing objects on-screen*/
 	protected Thread thread;
 	/**Seconds thread; handles moving on-screen objects*/
@@ -89,7 +90,7 @@ public class DanProgramCopy extends JPanel implements Runnable{
 	/**Flag that tells us when a new trial iteration is started and we must move the cursor over to where the target circle is starting*/
 	protected boolean flag;
 	/**Holds the gain from the joystick for movement along the x-axis. Making the value bigger makes the cursor move faster with less input. Making it smaller gives the user more control*/
-	protected static int XGain=2;
+	protected static int XGain=0;
 	
 	
 	public DanProgramCopy(){
@@ -353,6 +354,92 @@ public class DanProgramCopy extends JPanel implements Runnable{
 		}
 	}
 	
+	
+	/**
+	 * Method reads the input specifications for this experiment from a file 
+	 * entitled InputSpecifications.txt. If this file is not found, this method
+	 *  throws an error. 
+	 *  <p>
+	 *  This method reads in the spatial frequencies, distance from screen in 
+	 *  inches, modulations, delay time, iterations delay, and xGain from the 
+	 *  file by looking for certain words at the start of the line. 
+	 *  For example, it reads in the Spacial Frequencies by looking for a 
+	 *  line in the file that starts with the word Spatial and then reads 
+	 *  in all space-separated numbers on this line.
+	 *  For things like the delay time, this method only reads in the first number with a space on either side of it.
+	 *  All other numbers are ignored
+	 * @throws FileNotFoundException if the file InputSpecifications.txt is not found in the file system
+	 */
+	public void readInputSpecs() throws FileNotFoundException{
+		Scanner fileReader=new Scanner(new File("InputSpecifications.txt"));
+		ArrayList<Double> listSFs=new ArrayList<Double>();
+		ArrayList<Double> listMods=new ArrayList<Double>();
+		for(int i=0;i<3;i++)
+			fileReader.nextLine();
+		while(fileReader.hasNextLine()){
+			String line=fileReader.nextLine();
+			String[] words=line.split(" ");
+			if(words[0].equalsIgnoreCase("Spatial")){
+				for(int i=0;i<words.length;i++)
+					try{
+						listSFs.add(Double.parseDouble(words[i]));
+					}
+					catch(NumberFormatException e){
+						continue;
+					}
+			}
+			if(words[0].equalsIgnoreCase("Modulations")){
+				for(int i=0;i<words.length;i++)
+					try{
+						listMods.add(Double.parseDouble(words[i]));
+					}
+					catch(NumberFormatException e){
+						continue;
+					}
+			}
+			if(words[0].equalsIgnoreCase("Delay") && words[1].equalsIgnoreCase("time")){
+				for(int i=0;i<words.length;i++)
+					try{
+						DELAY_TIME=Integer.parseInt(words[i]);
+						break;
+					}
+					catch(NumberFormatException e){
+						continue;
+					}
+			}
+			if(words[0].equalsIgnoreCase("Iterations") && words[1].equalsIgnoreCase("delay")){
+				for(int i=0;i<words.length;i++)
+					try{
+						ITERATIONS_DELAY=Integer.parseInt(words[i]);
+						break;
+					}
+					catch(NumberFormatException e){
+						continue;
+					}
+			}
+			if(words[0].equalsIgnoreCase("XGain")){
+				for(int i=0;i<words.length;i++)
+					try{
+						XGain=Integer.parseInt(words[i]);
+						break;
+					}
+					catch(NumberFormatException e){
+						continue;
+					}
+			}
+			if(words[0].equalsIgnoreCase("Distance")){
+				for(int i=0;i<words.length;i++)
+					try{
+						DISTANCE_FROM_SCREEN_IN_INCHES=Double.parseDouble(words[i]);
+						break;
+					}
+					catch(NumberFormatException e){
+						continue;
+					}
+			}
+		}
+	}
+	
 	public void initObjects(){
 		//Initializes Curseor
 		warfighter=new Curseor(screenDimentions.width/8,screenDimentions.height/2);
@@ -426,6 +513,12 @@ public class DanProgramCopy extends JPanel implements Runnable{
 	}
 
 	public void convertToSpacialFrequencies(){
+		try {
+			readInputSpecs();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//Makes the array of pixel widths the same size as the array of spatial frequencies-this allows the user to input in a array of spatial frequencies of any length
 		pixelWidths=new int[SPATIAL_FREQUENCIES.length];
 

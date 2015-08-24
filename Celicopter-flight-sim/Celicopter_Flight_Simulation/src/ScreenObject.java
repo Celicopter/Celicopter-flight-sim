@@ -331,7 +331,7 @@ public class ScreenObject{
 	 * Actually draws the object in the specified context g
 	 * @param g Graphics2D context to draw the object in
 	 */
-	private void drawObject(Graphics2D g){
+	protected void drawObject(Graphics2D g){
 		if(shape==null && sprite==null){
 			if(isOval)
 				g.fillOval((int)xCenterPosition-(int)pixelDiameter/2, (int)yCenterPosition-(int)pixelDiameter/2, (int)pixelDiameter, (int) (2*pixelDiameter/3));
