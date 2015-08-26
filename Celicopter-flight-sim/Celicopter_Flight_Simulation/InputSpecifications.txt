@@ -6,3 +6,4 @@ Modulations to test: 1.0 0.06
 Delay time (milliseconds): 30
 Iterations delay (milliseconds): 8000
 XGain: 4
+Number of Iterations: 7

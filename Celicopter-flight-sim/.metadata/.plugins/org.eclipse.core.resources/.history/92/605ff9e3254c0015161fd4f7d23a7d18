@@ -1,0 +1,5 @@
+
+public class ScreenObjectEllipse extends ScreenObject{
+	protected double theta=0;
+	
+}

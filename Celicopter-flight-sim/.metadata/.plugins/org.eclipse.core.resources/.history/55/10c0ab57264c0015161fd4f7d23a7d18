@@ -1,0 +1,7 @@
+
+public class ScreenObjectEllipse extends ScreenObject{
+	/**Amount, in degrees, the ellipse is rotated about it's center*/
+	protected double theta=0;
+	/**Height of the ellipse. The pixel diameter field is used to determine the width of the ellipse*/
+	protected double pixelHeight=1;
+}

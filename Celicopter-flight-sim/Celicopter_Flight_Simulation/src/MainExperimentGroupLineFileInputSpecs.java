@@ -78,6 +78,7 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 	protected long startTime;
 	protected boolean flag;
 	protected static int XGain=4;
+	protected static int numberOfIterations;
 	
 	
 	public MainExperimentGroupLineFileInputSpecs(){
@@ -97,7 +98,7 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 			//Creates/opens the file Data_Output.csv for us to put our data in
 			outputFile = new PrintWriter(participantName+" data output.csv");
 			//Prints a header for us
-			outputFile.println("Spatial Frequency(Hz),Modulation(0-1),System time(milliseconds),Target Position(pixels),Cursor Position(pixels),Error(pixels),x-axis gain");
+			outputFile.println("System time(milliseconds),Target Position(pixels),Cursor Position(pixels),Error(pixels),x-axis gain,Spatial Frequency(Hz),Modulation(0-1)");
 		} catch (FileNotFoundException e1) {
 			//If for some unseen reason we cant open/create the file, an error is thrown and the program closes
 			e1.printStackTrace();
@@ -274,13 +275,14 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 	}
 	
 	public void writeErrorToFile(){
-		outputFile.println(
+		outputFile.print(
 				(System.currentTimeMillis()-startTime)+"," + target.xCenterPosition + "," + warfighter.xCenterPosition + ","
 				+ warfighter.getError(target) + "," 
 				//+ stick.getXAxisValue() +"," 
 				);
 		if(warfighter.getDynamicMod()!=null)
-			outputFile.println(warfighter.getDynamicMod().getxGain() + "," );
+			outputFile.print(warfighter.getDynamicMod().getxGain() + "," );
+		outputFile.print("\n");
 	}
 	
 	public void initObjects(String participantName){
@@ -347,6 +349,16 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 							continue;
 						}
 				}
+				if(words[0].equalsIgnoreCase("Number") && words[1].equalsIgnoreCase("of")){
+					for(int i=0;i<words.length;i++)
+						try{
+							numberOfIterations=Integer.parseInt(words[i]);
+							break;
+						}
+						catch(NumberFormatException e){
+							continue;
+						}
+				}
 			}
 			//Ends Input Specifications read-in from file
 			
@@ -366,8 +378,6 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 			double[] thetas={37.5,124.3,237,348};
 			Target[] scs={t1,t2,t1,t2};
 			target=new TargetGroup(targetPositions[0],screenDimentions.height/2,0,0,radii,thetas,scs);
-			for(Target t:target.getTargets())
-				System.out.println(t);
 			//Initializes Curseor
 			warfighter=new CursorLine(screenDimentions.width/8,screenDimentions.height);
 			//Allows the Curseor to take in joystick input
@@ -416,7 +426,7 @@ public class MainExperimentGroupLineFileInputSpecs extends JPanel implements Run
 			warfighter.yCenterPosition=target.yCenterPosition;
 			flag=false;
 		}
-		if(iterationsNumber>7){
+		if(iterationsNumber>numberOfIterations){
 			System.out.println("Writing to file...Done!");
 			System.exit(0);
 		}

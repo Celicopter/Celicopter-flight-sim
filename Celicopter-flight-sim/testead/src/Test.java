@@ -35,7 +35,7 @@ public class Test extends JPanel implements Runnable{
 	private JInputJoystick stick;
 	private int stickX;
 	private int stickY;
-	protected Thread tead;
+	protected Thread tead=new Thread(this);
 	protected static final int delayTime=10;
 
 	public static void main(String []args){
@@ -143,8 +143,8 @@ public class Test extends JPanel implements Runnable{
 //		sc1=new ScreenObject(0,0,0.05,0.05,op);
 		// Creates the joystick controller
 		stick = new JInputJoystick(Controller.Type.STICK);
-		sc1.setDynamicsModel(new DynamicsModel(stick,3,2));
-		//tead.start();
+		//sc1.setDynamicsModel(new DynamicsModel(stick,3,2));
+		tead.start();
 		lastLoopTime = System.currentTimeMillis();
 		//this.sc.setDynamicsModel(new DynamicsModel(stick,2,2));
 		
@@ -170,8 +170,8 @@ public class Test extends JPanel implements Runnable{
 //			System.err.println("Controller disconnected!");
 //			// Do some stuff.
 //		}
-//		sc1.dx=(stick.getXAxisPercentage()-50)/25;
-//		sc1.dy=(stick.getYAxisPercentage()-50)/25;
+		sc1.dx=stickX;
+		sc1.dy=stickY;
 //		g.fillRect(100, 100, 100, 100);
 		g2.setColor(Color.green);
 		sc1.draw(g2);
