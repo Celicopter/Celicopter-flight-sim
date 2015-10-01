@@ -1,9 +1,10 @@
 Required header-must skip first three lines
 All numbers must come after semicolons and be space-delimited. No commas
 
-Spatial Frequencies to test: 200 20
+Spatial Frequencies to test: 20 200 
 Modulations to test: 1.0 0.06
 Delay time (milliseconds): 30
 Iterations delay (milliseconds): 8000
 XGain: 4
 Number of Iterations: 7
+Distance from screen in inches: 48
