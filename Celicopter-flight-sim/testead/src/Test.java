@@ -30,11 +30,13 @@ public class Test extends JPanel implements Runnable{
 	public Rectangle virtualBounds;
 	public TargetGroup sc;
 	public ScreenObject ford;
+	public ScreenObjectEllipse theMidnightAir;
 	public Curseor sc1;
 	public long lastLoopTime;
 	private JInputJoystick stick;
 	private int stickX;
 	private int stickY;
+	public double c=0;
 	protected Thread tead=new Thread(this);
 	protected static final int delayTime=10;
 
@@ -142,12 +144,16 @@ public class Test extends JPanel implements Runnable{
 //		}
 //		sc1=new ScreenObject(0,0,0.05,0.05,op);
 		// Creates the joystick controller
-		stick = new JInputJoystick(Controller.Type.STICK);
+		//stick = new JInputJoystick(Controller.Type.STICK);
 		//sc1.setDynamicsModel(new DynamicsModel(stick,3,2));
-		tead.start();
+		//tead.start();
 		lastLoopTime = System.currentTimeMillis();
 		//this.sc.setDynamicsModel(new DynamicsModel(stick,2,2));
-		
+		theMidnightAir=new ScreenObjectEllipse(300,400);
+		theMidnightAir.setPixelDiameter(400);
+		theMidnightAir.setPixelHeight(200);
+		theMidnightAir.setTheta(0);
+		c=0;
 	}
 	
 	@Override
@@ -177,6 +183,10 @@ public class Test extends JPanel implements Runnable{
 		sc1.draw(g2);
 		sc.move(sc.xCenterPosition, sc.yCenterPosition,getWidth(),getHeight());
 		sc.draw(g2);
+		theMidnightAir.draw(g2);
+		theMidnightAir.move(delta, getWidth(), getHeight());
+		theMidnightAir.setTheta(c);
+		c++;
 		//sc.move(getWidth(),getHeight(), getWidth(), getHeight());
 //		ford.draw(g2);
 //		ford.move(delta, getWidth(), getHeight());

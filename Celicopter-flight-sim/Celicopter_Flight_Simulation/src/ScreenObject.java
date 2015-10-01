@@ -346,11 +346,7 @@ public class ScreenObject{
 			sharpie=null;
 		}
 		if(sprite!=null){
-			BufferedImage tmpImg = new BufferedImage(sprite.getWidth(), sprite.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			Graphics2D g2d = (Graphics2D) tmpImg.getGraphics();
-			g2d.setComposite(AlphaComposite.SrcOver.derive((float)modulation)); 
-			g2d.drawImage(sprite, 0, 0, null);
-			g.drawImage(tmpImg, (int)xCenterPosition-(int)pixelDiameter/2, (int)yCenterPosition-(int)pixelDiameter/2, (int)pixelDiameter, (int)pixelDiameter, null);
+			g.drawImage(sprite, (int)xCenterPosition-(int)pixelDiameter/2, (int)yCenterPosition-(int)pixelDiameter/2, (int)pixelDiameter, (int)pixelDiameter, null);
 		}
 	}
 	/**
