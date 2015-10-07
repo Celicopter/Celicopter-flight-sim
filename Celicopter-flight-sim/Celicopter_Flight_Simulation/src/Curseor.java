@@ -160,7 +160,7 @@ public class Curseor extends ScreenObject{
 	}
 	public void draw(Graphics2D g){
 		Color d=g.getColor();
-		Color c=new Color(g.getColor().getRed(),g.getColor().getGreen(),g.getColor().getBlue(),(int) (255*modulation));
+		Color c=new Color(this.getColor().getRed(),this.getColor().getGreen(),this.getColor().getBlue(),(int) (255*modulation));
 		BasicStroke b=(BasicStroke) g.getStroke();
 		g.setColor(c);
 		g.setStroke(new BasicStroke(2));

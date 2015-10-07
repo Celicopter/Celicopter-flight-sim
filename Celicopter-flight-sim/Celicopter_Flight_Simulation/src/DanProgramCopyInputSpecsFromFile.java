@@ -9,6 +9,8 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -92,6 +94,9 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 	protected boolean flag;
 	/**Holds the gain from the joystick for movement along the x-axis. Making the value bigger makes the cursor move faster with less input. Making it smaller gives the user more control*/
 	protected static int XGain;
+	protected JFrame jiff;
+	/**Holds the circles that sit at the corners of the frame*/
+	protected ScreenObject[] cornerCircles;
 	/*Sample position arrays*/
 	protected static int [] targetPossiblePossitionsArray1 =
 		{96,98,100,102,104,106,109,112,114,117,120,123,126,130,133,136,139,142,145,148,151,153,156,158,160,162,164,166,167,169,170,171,173,174,175,176,177,178,179,180,181,183,184,185,187,188,190,191,193,194,196,197,198,200,201,202,203,204,205,206,207,208,208,209,210,210,211,212,212,213,214,215,216,217,218,220,221,223,225,226,228,230,232,234,236,237,239,241,242,243,244,245,246,246,246,246,246,245,244,243,242,241,239,237,236,234,232,230,228,226,224,223,221,220,218,217,215,214,213,212,211,209,208,207,206,205,203,202,200,199,197,195,193,191,188,186,184,181,179,176,173,171,168,166,163,161,159,157,154,152,150,149,147,145,143,142,140,138,137,135,133,132,130,128,126,124,122,120,118,115,113,111,108,106,104,101,99,97,96,94,92,91,90,89,88,87,86,86,86,85,85,85,85,85,85,84,84,84,83,82,82,81,79,78,76,74,72,70,68,66,63,61,58,56,53,51,48,46,43,41,39,37,35,34,32,31,30,28,27,26,25,24,23,22,21,20,19,18,16,15,14,12,11,10,8,7,5,4,3,1,0,-1,-2,-3,-4,-5,-6,-6,-7,-7,-8,-8,-9,-9,-10,-10,-11,-12,-13,-14,-15,-16,-18,-19,-21,-23,-25,-27,-29,-32,-34,-37,-39,-42,-44,-46,-48,-51,-53,-54,-56,-57,-59,-60,-61,-62,-63,-63,-64,-64,-64,-65,-65,-65,-66,-66,-67,-67,-68,-69,-70,-71,-72,-73,-75,-76,-78,-79,-81,-83,-84,-86,-87,-89,-90,-91,-92,-93,-94,-94,-95,-95,-95,-95,-95,-95,-95,-94,-94,-93,-93,-92,-92,-91,-91,-91,-90,-90,-90,-89,-89,-89,-88,-88,-88,-87,-87,-86,-85,-85,-84,-83,-82,-81,-80,-78,-77,-75,-74,-73,-71,-70,-68,-67,-66,-65,-64,-64,-63,-63,-63,-63,-64,-64,-65,-66,-67,-68,-69,-70,-72,-73,-74,-76,-77,-78,-79,-80,-80,-81,-81,-82,-82,-81,-81,-81,-80,-80,-79,-78,-77,-77,-76,-75,-75,-74,-74,-73,-73,-73,-73,-73,-73,-73,-74,-74,-74,-75,-75,-75,-76,-76,-76,-76,-76,-76,-76,-76,-76,-76,-75,-75,-74,-74,-74,-73,-73,-72,-72,-72,-72,-72,-72,-73,-73,-73,-74,-74,-75,-76,-77,-77,-78,-79,-79,-80,-80,-81,-81,-81,-81,-81,-81,-81,-81,-80,-80,-79,-79,-79,-78,-78,-78,-78,-78,-78,-79,-79,-80,-81,-82,-84,-85,-87,-89,-91,-93,-95,-97,-99,-102,-104,-106,-108,-109,-111,-113,-114,-115,-116,-117,-118,-118,-119,-119,-120,-120,-120,-120,-121,-121,-121,-122,-122,-123,-123,-124,-125,-126,-127,-128,-129,-131,-132,-133,-135,-136,-138,-139,-141,-142,-144,-145,-146,-147,-149,-150,-151,-152,-154,-155,-156,-157,-159,-160,-162,-164,-166,-168,-170,-172,-174,-177,-179,-182,-185,-187,-190,-193,-195,-198,-200,-203,-205,-207,-209,-210,-212,-213,-214,-215,-215,-216,-216,-216,-216,-216,-215,-215,-215,-214,-214,-213,-213,-213,-213,-212,-212,-213,-213,-213,-213,-214,-214,-214,-215,-215,-215,-215,-215,-215,-215,-215,-214,-214,-213,-212,-211,-209,-208,-206,-204,-202,-200,-198,-196,-193,-191,-189,-186,-184,-182,-180,-178,-176,-174,-172,-170,-169,-167,-165,-163,-162,-160,-158,-156,-154,-152,-150,-148,-146,-144,-142,-139,-137,-135,-132,-130,-128,-125,-123,-121,-119,-117,-115,-114,-112,-111,-110,-109,-108,-107,-106,-105,-105,-104,-104,-103,-102,-101};	
@@ -207,7 +212,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		screenDimentions=new Dimension(virtualBounds.width,virtualBounds.height);
 
 		//Creates new frame to hold and display our game object
-		JFrame jiff=new JFrame("IMPORTANT RESEARCH PROGRAME");
+		jiff=new JFrame("IMPORTANT RESEARCH PROGRAME");
 		if(!IS_MULTI_SCREEN){
 			//If the user wants the experiment to take up a single screen, this allows for that
 			virtualBounds=new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
@@ -247,8 +252,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		//Initializes all on-screen objects
 		initObjects();
 
-		//Allows us to see the frame we just made so we can actually see our experiment
-		jiff.setVisible(true);
+		
 
 		//Does the arithmetic to convert the array of spatial frequencies at the top to an array for pixel widths that allows for easier drawing
 		convertToSpacialFrequencies();
@@ -283,6 +287,22 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		//Initializes flag to be false. We will handle this shortly.
 		flag=false;
 		
+		jiff.addKeyListener(new KeyAdapter(){
+			public void keyTyped(KeyEvent e){
+				if(!isCalibrated)
+					isCalibrated=true;
+			}
+			public void keyPressed(KeyEvent e){
+				if(!isCalibrated)
+					isCalibrated=true;
+			}
+			public void keyReleased(KeyEvent e){
+				if(!isCalibrated)
+					isCalibrated=true;
+			}
+		});
+		//Allows us to see the frame we just made so we can actually see our experiment
+		jiff.setVisible(true);
 	}
 
 	public void SFAndModulationUpdater(){
@@ -366,6 +386,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 			//prevents the null pointer exception throw
 			if(o!=null){
 				o.move(delta, screenDimentions.width, screenDimentions.height);
+				System.out.println(cornerCircles[1].xCenterPosition);
 			}
 		}
 		if(flag){
@@ -461,16 +482,21 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 	public void initObjects(){
 		//Initializes Curseor
 		warfighter=new Curseor(screenDimentions.width/8,screenDimentions.height/2);
-
+		warfighter.setColor(Color.red);
 		//Allows the Curseor to take in joystick input
 		warfighter.setDynamicsModel(new DynamicsModel(stick,XGain,0));
 		//Initializes the Target
 		target=new Target(screenDimentions.width/8,screenDimentions.height/2);
 		target.setColor(Color.black);
-
-		//		for(int i=0;i<numberOfSceneryObjects;i++){
-		//			allOnScreenObjects.add(new ScreenObject());
-		//		}
+		cornerCircles=new ScreenObject[NUMBER_OF_SCENERY_OBJECTS];
+		for(int i=0;i<cornerCircles.length;i++){
+			cornerCircles[i]=new ScreenObject(0,0,0,0,50,0);
+			cornerCircles[i].setColor(Color.blue);
+		}
+		setCornerCirclesToCorners();
+		for(int i=0;i<cornerCircles.length;i++){
+			allOnScreenObjects.add(cornerCircles[i]);
+		}
 		allOnScreenObjects.add(target);
 		allOnScreenObjects.add(warfighter);
 	}
@@ -482,7 +508,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		if(!isCalibrated){
 			//Blanks out the current screen
 			g.setColor(Color.WHITE);
-			g.fillRect(0, 0, getWidth(), getHeight());
+			g.fillRect(0, 0, screenDimentions.width, screenDimentions.height);
 
 			//Sets the font our text will be displayed at to be 24pt Sans Serif (because I like Sans Serif font)
 			g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 32));
@@ -520,16 +546,22 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 					message=(stick.getXAxisPercentage()-50)+", "+(stick.getYAxisPercentage()-50);
 					message2="Use the wheels by the joystick to make\nthe two numbers at the top zero!";
 					if(stick.getXAxisPercentage()==50 && stick.getYAxisPercentage()==50){
-						message2="Calibration complete";
-						isCalibrated=true;
+						message2="Calibration complete. Press any key to continue";
 					}
-
 				}
 
 			//Prints messages to the screen in the upper-left
 			g.drawString(message,0,g.getFontMetrics().getMaxAscent());
 			g.drawString(message2,screenDimentions.width/2-g.getFontMetrics().stringWidth(message2)/2,screenDimentions.height/2-g.getFontMetrics().getMaxAscent());			
 			g.setFont(ff);
+			g.setColor(Color.black);
+			g.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,18));
+			g.fillOval(screenDimentions.width/2, screenDimentions.height/2, 20, 20);
+			g.drawString("1", screenDimentions.width/2-g.getFontMetrics().stringWidth("1"), screenDimentions.height/2);
+			g.fillOval(screenDimentions.width/2+200, screenDimentions.height/2+200, 20, 20);
+			g.drawString("3", screenDimentions.width/2+200-g.getFontMetrics().stringWidth("3"), screenDimentions.height/2+200);
+			g.fillOval(screenDimentions.width/2-200, screenDimentions.height/2+200, 20, 20);
+			g.drawString("2", screenDimentions.width/2-200-g.getFontMetrics().stringWidth("2"), screenDimentions.height/2+200);
 		}
 	}
 
@@ -551,6 +583,14 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		paint(g);
 	}
 
+	public void displayCurrentTime(){
+		long currentTime=System.currentTimeMillis()-startTime;
+		long currentTimeMinutes=currentTime/60000;
+		long currentTimeSeconds=(currentTime-currentTimeMinutes*60000)/1000;
+		long currentTimeThirtyiths=(long)(3*(currentTime-currentTimeMinutes*60000-currentTimeSeconds*1000)/100.0);
+		jiff.setTitle(currentTimeMinutes+"' "+currentTimeSeconds+"'' "+currentTimeThirtyiths+" thirtyiths");
+	}
+	
 	public void paint(Graphics g){
 
 		//    checks the buffersize with the current panelsize
@@ -581,10 +621,12 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 			calibration(g);
 		}
 		else {
-			g.setColor(Color.black);
-			target.draw(g);
-			g.setColor(Color.red);
-			warfighter.draw(g);
+			for(ScreenObject o:allOnScreenObjects){
+				//prevents the null pointer exception throw
+				if(o!=null){
+					o.draw(g);
+				}
+			}
 		}
 	}
 
@@ -627,8 +669,16 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		canvasGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		canvasGraphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		canvasGraphics.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+		setCornerCirclesToCorners();
 	}
 
+	public void setCornerCirclesToCorners(){
+		cornerCircles[1].xCenterPosition=(int) (screenDimentions.width-cornerCircles[1].getPixelDiameter()/2);
+		cornerCircles[2].yCenterPosition=screenDimentions.height;
+		cornerCircles[3].xCenterPosition=(int) (screenDimentions.width-cornerCircles[3].getPixelDiameter()/2);
+		cornerCircles[3].yCenterPosition=screenDimentions.height;
+	}
+	
 	@Override
 	public void run() {
 
@@ -663,3 +713,4 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		return out;
 	}
 }
+

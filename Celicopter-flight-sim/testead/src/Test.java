@@ -123,7 +123,7 @@ public class Test extends JPanel implements Runnable{
 		duh.modulation=0.5;
 		int x=700;
 		int y=300;
-		Target ford=new Target(x,y,0,0,56,5);
+		Target ford=new Target(x,y,0,0,56,0);
 		double[] radii={200,110,300};
 		double[] thetas={60,180,-60};
 		Target[] scs={duh,tt,ford};
@@ -180,6 +180,7 @@ public class Test extends JPanel implements Runnable{
 		sc1.dy=stickY;
 //		g.fillRect(100, 100, 100, 100);
 		g2.setColor(Color.green);
+		sc1.setColor(Color.green);
 		sc1.draw(g2);
 		sc.move(sc.xCenterPosition, sc.yCenterPosition,getWidth(),getHeight());
 		sc.draw(g2);
@@ -193,12 +194,13 @@ public class Test extends JPanel implements Runnable{
 		g.setColor(Color.green);
 		ford.draw(g2);
 		//sc.move(getWidth(), getHeight());
+		ford.xCenterPosition=getWidth();
 		ford.move(delta, getWidth(),getHeight());
 		sc1.move(delta, getWidth(), getHeight());
 //		Graphics2D g2=(Graphics2D) g;
 		g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 		g2.setColor(Color.black);
-		String message=ford.dx+", "+ford.dy;
+		String message=(ford.xCenterPosition-getWidth())+"";
 		g2.drawString(message,0,g2.getFontMetrics().getMaxAscent());
 		try {Thread.sleep(34);} catch (InterruptedException e) {}
 		repaint();
