@@ -395,29 +395,33 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 			ArrayList<Double> modulations=new ArrayList<Double>();
 			while(fileReader.hasNextLine()){
 				String line=fileReader.nextLine();
-				String[] words=line.split(" ");
+				String[] wordsNumbers=line.split(":");
+				if(wordsNumbers.length<=1)
+					continue;
+				String[] numbers=wordsNumbers[1].split(" ");
+				String[] words=wordsNumbers[0].split(" ");
 				if(words[0].equalsIgnoreCase("Spatial")){
-					for(int i=0;i<words.length;i++)
+					for(int i=0;i<numbers.length;i++)
 						try{
-							pixelDiams.add(Integer.parseInt(words[i]));
+							pixelDiams.add(Integer.parseInt(numbers[i]));
 						}
 					catch(NumberFormatException e){
 						continue;
 					}
 				}
 				if(words[0].equalsIgnoreCase("Modulations")){
-					for(int i=0;i<words.length;i++)
+					for(int i=0;i<numbers.length;i++)
 						try{
-							modulations.add(Double.parseDouble(words[i]));
+							modulations.add(Double.parseDouble(numbers[i]));
 						}
 					catch(NumberFormatException e){
 						continue;
 					}
 				}
 				if(words[0].equalsIgnoreCase("Delay") && words[1].equalsIgnoreCase("time")){
-					for(int i=0;i<words.length;i++)
+					for(int i=0;i<numbers.length;i++)
 						try{
-							DELAY_TIME=Integer.parseInt(words[i]);
+							DELAY_TIME=Integer.parseInt(numbers[i]);
 							break;
 						}
 					catch(NumberFormatException e){
@@ -425,9 +429,9 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 					}
 				}
 				if(words[0].equalsIgnoreCase("Iterations") && words[1].equalsIgnoreCase("delay")){
-					for(int i=0;i<words.length;i++)
+					for(int i=0;i<numbers.length;i++)
 						try{
-							ITERATIONS_DELAY=Integer.parseInt(words[i]);
+							ITERATIONS_DELAY=Integer.parseInt(numbers[i]);
 							break;
 						}
 					catch(NumberFormatException e){
@@ -435,9 +439,9 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 					}
 				}
 				if(words[0].equalsIgnoreCase("XGain")){
-					for(int i=0;i<words.length;i++)
+					for(int i=0;i<numbers.length;i++)
 						try{
-							XGain=Integer.parseInt(words[i]);
+							XGain=Integer.parseInt(numbers[i]);
 							break;
 						}
 					catch(NumberFormatException e){
@@ -445,9 +449,9 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 					}
 				}
 				if(words[0].equalsIgnoreCase("Distance") && words[1].equalsIgnoreCase("from")){
-					for(int i=0;i<words.length;i++)
+					for(int i=0;i<numbers.length;i++)
 						try{
-							DISTANCE_FROM_SCREEN_IN_INCHES=Integer.parseInt(words[i]);
+							DISTANCE_FROM_SCREEN_IN_INCHES=Integer.parseInt(numbers[i]);
 							break;
 						}
 					catch(NumberFormatException e){
@@ -461,6 +465,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 			MODULATIONS=new double[modulations.size()];
 			for(int i=0;i<MODULATIONS.length;i++)
 				MODULATIONS[i]=modulations.get(i);
+			fileReader.close();
 		}
 
 		//Ends Input Specifications read-in from file
@@ -547,12 +552,12 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 			g.setFont(ff);
 			g.setColor(Color.black);
 			g.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,18));
-			g.fillOval(screenDimentions.width/2, screenDimentions.height/2, 20, 20);
-			g.drawString("1", screenDimentions.width/2-g.getFontMetrics().stringWidth("1"), screenDimentions.height/2);
-			g.fillOval(screenDimentions.width/2+200, screenDimentions.height/2+200, 20, 20);
-			g.drawString("3", screenDimentions.width/2+200-g.getFontMetrics().stringWidth("3"), screenDimentions.height/2+200);
-			g.fillOval(screenDimentions.width/2-200, screenDimentions.height/2+200, 20, 20);
-			g.drawString("2", screenDimentions.width/2-200-g.getFontMetrics().stringWidth("2"), screenDimentions.height/2+200);
+			g.fillOval(screenDimentions.width/2, screenDimentions.height/20, 20, 20);
+			g.drawString("1", screenDimentions.width/2-g.getFontMetrics().stringWidth("1"), screenDimentions.height/20);
+			g.fillOval(8*screenDimentions.width/9, 5*screenDimentions.height/6, 20, 20);
+			g.drawString("3", 8*screenDimentions.width/9-g.getFontMetrics().stringWidth("3"), 5*screenDimentions.height/6);
+			g.fillOval(screenDimentions.width/9, 5*screenDimentions.height/6, 20, 20);
+			g.drawString("2", screenDimentions.width/9-g.getFontMetrics().stringWidth("2"), 5*screenDimentions.height/6);
 		}
 	}
 
