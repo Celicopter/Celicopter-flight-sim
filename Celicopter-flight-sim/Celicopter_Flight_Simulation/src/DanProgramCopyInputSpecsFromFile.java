@@ -93,7 +93,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 	/**Flag that tells us when a new trial iteration is started and we must move the cursor over to where the target circle is starting*/
 	protected boolean flag;
 	/**Holds the gain from the joystick for movement along the x-axis. Making the value bigger makes the cursor move faster with less input. Making it smaller gives the user more control*/
-	protected static int XGain;
+	protected static int XGain=4;
 	protected JFrame jiff;
 	/**Holds the circles that sit at the corners of the frame*/
 	protected ScreenObject[] cornerCircles;
@@ -266,7 +266,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		thread2=new Thread(){
 			public void run(){
 				//Runs while thread is active and the experiment is running 
-				while(Thread.currentThread()==thread2 && isRunning){
+				while(Thread.currentThread()==thread2 && isRunning && isCalibrated){
 					//The syncronized tag prevents the program from both moving and drawing everything on the screen at the same time, which would be bad
 					synchronized(lock1){
 						//If the joystick is calibrated, the objects on-screen can move. If it isnt calibrated, do nothing
@@ -282,23 +282,15 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		//Starts the drawing thread which begins executing what's in the run() method of this program
 		thread.start();
 
-		//Starts the thread that handles moving all on-screen objects
-		thread2.start();
 		//Initializes flag to be false. We will handle this shortly.
 		flag=false;
 		
 		jiff.addKeyListener(new KeyAdapter(){
-			public void keyTyped(KeyEvent e){
-				if(!isCalibrated)
-					isCalibrated=true;
-			}
-			public void keyPressed(KeyEvent e){
-				if(!isCalibrated)
-					isCalibrated=true;
-			}
 			public void keyReleased(KeyEvent e){
-				if(!isCalibrated)
+				if(!isCalibrated){
 					isCalibrated=true;
+					thread2.start();
+				}
 			}
 		});
 		//Allows us to see the frame we just made so we can actually see our experiment
@@ -386,7 +378,6 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 			//prevents the null pointer exception throw
 			if(o!=null){
 				o.move(delta, screenDimentions.width, screenDimentions.height);
-				System.out.println(cornerCircles[1].xCenterPosition);
 			}
 		}
 		if(flag){
