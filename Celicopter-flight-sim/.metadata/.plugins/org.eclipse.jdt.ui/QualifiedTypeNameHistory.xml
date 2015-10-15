@@ -34,4 +34,5 @@
 <fullyQualifiedTypeName name="java.awt.geom.AffineTransform"/>
 <fullyQualifiedTypeName name="java.awt.image.RescaleOp"/>
 <fullyQualifiedTypeName name="java.awt.Font"/>
+<fullyQualifiedTypeName name="joystick.Thread2"/>
 </qualifiedTypeNameHistroy>

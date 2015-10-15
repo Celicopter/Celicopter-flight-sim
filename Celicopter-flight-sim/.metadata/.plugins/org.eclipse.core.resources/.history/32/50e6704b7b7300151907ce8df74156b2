@@ -1,0 +1,26 @@
+package joystick;
+
+public class Thread2 extends Thread {
+	private volatile boolean running = true;
+	public void run(){
+		//Runs while thread is active and the experiment is running 
+		while(Thread.currentThread()==thread2 && running && isCalibrated){
+			//The syncronized tag prevents the program from both moving and drawing everything on the screen at the same time, which would be bad
+			synchronized(lock1){
+				//If the joystick is calibrated, the objects on-screen can move. If it isnt calibrated, do nothing
+				if(isCalibrated)
+					moveObjects();
+			}
+			//Pauses for delayTime milliseconds to make things smoother
+			try{ Thread.sleep(DELAY_TIME);} catch(InterruptedException e) {e.printStackTrace();}
+		}
+	}
+	
+	public void pause(){
+		running=false;
+	}
+	
+	public void go(){
+		running=true;
+	}
+}

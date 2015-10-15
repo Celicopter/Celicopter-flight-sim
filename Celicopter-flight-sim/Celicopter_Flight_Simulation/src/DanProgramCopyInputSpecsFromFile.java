@@ -68,6 +68,8 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 	protected static int NUMBER_OF_SCENERY_OBJECTS=4;
 	/**Delay between iterations (an iteration is composed of a modulation-spatial frequency combination) in milliseconds*/
 	protected static int ITERATIONS_DELAY;
+	/**Controls which of the 6 possible position arrays the program starts at*/
+	protected static int inputSeed;
 	/**First thread; handles drawing objects on-screen*/
 	protected Thread thread;
 	/**Seconds thread; handles moving on-screen objects*/
@@ -97,6 +99,8 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 	protected JFrame jiff;
 	/**Holds the circles that sit at the corners of the frame*/
 	protected ScreenObject[] cornerCircles;
+	/**True if program is waiting for any key on the keyboard to be pressed*/
+	//protected boolean waitingForKeyPress;
 	/*Sample position arrays*/
 	protected static int [] targetPossiblePossitionsArray1 =
 		{96,98,100,102,104,106,109,112,114,117,120,123,126,130,133,136,139,142,145,148,151,153,156,158,160,162,164,166,167,169,170,171,173,174,175,176,177,178,179,180,181,183,184,185,187,188,190,191,193,194,196,197,198,200,201,202,203,204,205,206,207,208,208,209,210,210,211,212,212,213,214,215,216,217,218,220,221,223,225,226,228,230,232,234,236,237,239,241,242,243,244,245,246,246,246,246,246,245,244,243,242,241,239,237,236,234,232,230,228,226,224,223,221,220,218,217,215,214,213,212,211,209,208,207,206,205,203,202,200,199,197,195,193,191,188,186,184,181,179,176,173,171,168,166,163,161,159,157,154,152,150,149,147,145,143,142,140,138,137,135,133,132,130,128,126,124,122,120,118,115,113,111,108,106,104,101,99,97,96,94,92,91,90,89,88,87,86,86,86,85,85,85,85,85,85,84,84,84,83,82,82,81,79,78,76,74,72,70,68,66,63,61,58,56,53,51,48,46,43,41,39,37,35,34,32,31,30,28,27,26,25,24,23,22,21,20,19,18,16,15,14,12,11,10,8,7,5,4,3,1,0,-1,-2,-3,-4,-5,-6,-6,-7,-7,-8,-8,-9,-9,-10,-10,-11,-12,-13,-14,-15,-16,-18,-19,-21,-23,-25,-27,-29,-32,-34,-37,-39,-42,-44,-46,-48,-51,-53,-54,-56,-57,-59,-60,-61,-62,-63,-63,-64,-64,-64,-65,-65,-65,-66,-66,-67,-67,-68,-69,-70,-71,-72,-73,-75,-76,-78,-79,-81,-83,-84,-86,-87,-89,-90,-91,-92,-93,-94,-94,-95,-95,-95,-95,-95,-95,-95,-94,-94,-93,-93,-92,-92,-91,-91,-91,-90,-90,-90,-89,-89,-89,-88,-88,-88,-87,-87,-86,-85,-85,-84,-83,-82,-81,-80,-78,-77,-75,-74,-73,-71,-70,-68,-67,-66,-65,-64,-64,-63,-63,-63,-63,-64,-64,-65,-66,-67,-68,-69,-70,-72,-73,-74,-76,-77,-78,-79,-80,-80,-81,-81,-82,-82,-81,-81,-81,-80,-80,-79,-78,-77,-77,-76,-75,-75,-74,-74,-73,-73,-73,-73,-73,-73,-73,-74,-74,-74,-75,-75,-75,-76,-76,-76,-76,-76,-76,-76,-76,-76,-76,-75,-75,-74,-74,-74,-73,-73,-72,-72,-72,-72,-72,-72,-73,-73,-73,-74,-74,-75,-76,-77,-77,-78,-79,-79,-80,-80,-81,-81,-81,-81,-81,-81,-81,-81,-80,-80,-79,-79,-79,-78,-78,-78,-78,-78,-78,-79,-79,-80,-81,-82,-84,-85,-87,-89,-91,-93,-95,-97,-99,-102,-104,-106,-108,-109,-111,-113,-114,-115,-116,-117,-118,-118,-119,-119,-120,-120,-120,-120,-121,-121,-121,-122,-122,-123,-123,-124,-125,-126,-127,-128,-129,-131,-132,-133,-135,-136,-138,-139,-141,-142,-144,-145,-146,-147,-149,-150,-151,-152,-154,-155,-156,-157,-159,-160,-162,-164,-166,-168,-170,-172,-174,-177,-179,-182,-185,-187,-190,-193,-195,-198,-200,-203,-205,-207,-209,-210,-212,-213,-214,-215,-215,-216,-216,-216,-216,-216,-215,-215,-215,-214,-214,-213,-213,-213,-213,-212,-212,-213,-213,-213,-213,-214,-214,-214,-215,-215,-215,-215,-215,-215,-215,-215,-214,-214,-213,-212,-211,-209,-208,-206,-204,-202,-200,-198,-196,-193,-191,-189,-186,-184,-182,-180,-178,-176,-174,-172,-170,-169,-167,-165,-163,-162,-160,-158,-156,-154,-152,-150,-148,-146,-144,-142,-139,-137,-135,-132,-130,-128,-125,-123,-121,-119,-117,-115,-114,-112,-111,-110,-109,-108,-107,-106,-105,-105,-104,-104,-103,-102,-101};	
@@ -119,6 +123,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 	public DanProgramCopyInputSpecsFromFile(){
 		super();
 		readInputSpecs();
+		//waitingForKeyPress=true;
 		//Set this to true to enable multi-screening
 		boolean IS_MULTI_SCREEN=false;
 		if(IS_MULTI_SCREEN)
@@ -191,17 +196,17 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		}
 
 		//Randomly chooses a target position array
-		switch((int)Math.random()*6){
+		switch(inputSeed){
 		//switch(0){
-		case 0:targetPositions=targetPossiblePossitionsArray1;
+		case 1:targetPositions=targetPossiblePossitionsArray1;
 		break;
-		case 1:targetPositions=targetPossiblePossitionsArray2;
+		case 2:targetPositions=targetPossiblePossitionsArray2;
 		break;
-		case 2:targetPositions=targetPossiblePossitionsArray3;
+		case 3:targetPositions=targetPossiblePossitionsArray3;
 		break;
-		case 3:targetPositions=targetPossiblePossitionsArray4;
+		case 4:targetPositions=targetPossiblePossitionsArray4;
 		break;
-		case 4:targetPositions=targetPossiblePossitionsArray5;
+		case 5:targetPositions=targetPossiblePossitionsArray5;
 		break;
 		default:targetPositions=targetPossiblePossitionsArray6;
 		break;
@@ -289,105 +294,27 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 			public void keyReleased(KeyEvent e){
 				if(!isCalibrated){
 					isCalibrated=true;
-					thread2.start();
 				}
+//				if(waitingForKeyPress){
+//					waitingForKeyPress=false;
+//				}
 			}
+//			public void keyTyped(KeyEvent e){
+//				if(waitingForKeyPress){
+//					waitingForKeyPress=false;
+//				}
+//			}
+//			public void keyPressed(KeyEvent e){
+//				if(waitingForKeyPress){
+//					waitingForKeyPress=false;
+//				}
+//			}
 		});
 		//Allows us to see the frame we just made so we can actually see our experiment
 		jiff.setVisible(true);
 	}
 
-	public void SFAndModulationUpdater(){
-		lastIterationTime=System.currentTimeMillis();
-		pixelWidthIndex++;
-		System.out.println("Frequency Iteration "+pixelWidthIndex+" done");
-		//Randomly chooses a target position array
-		switch((int)Math.random()*6){
-		//switch(0){
-			case 0:targetPositions=targetPossiblePossitionsArray1;
-					break;
-			case 1:targetPositions=targetPossiblePossitionsArray2;
-					break;
-			case 2:targetPositions=targetPossiblePossitionsArray3;
-					break;
-			case 3:targetPositions=targetPossiblePossitionsArray4;
-					break;
-			case 4:targetPositions=targetPossiblePossitionsArray5;
-					break;
-			default:targetPositions=targetPossiblePossitionsArray6;
-					break;
-		}
-		targetPositionIndex=0;
-		if(pixelWidthIndex>=pixelWidths.length){
-			pixelWidthIndex=0;
-			modIndex++;
-			System.out.println("Modulation Iteration "+modIndex+" done");
-		}
-		if(modIndex>=MODULATIONS.length && isRunning){
-			isRunning=false;
-			System.out.println("Experiment trial completed!!\nWriting to file...");
-			outputFile.close();
-		}
-	}
-
-	public void writeErrorToFile(){
-		if(pixelWidthIndex<SPATIAL_FREQUENCIES.length && modIndex<MODULATIONS.length){
-			outputFile.print(SPATIAL_FREQUENCIES[pixelWidthIndex] + "," + MODULATIONS[modIndex] + "," 
-					+ (System.currentTimeMillis()-startTime)+"," + target.xCenterPosition + "," + warfighter.xCenterPosition + ","
-					+ warfighter.getError(target) + "," 
-					//+ stick.getXAxisValue() +"," 
-					);
-			if(warfighter.getDynamicMod()!=null)
-				outputFile.print(warfighter.getDynamicMod().getxGain() + "," );
-			outputFile.println();
-		}		
-	}
-
-	public void moveObjects(){
-		//Gets the change in milliseconds since the last update
-		long delta=System.currentTimeMillis()-lastDrawTime;
-		//Updates the holder variable with the current time
-		lastDrawTime=System.currentTimeMillis();
-		//Sets the size of the target to the current size we want
-		target.setPixelDiameter(pixelWidths[pixelWidthIndex]);
-		//Sets the size of the Cursor to be 20% bigger than the target
-		warfighter.setPixelDiameter(1.2*pixelWidths[pixelWidthIndex]);
-		target.modulation=MODULATIONS[modIndex];
-		target.yCenterPosition=(int) Math.round(screenDimentions.getHeight()/2);
-		long delta2=System.currentTimeMillis()-lastIterationTime;
-		if(delta2>=ITERATIONS_DELAY){
-			SFAndModulationUpdater();
-			flag=true;
-			return;
-		}
-		else if(delta2>=ITERATIONS_DELAY/2){
-			target.xCenterPosition=(int) Math.round(targetPositions[targetPositionIndex]+3*screenDimentions.getWidth()/4);
-			targetPositionIndex++;
-		}
-		else {
-			target.xCenterPosition=(int) Math.round(targetPositions[targetPositionIndex]+screenDimentions.getWidth()/4);
-			targetPositionIndex++;
-		}
-
-		if(targetPositionIndex>=targetPositions.length){
-			targetPositionIndex=0;
-		}
-		warfighter.yCenterPosition=(int) Math.round(screenDimentions.getHeight()/2);
-		//Updates the positions of (moves) all the objects on the screen depending on how much time has passed since the last redraw, and the objects position (if the object is near the side of the screen it bounces off it)
-		for(ScreenObject o:allOnScreenObjects){
-			//prevents the null pointer exception throw
-			if(o!=null){
-				o.move(delta, screenDimentions.width, screenDimentions.height);
-			}
-		}
-		if(flag){
-			warfighter.xCenterPosition=target.xCenterPosition;
-			warfighter.yCenterPosition=target.yCenterPosition;
-			flag=false;
-		}
-	}
-
-	public void readInputSpecs(){
+	public static void readInputSpecs(){
 		try {
 			//Starts methodology for loading certain input parameters from file
 			Scanner fileReader=new Scanner(new File("InputSpecifications.txt"));
@@ -458,6 +385,16 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 						continue;
 					}
 				}
+				if(words[0].equalsIgnoreCase("Input") && words[1].equalsIgnoreCase("Seed")){
+					for(int i=0;i<numbers.length;i++)
+						try{
+							inputSeed=Integer.parseInt(numbers[i]);
+							break;
+						}
+					catch(NumberFormatException e){
+						continue;
+					}
+				}
 			}
 			SPATIAL_FREQUENCIES=new double[pixelDiams.size()];
 			for(int i=0;i<SPATIAL_FREQUENCIES.length;i++)
@@ -467,7 +404,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 				MODULATIONS[i]=modulations.get(i);
 			fileReader.close();
 		}
-
+	
 		//Ends Input Specifications read-in from file
 		catch (FileNotFoundException e) {
 			System.err.println("Cannot read input file");
@@ -495,6 +432,112 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		}
 		allOnScreenObjects.add(target);
 		allOnScreenObjects.add(warfighter);
+	}
+
+	public void convertToSpacialFrequencies(){
+		//Makes the array of pixel widths the same size as the array of spatial frequencies-this allows the user to input in a array of spatial frequencies of any length
+		pixelWidths=new int[SPATIAL_FREQUENCIES.length];
+	
+		//Gets the (approximate) resolution of the screen 
+		int dpi=Toolkit.getDefaultToolkit().getScreenResolution();
+		//Fills the array of pixel widths based on the input array spatial frequencies
+		for(int i=0;i<SPATIAL_FREQUENCIES.length;i++){
+			pixelWidths[i]=(int) (DISTANCE_FROM_SCREEN_IN_INCHES*dpi*Math.tan(2/SPATIAL_FREQUENCIES[i]));
+	
+		}
+	
+	}
+
+	public void writeErrorToFile(){
+		if(pixelWidthIndex<SPATIAL_FREQUENCIES.length && modIndex<MODULATIONS.length){
+			outputFile.print(SPATIAL_FREQUENCIES[pixelWidthIndex] + "," + MODULATIONS[modIndex] + "," 
+					+ (System.currentTimeMillis()-startTime)+"," + target.xCenterPosition + "," + warfighter.xCenterPosition + ","
+					+ warfighter.getError(target) + "," 
+					//+ stick.getXAxisValue() +"," 
+					);
+			if(warfighter.getDynamicMod()!=null)
+				outputFile.print(warfighter.getDynamicMod().getxGain() + "," );
+			outputFile.println();
+		}		
+	}
+
+	public void moveObjects(){
+		//Gets the change in milliseconds since the last update
+		long delta=System.currentTimeMillis()-lastDrawTime;
+		//Updates the holder variable with the current time
+		lastDrawTime=System.currentTimeMillis();
+		//Sets the size of the target to the current size we want
+		target.setPixelDiameter(pixelWidths[pixelWidthIndex]);
+		//Sets the size of the Cursor to be 20% bigger than the target
+		warfighter.setPixelDiameter(1.2*pixelWidths[pixelWidthIndex]);
+		target.modulation=MODULATIONS[modIndex];
+		target.yCenterPosition=(int) Math.round(screenDimentions.getHeight()/2);
+		long delta2=System.currentTimeMillis()-lastIterationTime;
+		if(delta2>=ITERATIONS_DELAY){
+			SFAndModulationUpdater();
+			flag=true;
+			return;
+		}
+		else if(delta2>=ITERATIONS_DELAY/2){
+			target.xCenterPosition=(int) Math.round(targetPositions[targetPositionIndex]+3*screenDimentions.getWidth()/4);
+			targetPositionIndex++;
+		}
+		else {
+			target.xCenterPosition=(int) Math.round(targetPositions[targetPositionIndex]+screenDimentions.getWidth()/4);
+			targetPositionIndex++;
+		}
+
+		if(targetPositionIndex>=targetPositions.length){
+			targetPositionIndex=0;
+		}
+		warfighter.yCenterPosition=(int) Math.round(screenDimentions.getHeight()/2);
+		//Updates the positions of (moves) all the objects on the screen depending on how much time has passed since the last redraw, and the objects position (if the object is near the side of the screen it bounces off it)
+		for(ScreenObject o:allOnScreenObjects){
+			//prevents the null pointer exception throw
+			if(o!=null){
+				o.move(delta, screenDimentions.width, screenDimentions.height);
+			}
+		}
+		if(flag){
+			warfighter.xCenterPosition=target.xCenterPosition;
+			warfighter.yCenterPosition=target.yCenterPosition;
+			flag=false;
+		}
+		writeErrorToFile();
+	}
+
+	public void SFAndModulationUpdater(){
+		lastIterationTime=System.currentTimeMillis();
+		pixelWidthIndex++;
+		System.out.println("Frequency Iteration "+pixelWidthIndex+" done");
+		//waitingForKeyPress=true;
+		//Randomly chooses a target position array
+		switch((int)Math.random()*6){
+		//switch(0){
+			case 1:targetPositions=targetPossiblePossitionsArray1;
+					break;
+			case 2:targetPositions=targetPossiblePossitionsArray2;
+					break;
+			case 3:targetPositions=targetPossiblePossitionsArray3;
+					break;
+			case 4:targetPositions=targetPossiblePossitionsArray4;
+					break;
+			case 5:targetPositions=targetPossiblePossitionsArray5;
+					break;
+			default:targetPositions=targetPossiblePossitionsArray6;
+					break;
+		}
+		targetPositionIndex=0;
+		if(pixelWidthIndex>=pixelWidths.length){
+			pixelWidthIndex=0;
+			modIndex++;
+			System.out.println("Modulation Iteration "+modIndex+" done");
+		}
+		if(modIndex>=MODULATIONS.length && isRunning){
+			isRunning=false;
+			System.out.println("Experiment trial completed!!\nWriting to file...");
+			outputFile.close();
+		}
 	}
 
 	public void calibration(Graphics2D g){
@@ -550,6 +593,8 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 			g.drawString(message,0,g.getFontMetrics().getMaxAscent());
 			g.drawString(message2,screenDimentions.width/2-g.getFontMetrics().stringWidth(message2)/2,screenDimentions.height/2-g.getFontMetrics().getMaxAscent());			
 			g.setFont(ff);
+			
+			//Displays three circles used to calibrate the eye tracker
 			g.setColor(Color.black);
 			g.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,18));
 			g.fillOval(screenDimentions.width/2, screenDimentions.height/20, 20, 20);
@@ -561,24 +606,6 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		}
 	}
 
-	public void convertToSpacialFrequencies(){
-		//Makes the array of pixel widths the same size as the array of spatial frequencies-this allows the user to input in a array of spatial frequencies of any length
-		pixelWidths=new int[SPATIAL_FREQUENCIES.length];
-
-		//Gets the (approximate) resolution of the screen 
-		int dpi=Toolkit.getDefaultToolkit().getScreenResolution();
-		//Fills the array of pixel widths based on the input array spatial frequencies
-		for(int i=0;i<SPATIAL_FREQUENCIES.length;i++){
-			pixelWidths[i]=(int) (DISTANCE_FROM_SCREEN_IN_INCHES*dpi*Math.tan(2/SPATIAL_FREQUENCIES[i]));
-
-		}
-
-	}
-
-	public void update(Graphics g){
-		paint(g);
-	}
-
 	public void displayCurrentTime(){
 		long currentTime=System.currentTimeMillis()-startTime;
 		long currentTimeMinutes=currentTime/60000;
@@ -587,42 +614,31 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		jiff.setTitle(currentTimeMinutes+"' "+currentTimeSeconds+"'' "+currentTimeThirtyiths+" thirtyiths");
 	}
 	
-	public void paint(Graphics g){
+	public void update(Graphics g){
+		paint(g);
+	}
 
+	public void paint(Graphics g){
+	
 		//    checks the buffersize with the current panelsize
 		//    or initialises the image with the first paint
 		if(screenDimentions.width!=getWidth() || screenDimentions.height!=getHeight() || canvas==null || canvasGraphics==null)
 			resetBuffer();
-
+	
 		if(canvas!=null){
 			Color backgroundColor = Color.black;
 			//this clears the offscreen image, not the onscreen one
 			if(modIndex<MODULATIONS.length)
 				backgroundColor=new Color((int) (125*MODULATIONS[modIndex]+125),(int) (125*MODULATIONS[modIndex]+125),(int) (125*MODULATIONS[modIndex]+125));
 			canvasGraphics.setColor(backgroundColor);
-			writeErrorToFile();
 			canvasGraphics.fillRect(0,0,screenDimentions.width,screenDimentions.height);
-
+	
 			//calls the paintbuffer method with 
 			//the offscreen graphics as a param
 			updateFrame(canvasGraphics);
-
+	
 			//we finally paint the offscreen image onto the onscreen image
 			g.drawImage(canvas,0,0,this);
-		}
-	}
-
-	public void drawObjectsOnScreen(Graphics2D g){
-		if(!isCalibrated){
-			calibration(g);
-		}
-		else {
-			for(ScreenObject o:allOnScreenObjects){
-				//prevents the null pointer exception throw
-				if(o!=null){
-					o.draw(g);
-				}
-			}
 		}
 	}
 
@@ -632,6 +648,25 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 			drawObjectsOnScreen(g);
 		}
 
+	}
+
+	public void drawObjectsOnScreen(Graphics2D g){
+		if(!isCalibrated){
+			calibration(g);
+		}
+		else {
+			if(!thread2.isAlive()){
+				thread2.start();
+				lastIterationTime=System.currentTimeMillis();
+				
+			}
+			for(ScreenObject o:allOnScreenObjects){
+				//prevents the null pointer exception throw
+				if(o!=null){
+					o.draw(g);
+				}
+			}
+		}
 	}
 
 	/** 

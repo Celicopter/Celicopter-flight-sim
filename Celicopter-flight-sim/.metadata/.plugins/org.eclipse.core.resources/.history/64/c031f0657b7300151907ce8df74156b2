@@ -1,0 +1,13 @@
+package joystick;
+
+public abstract class Thread2 extends Thread {
+	private volatile boolean running = true;
+	
+	public void pause(){
+		running=false;
+	}
+	
+	public void go(){
+		running=true;
+	}
+}
