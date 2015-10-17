@@ -287,7 +287,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		};
 		
 		
-		
+		startTime=System.currentTimeMillis();
 		//Starts the drawing thread which begins executing what's in the run() method of this program
 		thread.start();
 
@@ -457,7 +457,10 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 	}
 
 	public void moveObjects(){
-		displayCurrentTime();
+//		//Gets the change in milliseconds since the last update
+//		long delta=System.currentTimeMillis()-lastDrawTime;
+//		//Updates the holder variable with the current time
+//		lastDrawTime=System.currentTimeMillis();
 		//Sets the size of the target to the current size we want
 		target.setPixelDiameter(pixelWidths[pixelWidthIndex]);
 		//Sets the size of the Cursor to be 20% bigger than the target
@@ -599,29 +602,18 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 	}
 
 	public void displayCurrentTime(){
-		jiff.setTitle(formatTimeToThirteiths(System.currentTimeMillis()-startTime));
+		long currentTime=System.currentTimeMillis()-startTime;
+		long currentTimeMinutes=currentTime/60000;
+		long currentTimeSeconds=(currentTime-currentTimeMinutes*60000)/1000;
+		long currentTimeThirtyiths=(long)(3*(currentTime-currentTimeMinutes*60000-currentTimeSeconds*1000)/100.0);
+		jiff.setTitle(currentTimeMinutes+"' "+currentTimeSeconds+"'' "+currentTimeThirtyiths+" thirtyiths");
 	}
 	
-	/**
-	 * Takes input time in milliseconds and formats it into minute, second, and 1/30th second increments
-	 * @param time input time in milliseconds
-	 * @return Formated string of minutes' seconds'' thirthyiths
-	 */
-	public String formatTimeToThirteiths(long time){
-		String t="";
-		long timeMinutes=time/60000;
-		long timeSeconds=(time-timeMinutes*60000)/1000;
-		long timeThirtyiths=(long)(3*(time-timeMinutes*60000-timeSeconds*1000)/100.0);
-		if(timeMinutes<10)
-			t+="0";
-		t+=timeMinutes+"' ";
-		if(timeSeconds<10)
-			t+="0";
-		t+=timeSeconds+"'' ";
-		if(timeThirtyiths<10)
-			t+="0";
-		t+=timeThirtyiths+" thirtyiths";
-		return t;
+	public void formatTimeToThirthiths(long time){
+		
+		long currentTimeMinutes=time/60000;
+		long currentTimeSeconds=(time-currentTimeMinutes*60000)/1000;
+		long currentTimeThirtyiths=(long)(3*(time-currentTimeMinutes*60000-currentTimeSeconds*1000)/100.0);
 	}
 	
 	public void update(Graphics g){
@@ -647,8 +639,6 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 			//the offscreen graphics as a param
 			updateFrame(canvasGraphics);
 	
-			
-			
 			//we finally paint the offscreen image onto the onscreen image
 			g.drawImage(canvas,0,0,this);
 		}
@@ -669,7 +659,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		else {
 			if(!thread2.isAlive()){
 				thread2.start();
-				startTime=System.currentTimeMillis();
+				//lastIterationTime=System.currentTimeMillis();
 				
 			}
 			for(ScreenObject o:allOnScreenObjects){

@@ -287,7 +287,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		};
 		
 		
-		
+		startTime=System.currentTimeMillis();
 		//Starts the drawing thread which begins executing what's in the run() method of this program
 		thread.start();
 
@@ -646,8 +646,6 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 			//calls the paintbuffer method with 
 			//the offscreen graphics as a param
 			updateFrame(canvasGraphics);
-	
-			
 			
 			//we finally paint the offscreen image onto the onscreen image
 			g.drawImage(canvas,0,0,this);
@@ -669,7 +667,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		else {
 			if(!thread2.isAlive()){
 				thread2.start();
-				startTime=System.currentTimeMillis();
+				//lastIterationTime=System.currentTimeMillis();
 				
 			}
 			for(ScreenObject o:allOnScreenObjects){

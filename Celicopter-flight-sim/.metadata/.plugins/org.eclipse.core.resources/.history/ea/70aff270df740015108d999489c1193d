@@ -274,6 +274,8 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 				while(Thread.currentThread()==thread2 && isRunning && isCalibrated){
 					//The syncronized tag prevents the program from both moving and drawing everything on the screen at the same time, which would be bad
 					synchronized(lock1){
+						if(!isCalibrated)
+							
 						//If the joystick is calibrated, the objects on-screen can move. If it isnt calibrated, do nothing
 						if(isCalibrated && !waitingForKeyPress)
 							moveObjects();

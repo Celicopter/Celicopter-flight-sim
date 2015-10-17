@@ -287,7 +287,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		};
 		
 		
-		
+		startTime=System.currentTimeMillis();
 		//Starts the drawing thread which begins executing what's in the run() method of this program
 		thread.start();
 
@@ -669,7 +669,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		else {
 			if(!thread2.isAlive()){
 				thread2.start();
-				startTime=System.currentTimeMillis();
+				//lastIterationTime=System.currentTimeMillis();
 				
 			}
 			for(ScreenObject o:allOnScreenObjects){

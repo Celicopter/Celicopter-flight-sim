@@ -277,8 +277,9 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 						//If the joystick is calibrated, the objects on-screen can move. If it isnt calibrated, do nothing
 						if(isCalibrated && !waitingForKeyPress)
 							moveObjects();
-						else
+						else{
 							lastIterationTime=System.currentTimeMillis();
+						}
 					}
 					//Pauses for delayTime milliseconds to make things smoother
 					try{ Thread.sleep(DELAY_TIME);} catch(InterruptedException e) {e.printStackTrace();}
@@ -646,8 +647,6 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 			//calls the paintbuffer method with 
 			//the offscreen graphics as a param
 			updateFrame(canvasGraphics);
-	
-			
 			
 			//we finally paint the offscreen image onto the onscreen image
 			g.drawImage(canvas,0,0,this);
@@ -669,7 +668,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		else {
 			if(!thread2.isAlive()){
 				thread2.start();
-				startTime=System.currentTimeMillis();
+				//lastIterationTime=System.currentTimeMillis();
 				
 			}
 			for(ScreenObject o:allOnScreenObjects){
