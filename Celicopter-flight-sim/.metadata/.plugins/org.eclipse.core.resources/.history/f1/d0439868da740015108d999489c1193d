@@ -301,7 +301,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 				}
 				if(waitingForKeyPress){
 					waitingForKeyPress=false;
-					//lastIterationTime=System.currentTimeMillis();
+					lastIterationTime=System.currentTimeMillis();
 				}
 			}
 		});
@@ -652,7 +652,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		else {
 			if(!thread2.isAlive()){
 				thread2.start();
-				//lastIterationTime=System.currentTimeMillis();
+				lastIterationTime=System.currentTimeMillis();
 				
 			}
 			for(ScreenObject o:allOnScreenObjects){

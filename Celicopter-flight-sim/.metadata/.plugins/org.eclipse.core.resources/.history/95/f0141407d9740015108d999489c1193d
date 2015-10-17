@@ -277,8 +277,6 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 						//If the joystick is calibrated, the objects on-screen can move. If it isnt calibrated, do nothing
 						if(isCalibrated && !waitingForKeyPress)
 							moveObjects();
-						else
-							lastIterationTime=System.currentTimeMillis();
 					}
 					//Pauses for delayTime milliseconds to make things smoother
 					try{ Thread.sleep(DELAY_TIME);} catch(InterruptedException e) {e.printStackTrace();}
@@ -301,7 +299,16 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 				}
 				if(waitingForKeyPress){
 					waitingForKeyPress=false;
-					//lastIterationTime=System.currentTimeMillis();
+				}
+			}
+			public void keyTyped(KeyEvent e){
+				if(waitingForKeyPress){
+					waitingForKeyPress=false;
+				}
+			}
+			public void keyPressed(KeyEvent e){
+				if(waitingForKeyPress){
+					waitingForKeyPress=false;
 				}
 			}
 		});
@@ -502,7 +509,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 	}
 
 	public void SFAndModulationUpdater(){
-		
+		lastIterationTime=System.currentTimeMillis();
 		pixelWidthIndex++;
 		System.out.println("Frequency Iteration "+pixelWidthIndex+" done");
 		waitingForKeyPress=true;
@@ -652,7 +659,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		else {
 			if(!thread2.isAlive()){
 				thread2.start();
-				//lastIterationTime=System.currentTimeMillis();
+				lastIterationTime=System.currentTimeMillis();
 				
 			}
 			for(ScreenObject o:allOnScreenObjects){

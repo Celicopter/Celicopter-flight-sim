@@ -277,16 +277,12 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 						//If the joystick is calibrated, the objects on-screen can move. If it isnt calibrated, do nothing
 						if(isCalibrated && !waitingForKeyPress)
 							moveObjects();
-						else
-							lastIterationTime=System.currentTimeMillis();
 					}
 					//Pauses for delayTime milliseconds to make things smoother
 					try{ Thread.sleep(DELAY_TIME);} catch(InterruptedException e) {e.printStackTrace();}
 				}
 			}
 		};
-		
-		
 		startTime=System.currentTimeMillis();
 		//Starts the drawing thread which begins executing what's in the run() method of this program
 		thread.start();
@@ -301,7 +297,16 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 				}
 				if(waitingForKeyPress){
 					waitingForKeyPress=false;
-					//lastIterationTime=System.currentTimeMillis();
+				}
+			}
+			public void keyTyped(KeyEvent e){
+				if(waitingForKeyPress){
+					waitingForKeyPress=false;
+				}
+			}
+			public void keyPressed(KeyEvent e){
+				if(waitingForKeyPress){
+					waitingForKeyPress=false;
 				}
 			}
 		});
@@ -457,10 +462,10 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 	}
 
 	public void moveObjects(){
-//		//Gets the change in milliseconds since the last update
-//		long delta=System.currentTimeMillis()-lastDrawTime;
-//		//Updates the holder variable with the current time
-//		lastDrawTime=System.currentTimeMillis();
+		//Gets the change in milliseconds since the last update
+		long delta=System.currentTimeMillis()-lastDrawTime;
+		//Updates the holder variable with the current time
+		lastDrawTime=System.currentTimeMillis();
 		//Sets the size of the target to the current size we want
 		target.setPixelDiameter(pixelWidths[pixelWidthIndex]);
 		//Sets the size of the Cursor to be 20% bigger than the target
@@ -490,7 +495,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		for(ScreenObject o:allOnScreenObjects){
 			//prevents the null pointer exception throw
 			if(o!=null){
-				o.move(1, screenDimentions.width, screenDimentions.height);
+				o.move(delta, screenDimentions.width, screenDimentions.height);
 			}
 		}
 		if(flag){
@@ -502,10 +507,10 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 	}
 
 	public void SFAndModulationUpdater(){
-		
+		lastIterationTime=System.currentTimeMillis();
 		pixelWidthIndex++;
 		System.out.println("Frequency Iteration "+pixelWidthIndex+" done");
-		waitingForKeyPress=true;
+		//waitingForKeyPress=true;
 		//Randomly chooses a target position array
 		switch((int)Math.random()*6){
 		//switch(0){
@@ -652,7 +657,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		else {
 			if(!thread2.isAlive()){
 				thread2.start();
-				//lastIterationTime=System.currentTimeMillis();
+				lastIterationTime=System.currentTimeMillis();
 				
 			}
 			for(ScreenObject o:allOnScreenObjects){
@@ -686,7 +691,7 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		canvas=new BufferedImage(screenDimentions.width,screenDimentions.height,BufferedImage.TYPE_INT_ARGB);
 		canvasGraphics=(Graphics2D) canvas.getGraphics();
 
-		//Makes everything look smoother 
+		//Makes movement look smoother 
 		canvasGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		canvasGraphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
 		canvasGraphics.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
@@ -695,15 +700,9 @@ public class DanProgramCopyInputSpecsFromFile extends JPanel implements Runnable
 		canvasGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		canvasGraphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		canvasGraphics.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-		
-		
 		setCornerCirclesToCorners();
 	}
 
-	/**
-	 * Puts four blue circles on screen; one at each corner.
-	 * These are used to analyze data from the eye tracker.
-	 */
 	public void setCornerCirclesToCorners(){
 		cornerCircles[1].xCenterPosition=(int) (screenDimentions.width-cornerCircles[1].getPixelDiameter()/2);
 		cornerCircles[2].yCenterPosition=screenDimentions.height;
