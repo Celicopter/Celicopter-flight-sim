@@ -1,0 +1,11 @@
+Required header-must skip first three lines
+All numbers must come after semicolons and be space-delimited. No commas
+
+Input Seed: 6
+Spatial Frequencies to test: 1 3 6 15 36 91
+Modulations to test: 1.0 0.804 0.608 0.412 0.216 0.02
+Delay time (milliseconds): 30
+Iterations delay (milliseconds): 16000
+XGain: 4
+Number of Iterations: 36	
+Distance from screen in inches: 48
